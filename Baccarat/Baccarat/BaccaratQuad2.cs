@@ -129,6 +129,7 @@ namespace Baccarat
                 MessageBox.Show("Vui lòng nhập giá trị");
                 return;
             }
+            
             //Reset if needed            
             if (IDCounting % 8 == 0)
             {
@@ -152,7 +153,10 @@ namespace Baccarat
             var inputValue = txt_1.Text == BANKER_VALUE
                                     ? BaccratCard.Banker : BaccratCard.Player;
 
-            TradeFiveToEightCards.Add(inputValue);
+            if (IDCounting > 0)
+            {
+                TradeFiveToEightCards.Add(inputValue);
+            }            
 
             if (IDCounting > 2)
             {
@@ -168,7 +172,6 @@ namespace Baccarat
             {
                 TradeThreeToSixCards.Add(inputValue);
             }
-
 
             TradeFiveToEightCalculator.SetCards(TradeFiveToEightCards);
             TradeOneToFourCalculator.SetCards(TradeOneToFourCards);

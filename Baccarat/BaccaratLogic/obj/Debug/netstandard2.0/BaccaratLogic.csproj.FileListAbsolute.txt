@@ -1,8 +1,0 @@
-D:\Coding\Baccarat\BaccaratLogic\bin\Debug\netstandard2.0\BaccaratLogic.dll
-D:\Coding\Baccarat\BaccaratLogic\bin\Debug\netstandard2.0\BaccaratLogic.pdb
-D:\Coding\Baccarat\BaccaratLogic\obj\Debug\netstandard2.0\BaccaratLogic.csprojAssemblyReference.cache
-D:\Coding\Baccarat\BaccaratLogic\obj\Debug\netstandard2.0\BaccaratLogic.csproj.CoreCompileInputs.cache
-D:\Coding\Baccarat\BaccaratLogic\obj\Debug\netstandard2.0\BaccaratLogic.AssemblyInfoInputs.cache
-D:\Coding\Baccarat\BaccaratLogic\obj\Debug\netstandard2.0\BaccaratLogic.AssemblyInfo.cs
-D:\Coding\Baccarat\BaccaratLogic\obj\Debug\netstandard2.0\BaccaratLogic.dll
-D:\Coding\Baccarat\BaccaratLogic\obj\Debug\netstandard2.0\BaccaratLogic.pdb
