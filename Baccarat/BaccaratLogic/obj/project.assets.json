@@ -185,11 +185,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Coding\\Baccarat\\BaccaratLogic\\CalculationLogic.csproj",
+      "projectUniqueName": "D:\\Coding\\bac\\Baccarat\\BaccaratLogic\\CalculationLogic.csproj",
       "projectName": "CalculationLogic",
-      "projectPath": "D:\\Coding\\Baccarat\\BaccaratLogic\\CalculationLogic.csproj",
+      "projectPath": "D:\\Coding\\bac\\Baccarat\\BaccaratLogic\\CalculationLogic.csproj",
       "packagesPath": "C:\\Users\\anh.hoang\\.nuget\\packages\\",
-      "outputPath": "D:\\Coding\\Baccarat\\BaccaratLogic\\obj\\",
+      "outputPath": "D:\\Coding\\bac\\Baccarat\\BaccaratLogic\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"

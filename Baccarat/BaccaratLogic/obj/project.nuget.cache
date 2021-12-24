@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "kZwvtyAAU51Szrh0iWRIsxLgPYfgfbnAocsDO4k9F4v6VacvRd6I2eRjb1gdv0Les/Uds4OeqxLdeqBJ0W6glg==",
+  "dgSpecHash": "VeeA5q9WnG7dJxjku5IN6yEzvJ6Mzv898XAstGOhe2C/TbLIt5EYfbyRRO7MCmIgKZbLlId3opIWf3CarNc2qA==",
   "success": true,
-  "projectFilePath": "D:\\Coding\\Baccarat\\BaccaratLogic\\CalculationLogic.csproj",
+  "projectFilePath": "D:\\Coding\\bac\\Baccarat\\BaccaratLogic\\CalculationLogic.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\anh.hoang\\.nuget\\packages\\microsoft.netcore.platforms\\1.1.0\\microsoft.netcore.platforms.1.1.0.nupkg.sha512",
     "C:\\Users\\anh.hoang\\.nuget\\packages\\netstandard.library\\2.0.3\\netstandard.library.2.0.3.nupkg.sha512"
