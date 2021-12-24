@@ -19,6 +19,12 @@ namespace CalculationLogic
         public int Same_Coff { get; set; }
         public int Diff_Coff { get; set; }
     }
+
+    public class QuadruplePredict
+    {
+        public BaccratCard Value { get; set; }
+        public int Volume { get; set; }
+    }
     public class BaccaratQuadruple
     {
         public BaccaratQuadruple()
@@ -42,24 +48,13 @@ namespace CalculationLogic
             {
                 if (BaccratCards[i] != SaveBaccratCards[i])
                     return false;
-            }                
-
+            }
             return true;
         }        
 
-        public QuadrupleResult Predict(int? realSame = null, int? realDiff = null)
+        public QuadrupleResult Predict()
         {
-            var currentOrder = (BaccratCards.Count - 1) % 8; //0-8 --> Count needs to minus 1
-
-            if (realSame.HasValue)
-            {
-                Current_Same = realSame.Value; 
-            }
-
-            if (realDiff.HasValue)
-            {
-                Current_Diff = realDiff.Value;
-            }
+            var currentOrder = (BaccratCards.Count - 1) % 8; //0-8 --> Count needs to minus 1            
 
             if (currentOrder < 3 ) //If currentOrder in [0,1,2]: cannot predict 
             {
@@ -79,6 +74,7 @@ namespace CalculationLogic
                             (Current_Same == 0 || Current_Same == 1 || Current_Same == 2) ? 1
                                 : Current_Same < 0 ? Math.Abs(Current_Same) + 2
                                 : Current_Same - 2;
+
             var assumeDiff = condition ? 1 : currentOrder == 3 ? Current_Diff :
                             (Current_Diff == 0 || Current_Diff == 1 || Current_Diff == 2) ? 1
                                 : Current_Diff < 0 ? Math.Abs(Current_Diff) + 2
@@ -103,7 +99,7 @@ namespace CalculationLogic
                                 : predictVolume > 0 ? assumeCard
                                 : (assumeCard == BaccratCard.Banker ? BaccratCard.Player : BaccratCard.Banker);
 
-            SaveBaccratCards = BaccratCards;            
+            UpdateSaveCards();
 
             return new QuadrupleResult
             {
@@ -156,6 +152,7 @@ namespace CalculationLogic
             Current_Same = 0;
             Current_Diff = 0;
             Current_Predict = BaccratCard.NoTrade;
+            
             BaccratCards.Clear();
             SaveBaccratCards.Clear();
         }
@@ -167,6 +164,15 @@ namespace CalculationLogic
             for (var i = 0; i < baccratCards.Count; i++)
             {
                 BaccratCards.Add(baccratCards[i]);
+            }
+        }
+
+        private void UpdateSaveCards()
+        {
+            SaveBaccratCards.Clear();
+            for (var i = 0; i < BaccratCards.Count; i++)
+            {
+                SaveBaccratCards.Add(BaccratCards[i]);
             }
         }
 

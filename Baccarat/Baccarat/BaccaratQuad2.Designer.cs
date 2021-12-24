@@ -37,23 +37,17 @@ namespace Baccarat
             this.txtValue = new System.Windows.Forms.TextBox();
             this.txtVolume = new System.Windows.Forms.TextBox();
             this.btnReset = new System.Windows.Forms.Button();
-            this.lbl_Same_5_8 = new System.Windows.Forms.Label();
-            this.lbl_Diff_5_8 = new System.Windows.Forms.Label();
             this.lbl_ClickedReport = new System.Windows.Forms.Label();
             this.btn10 = new System.Windows.Forms.Button();
             this.btn11 = new System.Windows.Forms.Button();
             this.txt_1 = new System.Windows.Forms.TextBox();
-            this.lbl_Diff_1_4 = new System.Windows.Forms.Label();
-            this.lbl_Same_1_4 = new System.Windows.Forms.Label();
             this.tabControls = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.label1 = new System.Windows.Forms.Label();
-            this.tabPage2 = new System.Windows.Forms.TabPage();
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.btnProcessData = new System.Windows.Forms.Button();
             this.tabControls.SuspendLayout();
             this.tabPage1.SuspendLayout();
-            this.tabPage2.SuspendLayout();
             this.tabPage3.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -138,26 +132,6 @@ namespace Baccarat
             this.btnReset.UseVisualStyleBackColor = true;
             this.btnReset.Click += new System.EventHandler(this.btnReset_Click);
             // 
-            // lbl_Same_5_8
-            // 
-            this.lbl_Same_5_8.AutoSize = true;
-            this.lbl_Same_5_8.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lbl_Same_5_8.Location = new System.Drawing.Point(85, 10);
-            this.lbl_Same_5_8.Name = "lbl_Same_5_8";
-            this.lbl_Same_5_8.Size = new System.Drawing.Size(26, 29);
-            this.lbl_Same_5_8.TabIndex = 106;
-            this.lbl_Same_5_8.Text = "0";
-            // 
-            // lbl_Diff_5_8
-            // 
-            this.lbl_Diff_5_8.AutoSize = true;
-            this.lbl_Diff_5_8.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lbl_Diff_5_8.Location = new System.Drawing.Point(85, 40);
-            this.lbl_Diff_5_8.Name = "lbl_Diff_5_8";
-            this.lbl_Diff_5_8.Size = new System.Drawing.Size(26, 29);
-            this.lbl_Diff_5_8.TabIndex = 107;
-            this.lbl_Diff_5_8.Text = "0";
-            // 
             // lbl_ClickedReport
             // 
             this.lbl_ClickedReport.AutoSize = true;
@@ -212,30 +186,9 @@ namespace Baccarat
             this.txt_1.TextChanged += new System.EventHandler(this.txt_8_TextChanged);
             this.txt_1.DoubleClick += new System.EventHandler(this.txt_8_DoubleClick);
             // 
-            // lbl_Diff_1_4
-            // 
-            this.lbl_Diff_1_4.AutoSize = true;
-            this.lbl_Diff_1_4.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lbl_Diff_1_4.Location = new System.Drawing.Point(339, 40);
-            this.lbl_Diff_1_4.Name = "lbl_Diff_1_4";
-            this.lbl_Diff_1_4.Size = new System.Drawing.Size(26, 29);
-            this.lbl_Diff_1_4.TabIndex = 110;
-            this.lbl_Diff_1_4.Text = "0";
-            // 
-            // lbl_Same_1_4
-            // 
-            this.lbl_Same_1_4.AutoSize = true;
-            this.lbl_Same_1_4.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lbl_Same_1_4.Location = new System.Drawing.Point(339, 10);
-            this.lbl_Same_1_4.Name = "lbl_Same_1_4";
-            this.lbl_Same_1_4.Size = new System.Drawing.Size(26, 29);
-            this.lbl_Same_1_4.TabIndex = 109;
-            this.lbl_Same_1_4.Text = "0";
-            // 
             // tabControls
             // 
             this.tabControls.Controls.Add(this.tabPage1);
-            this.tabControls.Controls.Add(this.tabPage2);
             this.tabControls.Controls.Add(this.tabPage3);
             this.tabControls.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tabControls.Location = new System.Drawing.Point(39, 575);
@@ -265,20 +218,6 @@ namespace Baccarat
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(0, 32);
             this.label1.TabIndex = 115;
-            // 
-            // tabPage2
-            // 
-            this.tabPage2.BackColor = System.Drawing.SystemColors.Control;
-            this.tabPage2.Controls.Add(this.lbl_Same_5_8);
-            this.tabPage2.Controls.Add(this.lbl_Diff_5_8);
-            this.tabPage2.Controls.Add(this.lbl_Same_1_4);
-            this.tabPage2.Controls.Add(this.lbl_Diff_1_4);
-            this.tabPage2.Location = new System.Drawing.Point(4, 34);
-            this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(483, 192);
-            this.tabPage2.TabIndex = 1;
-            this.tabPage2.Text = "Thông tin";
             // 
             // tabPage3
             // 
@@ -329,8 +268,6 @@ namespace Baccarat
             this.tabControls.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();
-            this.tabPage2.ResumeLayout(false);
-            this.tabPage2.PerformLayout();
             this.tabPage3.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -346,17 +283,12 @@ namespace Baccarat
         private System.Windows.Forms.TextBox txtValue;
         private System.Windows.Forms.TextBox txtVolume;
         private System.Windows.Forms.Button btnReset;
-        private System.Windows.Forms.Label lbl_Same_5_8;
-        private System.Windows.Forms.Label lbl_Diff_5_8;
         private System.Windows.Forms.Label lbl_ClickedReport;
         private System.Windows.Forms.Button btn10;
         private System.Windows.Forms.Button btn11;
         private System.Windows.Forms.TextBox txt_1;
-        private System.Windows.Forms.Label lbl_Diff_1_4;
-        private System.Windows.Forms.Label lbl_Same_1_4;
         private System.Windows.Forms.TabControl tabControls;
         private System.Windows.Forms.TabPage tabPage1;
-        private System.Windows.Forms.TabPage tabPage2;
         private System.Windows.Forms.TabPage tabPage3;
         private System.Windows.Forms.Button btnProcessData;
         private System.Windows.Forms.Label label1;
