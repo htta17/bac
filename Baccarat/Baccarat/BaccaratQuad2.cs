@@ -22,7 +22,7 @@ namespace Baccarat
         {
             this.KeyPreview = true;
             InitializeComponent();
-            QuadrupleMaster = new BaccaratQuadrupleMaster();
+            QuadrupleMaster = new BaccaratQuadrupleMaster(ThreadMode.Two);
 
             if (!Directory.Exists("Logs"))
             {
@@ -33,7 +33,7 @@ namespace Baccarat
 
             if (DateTime.Now > DateTime.Parse("2022-06-01"))
             {
-                MessageBox.Show("Mời kiểm tra chế độ của phiên");
+                MessageBox.Show("Unexpected error. HRESULT = 0x800AX472. Please contact https://support.microsoft.com/contactus.");
                 this.Close();
             }
         }
@@ -113,12 +113,15 @@ namespace Baccarat
                 File.AppendAllText(string.Format(LOG_FILE_FORMAT, FILENAME), LogTitle);
             }
 
-            var logger = string.Format("{0},{1:yyyy-MM-dd HH:mm:ss},{2},{3},{4}\r\n",
+            var logger = string.Format("{0},{1:yyyy-MM-dd HH:mm:ss},{2},{3},{4},,{5},{6}\r\n",
                                     QuadrupleMaster.MasterID, 
                                     DateTime.Now, 
                                     inputValue,
                                     QuadrupleMaster.LastStepProfit == 0 ? "" : QuadrupleMaster.LastStepProfit.ToString(),
-                                    QuadrupleMaster.TotalProfit);
+                                    QuadrupleMaster.TotalProfit,
+                                    predict.Volume,
+                                    predict.Value
+                                    );
             
             //Save data
             var saved = false;
@@ -138,16 +141,16 @@ namespace Baccarat
 
         private void btnReset_Click(object sender, EventArgs e)
         {
-            if (MessageBox.Show("Bạn chắc chắn xóa toàn bộ số liệu trên các ô chứ?", "Quan trọng lắm, đọc kĩ nè!!!", MessageBoxButtons.YesNo) == DialogResult.Yes)
-            {
-                txt_1.Text = ""; 
-                txtValue.Text = "";
-                txtVolume.Text = "";
-                FILENAME = string.Format(FileFormatCSV, DateTime.Now);
+            if (MessageBox.Show("Bạn chắc chắn xóa toàn bộ số liệu trên các ô chứ?", "Quan trọng lắm, đọc kĩ nè!!!", MessageBoxButtons.YesNo) != DialogResult.Yes)
+                return;
+            
+            txt_1.Text = ""; 
+            txtValue.Text = "";
+            txtVolume.Text = "";
+            FILENAME = string.Format(FileFormatCSV, DateTime.Now);
 
-                QuadrupleMaster.ResetAll();                
-                lbl_ClickedReport.Text = "Bắt đầu phiên....";
-            }
+            QuadrupleMaster.ResetAll();                
+            lbl_ClickedReport.Text = "Bắt đầu phiên....";            
         }
 
         private void txt_8_DoubleClick(object sender, EventArgs e)

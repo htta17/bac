@@ -4,9 +4,18 @@ using System.Text;
 
 namespace CalculationLogic
 {
+    public enum ThreadMode
+    { 
+        Two =2, 
+        Four = 4
+    }
     public class BaccaratQuadrupleMaster
     {
-        public BaccaratQuadrupleMaster()
+        /// <summary>
+        /// Initial BaccaratQuadrupleMaster
+        /// </summary>
+        /// <param name="threadMode">2 or 4. Default is 4</param>
+        public BaccaratQuadrupleMaster(ThreadMode threadMode)
         {
             TradeFiveToEightCards = new List<BaccratCard>();
             TradeOneToFourCards = new List<BaccratCard>();
@@ -22,8 +31,11 @@ namespace CalculationLogic
 
             MasterID = 0;
             TotalProfit = 0;
-
             MasterPredict = new QuadruplePredict { Value = BaccratCard.NoTrade, Volume = 0 };
+
+            ThreadMode = threadMode;
+
+            HistoryCoffs = new List<HistoryCoff>();
         }
         
         List<BaccratCard> MasterList { get; set; }
@@ -44,6 +56,8 @@ namespace CalculationLogic
         public int MasterID { get; internal set; }
         public int TotalProfit { get; internal set;}
         public int LastStepProfit { get; internal set; }
+
+        private ThreadMode ThreadMode { get; set; }
 
         public QuadruplePredict MasterPredict { get; internal set; }
 
@@ -111,9 +125,12 @@ namespace CalculationLogic
 
             LastStepProfit = 0;
             LastStepProfit += (CurrentPredict14.Value == BaccratCard.NoTrade ? 0 : inputValue != CurrentPredict14.Value ? -CurrentPredict14.Volume : CurrentPredict14.Volume);
-            LastStepProfit += (CurrentPredict36.Value == BaccratCard.NoTrade ? 0 : inputValue != CurrentPredict36.Value ? -CurrentPredict36.Volume : CurrentPredict36.Volume);
             LastStepProfit += (CurrentPredict58.Value == BaccratCard.NoTrade ? 0 : inputValue != CurrentPredict58.Value ? -CurrentPredict58.Volume : CurrentPredict58.Volume);
-            LastStepProfit += (CurrentPredict72.Value == BaccratCard.NoTrade ? 0 : inputValue != CurrentPredict72.Value ? -CurrentPredict72.Volume : CurrentPredict72.Volume);
+            if (ThreadMode == ThreadMode.Four)
+            {
+                LastStepProfit += (CurrentPredict36.Value == BaccratCard.NoTrade ? 0 : inputValue != CurrentPredict36.Value ? -CurrentPredict36.Volume : CurrentPredict36.Volume);
+                LastStepProfit += (CurrentPredict72.Value == BaccratCard.NoTrade ? 0 : inputValue != CurrentPredict72.Value ? -CurrentPredict72.Volume : CurrentPredict72.Volume);
+            }
             TotalProfit += LastStepProfit;
 
             TradeFiveToEightCalculator.UpdateCoff();
@@ -130,8 +147,12 @@ namespace CalculationLogic
             var predict36 = CurrentPredict36.Value == BaccratCard.Banker ? CurrentPredict36.Volume : -CurrentPredict36.Volume;
             var predict58 = CurrentPredict58.Value == BaccratCard.Banker ? CurrentPredict58.Volume : -CurrentPredict58.Volume;
             var predict72 = CurrentPredict72.Value == BaccratCard.Banker ? CurrentPredict72.Volume : -CurrentPredict72.Volume;
-
-            var totalPredict = predict14 + predict36 + predict58 + predict72;
+                        
+            var totalPredict = predict14 + predict58;
+            if (ThreadMode == ThreadMode.Four)
+            {
+                totalPredict += predict36 + predict72; 
+            }
 
             MasterPredict.Volume = Math.Abs(totalPredict);
             MasterPredict.Value = totalPredict == 0 ? BaccratCard.NoTrade
