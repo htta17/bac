@@ -1,0 +1,143 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="BaccaratModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Result">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Card" Type="smallint" Nullable="false" />
+          <Property Name="InputDateTime" Type="datetime" Nullable="false" />
+          <Property Name="SessionID" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Session">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="StartDateTime" Type="datetime" Nullable="false" />
+          <Property Name="Result2Threads" Type="int" Nullable="false" />
+          <Property Name="Result4Threads" Type="int" Nullable="false" />
+          <Property Name="NoOfSteps" Type="int" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_Result_Session">
+          <End Role="Session" Type="Self.Session" Multiplicity="1" />
+          <End Role="Result" Type="Self.Result" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Session">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Result">
+              <PropertyRef Name="SessionID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="BaccaratModelStoreContainer">
+          <EntitySet Name="Result" EntityType="Self.Result" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Session" EntityType="Self.Session" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_Result_Session" Association="Self.FK_Result_Session">
+            <End Role="Session" EntitySet="Session" />
+            <End Role="Result" EntitySet="Result" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="BaccaratModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Result">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Card" Type="Int16" Nullable="false" />
+          <Property Name="InputDateTime" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="SessionID" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Session" Relationship="Self.FK_Result_Session" FromRole="Result" ToRole="Session" />
+        </EntityType>
+        <EntityType Name="Session">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="StartDateTime" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Result2Threads" Type="Int32" Nullable="false" />
+          <Property Name="Result4Threads" Type="Int32" Nullable="false" />
+          <Property Name="NoOfSteps" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Results" Relationship="Self.FK_Result_Session" FromRole="Session" ToRole="Result" />
+        </EntityType>
+        <Association Name="FK_Result_Session">
+          <End Role="Session" Type="Self.Session" Multiplicity="1" />
+          <End Role="Result" Type="Self.Result" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Session">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Result">
+              <PropertyRef Name="SessionID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="BaccaratEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Results" EntityType="Self.Result" />
+          <EntitySet Name="Sessions" EntityType="Self.Session" />
+          <AssociationSet Name="FK_Result_Session" Association="Self.FK_Result_Session">
+            <End Role="Session" EntitySet="Sessions" />
+            <End Role="Result" EntitySet="Results" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="BaccaratModelStoreContainer" CdmEntityContainer="BaccaratEntities">
+          <EntitySetMapping Name="Results">
+            <EntityTypeMapping TypeName="BaccaratModel.Result">
+              <MappingFragment StoreEntitySet="Result">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Card" ColumnName="Card" />
+                <ScalarProperty Name="InputDateTime" ColumnName="InputDateTime" />
+                <ScalarProperty Name="SessionID" ColumnName="SessionID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Sessions">
+            <EntityTypeMapping TypeName="BaccaratModel.Session">
+              <MappingFragment StoreEntitySet="Session">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="StartDateTime" ColumnName="StartDateTime" />
+                <ScalarProperty Name="Result2Threads" ColumnName="Result2Threads" />
+                <ScalarProperty Name="Result4Threads" ColumnName="Result4Threads" />
+                <ScalarProperty Name="NoOfSteps" ColumnName="NoOfSteps" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

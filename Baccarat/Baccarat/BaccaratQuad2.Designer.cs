@@ -46,6 +46,7 @@ namespace Baccarat
             this.label1 = new System.Windows.Forms.Label();
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.btnProcessData = new System.Windows.Forms.Button();
+            this.btnBackward = new System.Windows.Forms.Button();
             this.tabControls.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage3.SuspendLayout();
@@ -124,7 +125,7 @@ namespace Baccarat
             // btnReset
             // 
             this.btnReset.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnReset.Location = new System.Drawing.Point(6, 6);
+            this.btnReset.Location = new System.Drawing.Point(11, 12);
             this.btnReset.Name = "btnReset";
             this.btnReset.Size = new System.Drawing.Size(146, 87);
             this.btnReset.TabIndex = 105;
@@ -194,7 +195,7 @@ namespace Baccarat
             this.tabControls.Location = new System.Drawing.Point(39, 575);
             this.tabControls.Name = "tabControls";
             this.tabControls.SelectedIndex = 0;
-            this.tabControls.Size = new System.Drawing.Size(491, 230);
+            this.tabControls.Size = new System.Drawing.Size(491, 193);
             this.tabControls.TabIndex = 113;
             this.tabControls.Visible = false;
             // 
@@ -206,7 +207,7 @@ namespace Baccarat
             this.tabPage1.Location = new System.Drawing.Point(4, 34);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(483, 192);
+            this.tabPage1.Size = new System.Drawing.Size(483, 155);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Thao tác";
             // 
@@ -225,7 +226,7 @@ namespace Baccarat
             this.tabPage3.Location = new System.Drawing.Point(4, 34);
             this.tabPage3.Name = "tabPage3";
             this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage3.Size = new System.Drawing.Size(483, 192);
+            this.tabPage3.Size = new System.Drawing.Size(483, 155);
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "Xử lý";
             this.tabPage3.UseVisualStyleBackColor = true;
@@ -242,11 +243,24 @@ namespace Baccarat
             this.btnProcessData.Visible = false;
             this.btnProcessData.Click += new System.EventHandler(this.btnProcessData_Click);
             // 
+            // btnBackward
+            // 
+            this.btnBackward.BackgroundImage = global::Midas.Properties.Resources._160041651;
+            this.btnBackward.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.btnBackward.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnBackward.Location = new System.Drawing.Point(39, 770);
+            this.btnBackward.Name = "btnBackward";
+            this.btnBackward.Size = new System.Drawing.Size(45, 44);
+            this.btnBackward.TabIndex = 108;
+            this.btnBackward.UseVisualStyleBackColor = true;
+            this.btnBackward.Click += new System.EventHandler(this.btnBackward_Click);
+            // 
             // BaccaratQuad2
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(562, 817);
+            this.Controls.Add(this.btnBackward);
             this.Controls.Add(this.tabControls);
             this.Controls.Add(this.lbl_ClickedReport);
             this.Controls.Add(this.label24);
@@ -264,6 +278,7 @@ namespace Baccarat
             this.Name = "BaccaratQuad2";
             this.Text = "Midas Soft";
             this.TopMost = true;
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.BaccaratQuad2_FormClosing);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.BaccaratQuad_KeyDown);
             this.tabControls.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
@@ -292,5 +307,6 @@ namespace Baccarat
         private System.Windows.Forms.TabPage tabPage3;
         private System.Windows.Forms.Button btnProcessData;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Button btnBackward;
     }
 }

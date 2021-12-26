@@ -36,6 +36,8 @@ namespace Baccarat
                 MessageBox.Show("Unexpected error. HRESULT = 0x800AX472. Please contact https://support.microsoft.com/contactus.");
                 this.Close();
             }
+
+            //SlackWebHookSender.SendMessage("Trader bắt đầu phiên giao dịch mới.", "brothers-project");
         }
 
         BaccaratQuadrupleMaster QuadrupleMaster { get; set; }       
@@ -43,7 +45,9 @@ namespace Baccarat
         const string BANKER_VALUE = "BANKER";
         const string PLAYER_VALUE = "PLAYER";
         const string LOG_FILE_FORMAT = "Logs\\Midas_{0}";
-        
+        const string REG_KEY = "HKEY_CURRENT_USER\\MidasSoft";
+        const string REG_VALUE = "HKEY_CURRENT_USER\\MidasSoft";
+
         private string ReadFile(string filePath)
         {
             var text = "";
@@ -59,18 +63,13 @@ namespace Baccarat
             }
             return text;
         }
-        
-        /// <summary>
-        /// ID 
-        /// </summary>
-        //int IDCounting = 0;        
 
         /// <summary>
         /// Current file name
         /// </summary>
         private string FILENAME = null;
         private const string LogTitle = "ID,Time,Card,Loss/Profit,Total\r\n";
-        private const string FileFormatCSV = "{0:yyyyMMdd_HHmmss}.csv";      
+        private const string FileFormatCSV = "{0:yyyyMMdd_HHmmss}.csv";
         
         private void btn51_Click(object sender, EventArgs e)
         {
@@ -113,16 +112,12 @@ namespace Baccarat
                 File.AppendAllText(string.Format(LOG_FILE_FORMAT, FILENAME), LogTitle);
             }
 
-            var logger = string.Format("{0},{1:yyyy-MM-dd HH:mm:ss},{2},{3},{4},,{5},{6}\r\n",
+            var logger = string.Format("{0},{1:yyyy-MM-dd HH:mm:ss},{2},{3},{4}\r\n",
                                     QuadrupleMaster.MasterID, 
                                     DateTime.Now, 
                                     inputValue,
                                     QuadrupleMaster.LastStepProfit == 0 ? "" : QuadrupleMaster.LastStepProfit.ToString(),
-                                    QuadrupleMaster.TotalProfit,
-                                    predict.Volume,
-                                    predict.Value
-                                    );
-            
+                                    QuadrupleMaster.TotalProfit );            
             //Save data
             var saved = false;
             while (!saved)
@@ -150,7 +145,9 @@ namespace Baccarat
             FILENAME = string.Format(FileFormatCSV, DateTime.Now);
 
             QuadrupleMaster.ResetAll();                
-            lbl_ClickedReport.Text = "Bắt đầu phiên....";            
+            lbl_ClickedReport.Text = "Bắt đầu phiên....";
+
+            //SlackWebHookSender.SendMessage("Trader bắt đầu phiên giao dịch mới.", "brothers-project");
         }
 
         private void txt_8_DoubleClick(object sender, EventArgs e)
@@ -183,8 +180,7 @@ namespace Baccarat
             else
             {
                 button.BackColor = Color.FromArgb(255, 128, 0);
-            }
-            
+            }            
         }
         private void btn120_MouseLeave(object sender, EventArgs e)
         {
@@ -236,6 +232,23 @@ namespace Baccarat
             Generate4ThreadLogs.ProcessFile(filePath, num);            
         }
 
+        private void btnBackward_Click(object sender, EventArgs e)
+        {
+            if (MessageBox.Show("Bạn chắc chắn xóa bước cuối chứ?", "Quan trọng", MessageBoxButtons.YesNo) != DialogResult.Yes)
+                return;
 
+            QuadrupleMaster.Reverse();
+            //Update UI
+            lbl_ClickedReport.Text = "Đã ghi nhận " + QuadrupleMaster.MasterID + ": " + txt_1.Text;
+
+            //SlackWebHookSender.SendMessage("Trader đã thực hiện lại bước cuối", "brothers-project");
+        }
+
+        private void BaccaratQuad2_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            var total = QuadrupleMaster.TotalProfit; 
+
+            SlackWebHookSender.SendMessage($"Kết thúc phiên, kết quả: { total }.", "brothers-project");
+        }
     }
 }

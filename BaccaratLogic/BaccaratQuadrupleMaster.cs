@@ -28,19 +28,18 @@ namespace CalculationLogic
             TradeThreeToSixCalculator = new BaccaratQuadruple();
 
             MasterList = new List<BaccratCard>();
-
-            MasterID = 0;
+            
             TotalProfit = 0;
             MasterPredict = new QuadruplePredict { Value = BaccratCard.NoTrade, Volume = 0 };
 
             ThreadMode = threadMode;
 
-            HistoryCoffs = new List<HistoryCoff>();
+            HistoryCoeffs = new List<HistoryCoeff>();
         }
         
         List<BaccratCard> MasterList { get; set; }
         
-        List<HistoryCoff> HistoryCoffs { get; set; }
+        List<HistoryCoeff> HistoryCoeffs { get; set; }
 
         BaccaratQuadruple TradeFiveToEightCalculator { get; set; }
         List<BaccratCard> TradeFiveToEightCards { get; set; }
@@ -53,7 +52,13 @@ namespace CalculationLogic
         BaccaratQuadruple TradeSevenToTwoCalculator { get; set; }
         List<BaccratCard> TradeSevenToTwoCards { get; set; }
 
-        public int MasterID { get; internal set; }
+        public int MasterID 
+        { 
+            get 
+            { 
+                return MasterList.Count; 
+            } 
+        }
         public int TotalProfit { get; internal set;}
         public int LastStepProfit { get; internal set; }
 
@@ -91,9 +96,7 @@ namespace CalculationLogic
             else if (MasterID % 8 == 6)
             {
                 TradeThreeToSixCards.Clear();
-            }
-
-            MasterID++; 
+            }            
             
             //Add cards
             MasterList.Add(inputValue);
@@ -133,10 +136,10 @@ namespace CalculationLogic
             }
             TotalProfit += LastStepProfit;
 
-            TradeFiveToEightCalculator.UpdateCoff();
-            TradeOneToFourCalculator.UpdateCoff();
-            TradeThreeToSixCalculator.UpdateCoff();
-            TradeSevenToTwoCalculator.UpdateCoff();
+            TradeFiveToEightCalculator.UpdateCoeff();
+            TradeOneToFourCalculator.UpdateCoeff();
+            TradeThreeToSixCalculator.UpdateCoeff();
+            TradeSevenToTwoCalculator.UpdateCoeff();
 
             CurrentPredict58 = TradeFiveToEightCalculator.Predict();
             CurrentPredict14 = TradeOneToFourCalculator.Predict();
@@ -155,10 +158,11 @@ namespace CalculationLogic
             }
 
             MasterPredict.Volume = Math.Abs(totalPredict);
-            MasterPredict.Value = totalPredict == 0 ? BaccratCard.NoTrade
-                                        : totalPredict > 0 ? BaccratCard.Banker : BaccratCard.Player;
+            MasterPredict.Value = totalPredict == 0 
+                                    ? BaccratCard.NoTrade : totalPredict > 0 
+                                    ? BaccratCard.Banker : BaccratCard.Player;
 
-            HistoryCoffs.Add(new HistoryCoff
+            HistoryCoeffs.Add(new HistoryCoeff
             {
                 Diff14 = CurrentPredict14.Diff_Coff,
                 Same14 = CurrentPredict14.Same_Coff, 
@@ -186,14 +190,44 @@ namespace CalculationLogic
 
             MasterList.Clear();
 
-            MasterID = 0;
             TotalProfit = 0;
 
             MasterPredict = new QuadruplePredict { Value = BaccratCard.NoTrade, Volume = 0 };
         }
+
+        public void Reverse()
+        {
+            //Delete last cards
+            MasterList.RemoveAt(MasterList.Count - 1);
+
+            if (TradeFiveToEightCards.Count > 0)
+                TradeFiveToEightCards.RemoveAt(TradeFiveToEightCards.Count -1);
+
+            if (TradeOneToFourCards.Count > 0)
+                TradeOneToFourCards.RemoveAt(TradeOneToFourCards.Count - 1);
+
+            if (TradeSevenToTwoCards.Count > 0)
+                TradeSevenToTwoCards.RemoveAt(TradeSevenToTwoCards.Count - 1);
+
+            if (TradeThreeToSixCards.Count > 0)
+                TradeThreeToSixCards.RemoveAt(TradeThreeToSixCards.Count - 1);
+
+            HistoryCoeffs.RemoveAt(HistoryCoeffs.Count - 1);
+
+            //Set coeff for calculators
+            var lastCoeffs = HistoryCoeffs.Count > 0 ? HistoryCoeffs.FindLast(c => 1 == 1)
+                                    : default (HistoryCoeff) ;
+            if (lastCoeffs != null)
+            {
+                TradeFiveToEightCalculator.UpdateCoeff(false, lastCoeffs.Same58, lastCoeffs.Diff58);
+                TradeOneToFourCalculator.UpdateCoeff(false, lastCoeffs.Same14, lastCoeffs.Diff14);
+                TradeThreeToSixCalculator.UpdateCoeff(false, lastCoeffs.Same36, lastCoeffs.Diff36);
+                TradeSevenToTwoCalculator.UpdateCoeff(false, lastCoeffs.Same72, lastCoeffs.Diff72);
+            }
+        }
     }
 
-    public class HistoryCoff
+    public class HistoryCoeff
     { 
         public int Same14 { get; set; }
         public int Same36 { get; set; }

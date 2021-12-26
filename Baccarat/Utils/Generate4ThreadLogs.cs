@@ -86,32 +86,33 @@ namespace Midas.Utils
                     }
 
                     _tradeFiveToEightCalculator.SetCards(_tradeFiveToEightCards);
-
                     _tradeOneToFourCalculator.SetCards(_tradeOneToFourCards);
-
                     _tradeSevenToTwoCalculator.SetCards(_tradeSevenToTwoCards);
-
                     _tradeThreeToSixCalculator.SetCards(_tradeThreeToSixCards);
 
-                    _tradeFiveToEightCalculator.UpdateCoff();
-                    _tradeOneToFourCalculator.UpdateCoff();
-                    _tradeSevenToTwoCalculator.UpdateCoff();
-                    _tradeThreeToSixCalculator.UpdateCoff();
+                    _tradeFiveToEightCalculator.UpdateCoeff();
+                    _tradeOneToFourCalculator.UpdateCoeff();
+                    _tradeSevenToTwoCalculator.UpdateCoeff();
+                    _tradeThreeToSixCalculator.UpdateCoeff();
 
-                    same_58 = ((id % 8 >= 5) || (id % 8 == 0)) ? _tradeFiveToEightCalculator.ShowCoff().Item1 : 0;
-                    diff_58 = ((id % 8 >= 5) || (id % 8 == 0)) ? _tradeFiveToEightCalculator.ShowCoff().Item2 : 0;
+                    var coeff58 = _tradeFiveToEightCalculator.ShowCoeff();
+                    same_58 = ((id % 8 >= 5) || (id % 8 == 0)) ? coeff58.Same_Coff : 0;
+                    diff_58 = ((id % 8 >= 5) || (id % 8 == 0)) ? coeff58.Diff_Coff : 0;
                     loss_Profit_Total58 += (same_58 + diff_58) / 2;
 
-                    same_14 = (id % 8 >= 1 && id % 8 <= 4 && id > 4) ? _tradeOneToFourCalculator.ShowCoff().Item1 : 0;
-                    diff_14 = (id % 8 >= 1 && id % 8 <= 4 && id > 4) ? _tradeOneToFourCalculator.ShowCoff().Item2 : 0;
+                    var coeff14 = _tradeOneToFourCalculator.ShowCoeff();
+                    same_14 = (id % 8 >= 1 && id % 8 <= 4 && id > 4) ? coeff14.Same_Coff : 0;
+                    diff_14 = (id % 8 >= 1 && id % 8 <= 4 && id > 4) ? coeff14.Diff_Coff : 0;
                     loss_Profit_Total14 += (same_14 + diff_14) / 2;
 
-                    same_36 = (id % 8 >= 3 && id % 8 <= 6 && id > 6) ? _tradeThreeToSixCalculator.ShowCoff().Item1 : 0;
-                    diff_36 = (id % 8 >= 3 && id % 8 <= 6 && id > 6) ? _tradeThreeToSixCalculator.ShowCoff().Item2 : 0;
+                    var coeff36 = _tradeThreeToSixCalculator.ShowCoeff();
+                    same_36 = (id % 8 >= 3 && id % 8 <= 6 && id > 6) ? coeff36.Same_Coff : 0;
+                    diff_36 = (id % 8 >= 3 && id % 8 <= 6 && id > 6) ? coeff36.Diff_Coff : 0;
                     loss_Profit_Total36 += (same_36 + diff_36) / 2;
 
-                    same_72 = ((id % 8 >= 7 || id % 8 <= 2) && id > 2) ? _tradeSevenToTwoCalculator.ShowCoff().Item1 : 0;
-                    diff_72 = ((id % 8 >= 7 || id % 8 <= 2) && id > 2) ? _tradeSevenToTwoCalculator.ShowCoff().Item2 : 0;
+                    var coeff72 = _tradeSevenToTwoCalculator.ShowCoeff();
+                    same_72 = ((id % 8 >= 7 || id % 8 <= 2) && id > 2) ? coeff72.Same_Coff : 0;
+                    diff_72 = ((id % 8 >= 7 || id % 8 <= 2) && id > 2) ? coeff72.Diff_Coff : 0;
                     loss_Profit_Total72 += (same_72 + diff_72) / 2;
 
                     //var loss_Profit_Total = texts[6];

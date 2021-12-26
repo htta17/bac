@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Linq;
+
+
 
 namespace CalculationLogic
 {
@@ -11,20 +11,9 @@ namespace CalculationLogic
         NoTrade =0,
         Banker = 1
     }
-    public class QuadrupleResult
-    {
-        public BaccratCard Value { get; set; }
-        public int Volume { get; set; }
+    
 
-        public int Same_Coff { get; set; }
-        public int Diff_Coff { get; set; }
-    }
-
-    public class QuadruplePredict
-    {
-        public BaccratCard Value { get; set; }
-        public int Volume { get; set; }
-    }
+    
     public class BaccaratQuadruple
     {
         public BaccaratQuadruple()
@@ -40,7 +29,7 @@ namespace CalculationLogic
 
         public List<BaccratCard> SaveBaccratCards { get; set; } = new List<BaccratCard>();
 
-        public bool CompareSame()
+        private bool CompareSame()
         {
             if (BaccratCards.Count != SaveBaccratCards.Count)
                 return false; 
@@ -50,8 +39,12 @@ namespace CalculationLogic
                     return false;
             }
             return true;
-        }        
+        }
 
+        /// <summary>
+        /// Predict next step
+        /// </summary>
+        /// <returns></returns>
         public QuadrupleResult Predict()
         {
             var currentOrder = (BaccratCards.Count - 1) % 8; //0-8 --> Count needs to minus 1            
@@ -110,41 +103,61 @@ namespace CalculationLogic
             };
         }
 
-        public void UpdateCoff()
+        /// <summary>
+        /// Update current Coeff 
+        /// </summary>
+        /// <param name="auto">auto = true: Update based on current coeffs, auto = false: Update based on `same` and `diff`</param>
+        /// <param name="same">current Same Coeff</param>
+        /// <param name="diff">current different Coeff</param>
+        public void UpdateCoeff(bool auto = true, int? same = null, int? diff = null)
         {
-            if (CompareSame())
-                return;
-            
-            var currentOrder = (BaccratCards.Count - 1) % 8; //0-8 --> Count needs to minus 1
-
-            if (currentOrder < 3 ) //If currentOrder in [0, 1, 2, 3]: 
+            #region Main logic
+            if (auto)
             {
-                return;
+                if (CompareSame())
+                    return;
+
+                var currentOrder = (BaccratCards.Count - 1) % 8; //0-8 --> Count needs to minus 1
+
+                if (currentOrder < 3) //If currentOrder in [0, 1, 2, 3]: 
+                {
+                    return;
+                }
+
+                if (BaccratCards.Count >= 5)
+                {
+                    if (BaccratCards[BaccratCards.Count - 1] == BaccratCards[BaccratCards.Count - 5])
+                    {
+                        Current_Same = Math.Abs(Current_Same);
+                        Current_Diff = -Math.Abs(Current_Diff);
+                    }
+                    else
+                    {
+                        Current_Same = -Math.Abs(Current_Same);
+                        Current_Diff = Math.Abs(Current_Diff);
+                    }
+                }
             }
-
-            if (BaccratCards.Count >= 5)
+            else
             {
-                if (BaccratCards[BaccratCards.Count - 1] == BaccratCards[BaccratCards.Count - 5])
+                if (same.HasValue && diff.HasValue)
                 {
-                    Current_Same = Math.Abs(Current_Same);
-                    Current_Diff = -Math.Abs(Current_Diff);
+                    Current_Same = same.Value;
+                    Current_Diff = diff.Value;
                 }
-                else
-                {
-                    Current_Same = -Math.Abs(Current_Same);
-                    Current_Diff = Math.Abs(Current_Diff);
-                }
-            }          
+            }
+            #endregion
+
         }
 
-        /// <summary>
-        /// Item1: Same
-        /// Item2: Diff
-        /// </summary>
-        /// <returns></returns>
-        public Tuple<int, int> ShowCoff()
+
+        public QuadrupleCoeff ShowCoeff()
         {
-            return Tuple.Create<int, int>(Current_Same, Current_Diff);
+            return new QuadrupleCoeff 
+            { 
+                Diff_Coff = Current_Diff, 
+                Same_Coff = Current_Same 
+            };
         }
 
         public void Reset()

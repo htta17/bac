@@ -19,7 +19,7 @@ namespace Baccarat
             this.KeyPreview = true;
             InitializeComponent();
 
-           
+            
         }
 
         private void SubForm_FormClosing(object sender, FormClosingEventArgs e)
