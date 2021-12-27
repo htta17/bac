@@ -30,9 +30,10 @@ namespace Midas.Utils
             }
         }
 
-        public static bool TestConnect()
+        public static bool TestConnect(string _connectionString = null)
         {
-            var connection = new SqlConnection(ConnectionString);
+            var conn = _connectionString ?? ConnectionString;
+            var connection = new SqlConnection(conn);
             try
             {
                 connection.Open();

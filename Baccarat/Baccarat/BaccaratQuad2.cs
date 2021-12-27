@@ -136,6 +136,22 @@ namespace Baccarat
 
         private void btnReset_Click(object sender, EventArgs e)
         {
+            var entities = new BaccaratDBContext();
+            var x = entities.Results.Select(c => c);
+            var y = entities.Sessions.AsQueryable().ToList();
+
+            var x1 = new Session
+            {
+                NoOfSteps = 3,
+                Result2Threads = 2,
+                Result4Threads = 1,
+                StartDateTime = DateTime.Now
+            };
+            entities.Sessions.Add(x1);
+            entities.SaveChanges();
+            
+
+
             if (MessageBox.Show("Bạn chắc chắn xóa toàn bộ số liệu trên các ô chứ?", "Quan trọng lắm, đọc kĩ nè!!!", MessageBoxButtons.YesNo) != DialogResult.Yes)
                 return;
             
@@ -246,9 +262,11 @@ namespace Baccarat
 
         private void BaccaratQuad2_FormClosing(object sender, FormClosingEventArgs e)
         {
-            var total = QuadrupleMaster.TotalProfit; 
+            var total = QuadrupleMaster.TotalProfit;
 
-            SlackWebHookSender.SendMessage($"Kết thúc phiên, kết quả: { total }.", "brothers-project");
+            
+
+            //SlackWebHookSender.SendMessage($"Kết thúc phiên, kết quả: { total }.", "brothers-project");
         }
     }
 }
