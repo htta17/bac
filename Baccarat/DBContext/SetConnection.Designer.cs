@@ -66,7 +66,7 @@ namespace Midas
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(758, 108);
+            this.ClientSize = new System.Drawing.Size(758, 90);
             this.Controls.Add(this.btnSaveConnection);
             this.Controls.Add(this.btnTestConnection);
             this.Controls.Add(this.txtConnectionString);

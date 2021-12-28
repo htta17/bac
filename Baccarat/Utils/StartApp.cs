@@ -15,7 +15,7 @@ namespace Midas.Utils
         public static void LoadRegistryConnectionString()
         {
             GlobalConnectionString = (string)Registry.GetValue(REG_PATH, REG_KEY, string.Empty);
-            while (GlobalConnectionString == string.Empty)
+            while (string.IsNullOrEmpty(GlobalConnectionString))
             {
                 SetConnection frm = new SetConnection();
                 frm.ShowDialog();

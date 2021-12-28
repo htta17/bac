@@ -21,5 +21,60 @@ namespace Midas
     
         public virtual DbSet<Result> Results { get; set; }
         public virtual DbSet<Session> Sessions { get; set; }
+
+
+        /// <summary>
+        /// Return new session ID
+        /// </summary>
+        /// <param name="session"></param>
+        /// <returns></returns>
+        public int AddSession(Session session)
+        {
+            Sessions.Add(session);
+            SaveChanges();
+            return session.ID; 
+        }
+
+        public void UpdateSession(Session session)
+        {
+            var current = Sessions.Find(session.ID);
+            if (current == null)
+                return;
+            this.Entry(session).CurrentValues.SetValues(session);
+            SaveChanges();
+        }
+
+        public void DeleteSession(int id)
+        {
+            var session = Sessions.Find(id);
+            Sessions.Remove(session);
+            SaveChanges();
+        }
+
+
+        public int AddResult(Result result)
+        {
+            Results.Add(result);
+            SaveChanges();
+            return result.ID;
+        }
+
+        public void UpdateResult(Result result)
+        {
+            var current = Results.Find(result.ID);
+            if (current == null)
+                return;
+            this.Entry(result).CurrentValues.SetValues(result);
+            SaveChanges();
+        }
+
+        public void DeleteResult(int id)
+        {
+            var result = Results.Find(id);
+            Results.Remove(result);
+            SaveChanges();
+        }
+
+
     }
 }
