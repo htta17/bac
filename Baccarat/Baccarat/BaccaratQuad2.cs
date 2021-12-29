@@ -22,7 +22,7 @@ namespace Baccarat
         {
             this.KeyPreview = true;
             InitializeComponent();
-            QuadrupleMaster = new BaccaratQuadrupleMaster(ThreadMode.Two);
+            QuadrupleMaster = new BaccaratQuadrupleMaster(ThreadMode.Five_Eight | ThreadMode.One_Four);
 
             if (!Directory.Exists("Logs"))
             {
