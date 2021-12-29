@@ -250,7 +250,7 @@ namespace Baccarat
 
         private void ProcessFile(string filePath, int num)
         {
-            Generate4ThreadLogs.ProcessFile(filePath, num);            
+            GenerateAllThreadLogs.ProcessFile(filePath, num);            
         }
 
         private void btnBackward_Click(object sender, EventArgs e)
@@ -265,12 +265,13 @@ namespace Baccarat
 
         private void BaccaratQuad2_FormClosing(object sender, FormClosingEventArgs e)
         {
-            CurrentSession.NoOfSteps = QuadrupleMaster.MasterID;
-            CurrentSession.Result4Threads = QuadrupleMaster.TotalProfit;
-
-            BaccaratDBContext.UpdateSession(CurrentSession);
-
-            //BaccaratDBContext.Dispose();
+            if (CurrentSession != null)
+            {
+                CurrentSession.NoOfSteps = QuadrupleMaster.MasterID;
+                CurrentSession.Result4Threads = QuadrupleMaster.TotalProfit;
+                BaccaratDBContext.UpdateSession(CurrentSession);
+            }
+            BaccaratDBContext.Dispose();
 
             var total = QuadrupleMaster.TotalProfit;
 

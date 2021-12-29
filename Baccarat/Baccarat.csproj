@@ -105,7 +105,7 @@
       <DependentUpon>SetConnection.cs</DependentUpon>
     </Compile>
     <Compile Include="Utils\DatabaseUtil.cs" />
-    <Compile Include="Utils\Generate4ThreadLogs.cs" />
+    <Compile Include="Utils\GenerateAllThreadLogs.cs" />
     <Compile Include="Utils\SlackWebhookSender.cs" />
     <Compile Include="Utils\StartApp.cs" />
     <Compile Include="VietnameseLottery.cs">

@@ -4,10 +4,17 @@ using System.Text;
 
 namespace CalculationLogic
 {
+    [Flags]
     public enum ThreadMode
     { 
+        One = 1,
         Two =2, 
-        Four = 4
+        Three = 4,
+        Four = 8, 
+        Five = 16, 
+        Six = 32, 
+        Seven = 64, 
+        Eight = 128
     }
     public class BaccaratQuadrupleMaster
     {
@@ -43,6 +50,8 @@ namespace CalculationLogic
 
         BaccaratQuadruple TradeFiveToEightCalculator { get; set; }
         List<BaccratCard> TradeFiveToEightCards { get; set; }
+
+
         BaccaratQuadruple TradeOneToFourCalculator { get; set; }
         List<BaccratCard> TradeOneToFourCards { get; set; }
 
