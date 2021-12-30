@@ -10,9 +10,7 @@ namespace CalculationLogic
         Player = -1,
         NoTrade =0,
         Banker = 1
-    }
-    
-
+    }  
     
     public class BaccaratQuadruple
     {

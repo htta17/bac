@@ -43,28 +43,33 @@ namespace Baccarat
             }
 
             BaccaratDBContext = new BaccaratDBContext();
-
-            //SlackWebHookSender.SendMessage("Xin chào <@U02RUDHU2LD> đập chai. Tổng tiền thu về hôm nay là `98` tỉ  ", "important-report");
         }
 
-        BaccaratQuadrupleMaster QuadrupleMaster { get; set; }       
+        BaccaratQuadrupleMaster QuadrupleMaster { get; set; }
 
         const string BANKER_VALUE = "BANKER";
         const string PLAYER_VALUE = "PLAYER";
-        const string LOG_FILE_FORMAT = "Logs\\Midas_{0}";        
 
         BaccaratDBContext BaccaratDBContext { get; set; }
-        
+
         private string FILENAME = null;
         private const string LogTitle = "ID,Time,Card,Loss/Profit,Total\r\n";
         private const string FileFormatCSV = "{0:yyyyMMdd_HHmmss}.csv";
-        
+        const string LOG_FILE_FORMAT = "Logs\\Midas_{0}";
+        string FULL_PATH_FILE
+        {
+            get
+            {
+                return string.Format(LOG_FILE_FORMAT, FILENAME);
+            }
+        }
+
         //Database
         private Session CurrentSession { get; set; }
-        
+
         private void btn51_Click(object sender, EventArgs e)
         {
-            var text = (sender as Button).Text;            
+            var text = (sender as Button).Text;
 
             var buttonName = (sender as Button).Name;
             var textBoxName = buttonName.Substring(3, buttonName.Length - 4);
@@ -74,17 +79,8 @@ namespace Baccarat
             textBox.Text = text;
         }
 
-        private void btnCalculate_Click(object sender, EventArgs e)
+        private void ProcessInput(BaccratCard inputValue, string importFileName)
         {
-            if (txt_1.Text == "")
-            {
-                MessageBox.Show("Vui lòng nhập giá trị");
-                return;
-            }
-
-            var inputValue = txt_1.Text == BANKER_VALUE
-                                ? BaccratCard.Banker : BaccratCard.Player;
-
             QuadrupleMaster.Process(inputValue);
 
             var predict = QuadrupleMaster.MasterPredict;
@@ -93,82 +89,115 @@ namespace Baccarat
             txtValue.ForeColor = predict.Value == BaccratCard.NoTrade ? Color.Black :
                                             predict.Value == BaccratCard.Banker ? Color.Red : Color.Blue;
             txtVolume.ForeColor = txtValue.ForeColor;
-            txtVolume.Text = predict.Volume.ToString(); 
+            txtVolume.Text = predict.Volume.ToString();
 
             lbl_ClickedReport.Text = "Đã ghi nhận " + QuadrupleMaster.MasterID + ": " + txt_1.Text;
             txt_1.Text = "";
 
-            if (QuadrupleMaster.MasterID == 1)
-            {
-                File.AppendAllText(string.Format(LOG_FILE_FORMAT, FILENAME), LogTitle);
-
-                CurrentSession = new Session
-                {
-                    StartDateTime = DateTime.Now
-                };
-
-                BaccaratDBContext.AddSession(CurrentSession);
-            }
-
-            WriteLog(inputValue);
-            
+            WriteLogNDatabase(inputValue, importFileName);
         }
 
-        private void FinishCurrentSession()
+        private void btnCalculate_Click(object sender, EventArgs e)
         {
-            
+            if (txt_1.Text == "")
+            {
+                MessageBox.Show("Vui lòng nhập giá trị");
+                return;
+            }
+            var inputValue = txt_1.Text == BANKER_VALUE
+                               ? BaccratCard.Banker : BaccratCard.Player;
+
+            ProcessInput(inputValue, null);
         }
+
+        private void FinishSession()
+        {
+            txt_1.Text = "";
+            txtValue.Text = "";
+            txtVolume.Text = "";
+            FILENAME = string.Format(FileFormatCSV, DateTime.Now);
+
+            QuadrupleMaster.ResetAll();
+            lbl_ClickedReport.Text = "Bắt đầu phiên....";
+        }
+
 
         private void btnReset_Click(object sender, EventArgs e)
         {
             if (MessageBox.Show("Bạn chắc chắn xóa toàn bộ số liệu trên các ô chứ?", "Quan trọng lắm, đọc kĩ nè!!!", MessageBoxButtons.YesNo) != DialogResult.Yes)
                 return;
 
-            FinishCurrentSession();
-
-
-            txt_1.Text = ""; 
-            txtValue.Text = "";
-            txtVolume.Text = "";
-            FILENAME = string.Format(FileFormatCSV, DateTime.Now);
-
-            QuadrupleMaster.ResetAll();                
-            lbl_ClickedReport.Text = "Bắt đầu phiên....";
-
-            //SlackWebHookSender.SendMessage("Trader bắt đầu phiên giao dịch mới.", "brothers-project");
+            FinishSession();
         }
 
-        private void WriteLog(BaccratCard baccratCard)
+        private void WriteLogNDatabase(BaccratCard baccratCard, string importFileName)
         {
             //Save to database
             var datetimeNow = DateTime.Now;
+            if (QuadrupleMaster.MasterID == 1)
+            {
+                CurrentSession = new Session
+                {
+                    StartDateTime = DateTime.Now,
+                    ImportFileName = importFileName
+                };
+
+                BaccaratDBContext.AddSession(CurrentSession);
+            }
+
+
             BaccaratDBContext.AddResult(new Result
             {
                 Card = (short)(baccratCard == BaccratCard.Banker ? 1 : -1),
                 InputDateTime = datetimeNow,
                 SessionID = CurrentSession.ID
             });
-            var logger = string.Format("{0},{1:yyyy-MM-dd HH:mm:ss},{2},{3},{4}\r\n",
-                                        QuadrupleMaster.MasterID,
-                                        datetimeNow,
-                                        baccratCard,
-                                        QuadrupleMaster.LastStepProfit == 0 ? "" : QuadrupleMaster.LastStepProfit.ToString(),
-                                        QuadrupleMaster.TotalProfit);
 
-            //Save data
-            var saved = false;
-            while (!saved)
+            if (CurrentSession != null)
             {
-                try
+                CurrentSession.NoOfSteps = QuadrupleMaster.MasterID;
+                CurrentSession.Profit14 = QuadrupleMaster.Profit14;
+                CurrentSession.Profit25 = QuadrupleMaster.Profit25;
+                CurrentSession.Profit36 = QuadrupleMaster.Profit36;
+                CurrentSession.Profit47 = QuadrupleMaster.Profit47;
+                CurrentSession.Profit58 = QuadrupleMaster.Profit58;
+                CurrentSession.Profit61 = QuadrupleMaster.Profit61;
+                CurrentSession.Profit72 = QuadrupleMaster.Profit72;
+                CurrentSession.Profit83 = QuadrupleMaster.Profit83;
+
+                BaccaratDBContext.UpdateSession(CurrentSession);
+            }
+
+            //Save to log (for now)
+            if (string.IsNullOrEmpty(importFileName))
+            {
+                if (QuadrupleMaster.MasterID == 1)
                 {
-                    File.AppendAllText(string.Format(LOG_FILE_FORMAT, FILENAME), logger);
-                    saved = true;
+                    File.AppendAllText(FULL_PATH_FILE, LogTitle);
                 }
-                catch
+                var logger = string.Format("{0},{1:yyyy-MM-dd HH:mm:ss},{2},{3},{4}\r\n",
+                                            QuadrupleMaster.MasterID,
+                                            datetimeNow,
+                                            baccratCard,
+                                            QuadrupleMaster.Trade_LastStepProfit == 0 ? "" : QuadrupleMaster.Trade_LastStepProfit.ToString(),
+                                            QuadrupleMaster.Trade_TotalProfit);
+
+                //If file is opened. 
+                var saved = false;
+                while (!saved)
                 {
-                    MessageBox.Show("Vui lòng đóng file CSV khi đang ghi, sau đó nhấn nút OK");
+                    try
+                    {
+                        File.AppendAllText(FULL_PATH_FILE, logger);
+                        saved = true;
+                    }
+                    catch
+                    {
+                        MessageBox.Show("Vui lòng đóng file CSV khi đang ghi, sau đó nhấn nút OK");
+                    }
                 }
             }
+
         }
 
         private void txt_8_DoubleClick(object sender, EventArgs e)
@@ -187,8 +216,12 @@ namespace Baccarat
                 tabControls.Visible = !tabControls.Visible;
             }
             else if (e.Control && e.KeyCode == Keys.K && e.Shift)
-            {                
+            {
                 btnProcessData.Visible = !btnProcessData.Visible;
+            }
+            else if (e.Control && e.KeyCode == Keys.A && e.Alt)
+            {
+                btnImport.Visible = !btnImport.Visible;
             }
         }
         private void btn10_MouseHover(object sender, EventArgs e)
@@ -201,7 +234,7 @@ namespace Baccarat
             else
             {
                 button.BackColor = Color.FromArgb(255, 128, 0);
-            }            
+            }
         }
         private void btn120_MouseLeave(object sender, EventArgs e)
         {
@@ -221,8 +254,8 @@ namespace Baccarat
             var textBox = (sender as TextBox);
             textBox.ForeColor = textBox.Text == BANKER_VALUE ? Color.Red : textBox.Text == PLAYER_VALUE ? Color.Blue : Color.Black;
 
-            textBox.BackColor = textBox.Text == "" ? Color.White : Color.FromArgb(255,255,192);
-        }       
+            textBox.BackColor = textBox.Text == "" ? Color.White : Color.FromArgb(255, 255, 192);
+        }
 
         private void btnProcessData_Click(object sender, EventArgs e)
         {
@@ -232,7 +265,7 @@ namespace Baccarat
             {
                 folderPath = folderChoose.SelectedPath;
             }
-            if (folderPath == "") 
+            if (folderPath == "")
                 return;
 
             Regex reg = new Regex("((Midas_)?(\\d{8})_(\\d{6})\\.csv)");
@@ -250,7 +283,7 @@ namespace Baccarat
 
         private void ProcessFile(string filePath, int num)
         {
-            GenerateAllThreadLogs.ProcessFile(filePath, num);            
+            GenerateAllThreadLogs.ProcessFile(filePath, num);
         }
 
         private void btnBackward_Click(object sender, EventArgs e)
@@ -259,23 +292,135 @@ namespace Baccarat
                 return;
 
             QuadrupleMaster.Reverse();
+
+            //Update database
+            var lastResult = BaccaratDBContext.Results
+                                    .AsQueryable()
+                                    .Where(c => c.SessionID == CurrentSession.ID)
+                                    .OrderByDescending(c => c.ID)
+                                    .FirstOrDefault();
+            if (lastResult != null)
+            {
+                BaccaratDBContext.DeleteResult(lastResult.ID);
+            }
+
+            //Update log file 
+            var allLines = File.ReadAllLines(FULL_PATH_FILE).ToList();
+            if (allLines.Count > 1)
+            {
+                allLines.RemoveAt(allLines.Count - 1);
+            }
+            File.WriteAllLines(FULL_PATH_FILE, allLines.ToArray());
+
             //Update UI
-            lbl_ClickedReport.Text = "Đã ghi nhận " + QuadrupleMaster.MasterID + ": " + txt_1.Text;
+            if (QuadrupleMaster.MasterID > 0)
+            {
+                lbl_ClickedReport.Text = "Đã ghi nhận " + QuadrupleMaster.MasterID + ": " + QuadrupleMaster.ShowLastCard().ToString();
+            }
+            else
+            {
+                lbl_ClickedReport.Text = "Bắt đầu phiên....";
+            }
+
         }
 
         private void BaccaratQuad2_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (CurrentSession != null)
-            {
-                CurrentSession.NoOfSteps = QuadrupleMaster.MasterID;
-                CurrentSession.Result4Threads = QuadrupleMaster.TotalProfit;
-                BaccaratDBContext.UpdateSession(CurrentSession);
-            }
             BaccaratDBContext.Dispose();
 
-            var total = QuadrupleMaster.TotalProfit;
+            var total = QuadrupleMaster.Trade_TotalProfit;
 
             //SlackWebHookSender.SendMessage($"Kết thúc phiên, kết quả: { total }.", "brothers-project");
         }
+
+        #region Import file to database
+        private void ImportFiles(string fullFilePathName)
+        {
+            var fileName = fullFilePathName.Split('\\').Last();
+            var existedSession = BaccaratDBContext.Sessions.AsQueryable()
+                                        .FirstOrDefault(c => c.ImportFileName == fileName);
+            if (existedSession != null)
+            {
+                MessageBox.Show("This file was imported to database");
+                return;
+            }
+
+            var allLines = File.ReadAllLines(fullFilePathName).ToList();
+            foreach (var line in allLines)
+            {
+                var texts = line.Split(',');
+                var card = texts[2].ToUpper();
+                if (card == BANKER_VALUE || card == PLAYER_VALUE)
+                {
+                    var inputValue = card == BANKER_VALUE
+                           ? BaccratCard.Banker : BaccratCard.Player;
+
+                    ProcessInput(inputValue, fileName);
+                }
+            }
+            FinishSession();
+        }
+        private void btnImport_Click(object sender, EventArgs e)
+        {
+            if (QuadrupleMaster.MasterID > 0)
+            {
+                MessageBox.Show("Vui lòng kết thúc phiên rồi mới import dữ liệu");
+                return;
+            }
+
+            var folderChoose = new FolderBrowserDialog();
+            var folderPath = "";
+            if (folderChoose.ShowDialog() == DialogResult.OK)
+            {
+                folderPath = folderChoose.SelectedPath;
+            }
+            if (folderPath == "")
+                return;
+
+            Regex reg = new Regex("((Midas_)?(\\d{8})_(\\d{6})\\.csv)");
+            var files = Directory.GetFiles(folderPath, "*.csv")
+                                    .Where(c => reg.IsMatch(c))
+                                    .ToArray();
+            
+            foreach (var file in files)
+            {
+                ImportFiles(file);
+            }
+            MessageBox.Show("Import thành công.");
+
+            //var openFileDialog = new OpenFileDialog();
+
+            //if (openFileDialog.ShowDialog() == DialogResult.OK)
+            //{
+            //    var fullFilePathName = openFileDialog.FileName;
+            //    var fileName = fullFilePathName.Split('\\').Last();
+            //    var existedSession = BaccaratDBContext.Sessions.AsQueryable()
+            //                                .FirstOrDefault(c => c.ImportFileName == fileName);
+            //    if (existedSession != null)
+            //    {
+            //        MessageBox.Show("This file was imported to database");
+            //        return; 
+            //    }
+
+            //    var allLines = File.ReadAllLines(fullFilePathName).ToList();
+            //    foreach (var line in allLines)
+            //    {
+            //        var texts = line.Split(',');
+            //        var card = texts[2].ToUpper();
+            //        if (card == BANKER_VALUE || card == PLAYER_VALUE)
+            //        {
+            //            var inputValue = card == BANKER_VALUE
+            //                   ? BaccratCard.Banker : BaccratCard.Player;
+
+            //            ProcessInput(inputValue, fileName);
+            //        }
+            //    }
+            //    FinishSession();
+
+            //    MessageBox.Show("Import thành công.");                
+            //}
+        }
+
+        #endregion
     }
 }

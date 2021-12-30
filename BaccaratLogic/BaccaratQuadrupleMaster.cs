@@ -44,17 +44,26 @@ namespace CalculationLogic
 
             MasterList = new List<BaccratCard>();
             
-            TotalProfit = 0;
+            Trade_TotalProfit =
+            Trade_LastStepProfit =
+            Profit14 =
+            Profit25 =
+            Profit36 =
+            Profit47 =
+            Profit58 =
+            Profit61 =
+            Profit72 =
+            Profit83 = 0;
+
             MasterPredict = new QuadruplePredict { Value = BaccratCard.NoTrade, Volume = 0 };
 
             ThreadMode = threadMode;
 
-            HistoryCoeffs = new List<HistoryCoeff>();
+            HistoryCoeffs = new List<HistoryInfo>();
         }
         
-        List<BaccratCard> MasterList { get; set; }
-        
-        List<HistoryCoeff> HistoryCoeffs { get; set; }
+        List<BaccratCard> MasterList { get; set; }        
+        List<HistoryInfo> HistoryCoeffs { get; set; }
 
         BaccaratQuadruple TradeFiveToEightCalculator { get; set; }
         List<BaccratCard> TradeFiveToEightCards { get; set; }
@@ -88,8 +97,52 @@ namespace CalculationLogic
                 return MasterList.Count; 
             } 
         }
-        public int TotalProfit { get; internal set;}
-        public int LastStepProfit { get; internal set; }
+        /// <summary>
+        /// Accumulate of thead 1-4
+        /// </summary>
+        public int Profit14 { get; internal set; }
+
+        /// <summary>
+        /// Accumulate of thead 2-5
+        /// </summary>
+        public int Profit25 { get; internal set; }
+
+        /// <summary>
+        /// Accumulate of thead 3-6
+        /// </summary>
+        public int Profit36 { get; internal set; }
+
+        /// <summary>
+        /// Accumulate of thead 4-7
+        /// </summary>
+        public int Profit47 { get; internal set; }
+
+        /// <summary>
+        /// Accumulate of thead 5-8
+        /// </summary>
+        public int Profit58 { get; internal set; }
+
+        /// <summary>
+        /// Accumulate of thead 6-1
+        /// </summary>
+        public int Profit61 { get; internal set; }
+
+        /// <summary>
+        /// Accumulate of thead 7-2
+        /// </summary>
+        public int Profit72 { get; internal set; }
+
+        /// <summary>
+        /// Accumulate of thead 8-3
+        /// </summary>
+
+        public int Profit83 { get; internal set; }
+
+        /// <summary>
+        /// Total Profit, only calculate based on running threads
+        /// </summary>
+        public int Trade_TotalProfit { get; internal set;}
+        public int Trade_LastStepProfit { get; internal set; }
 
         private ThreadMode ThreadMode { get; set; }
 
@@ -205,40 +258,58 @@ namespace CalculationLogic
 
 
             #region Calculate Profit/Loss based on last predict and new input
-            LastStepProfit = 0;
+            Trade_LastStepProfit = 0;
+            var lastStepProfit14 = (CurrentPredict14.Value == BaccratCard.NoTrade ? 0 : inputValue != CurrentPredict14.Value ? -CurrentPredict14.Volume : CurrentPredict14.Volume);
+            var lastStepProfit25 = (CurrentPredict25.Value == BaccratCard.NoTrade ? 0 : inputValue != CurrentPredict25.Value ? -CurrentPredict25.Volume : CurrentPredict25.Volume);
+            var lastStepProfit36 = (CurrentPredict36.Value == BaccratCard.NoTrade ? 0 : inputValue != CurrentPredict36.Value ? -CurrentPredict36.Volume : CurrentPredict36.Volume);
+            var lastStepProfit47 = (CurrentPredict47.Value == BaccratCard.NoTrade ? 0 : inputValue != CurrentPredict47.Value ? -CurrentPredict47.Volume : CurrentPredict47.Volume);
+            var lastStepProfit58 = (CurrentPredict58.Value == BaccratCard.NoTrade ? 0 : inputValue != CurrentPredict58.Value ? -CurrentPredict58.Volume : CurrentPredict58.Volume);
+            var lastStepProfit61 = (CurrentPredict61.Value == BaccratCard.NoTrade ? 0 : inputValue != CurrentPredict61.Value ? -CurrentPredict61.Volume : CurrentPredict61.Volume);
+            var lastStepProfit72 = (CurrentPredict72.Value == BaccratCard.NoTrade ? 0 : inputValue != CurrentPredict72.Value ? -CurrentPredict72.Volume : CurrentPredict72.Volume);
+            var lastStepProfit83 = (CurrentPredict83.Value == BaccratCard.NoTrade ? 0 : inputValue != CurrentPredict83.Value ? -CurrentPredict83.Volume : CurrentPredict83.Volume);
+
+            Profit14 += lastStepProfit14;
+            Profit25 += lastStepProfit25;
+            Profit36 += lastStepProfit36;
+            Profit47 += lastStepProfit47;
+            Profit58 += lastStepProfit58;
+            Profit61 += lastStepProfit61;
+            Profit72 += lastStepProfit72;
+            Profit83 += lastStepProfit83;
+
             if (ThreadMode.HasFlag(ThreadMode.One_Four))
-            {
-                LastStepProfit += (CurrentPredict14.Value == BaccratCard.NoTrade ? 0 : inputValue != CurrentPredict14.Value ? -CurrentPredict14.Volume : CurrentPredict14.Volume);
+            {                
+                Trade_LastStepProfit += lastStepProfit14;
             }
             if (ThreadMode.HasFlag(ThreadMode.Two_Five))
             {
-                LastStepProfit += (CurrentPredict25.Value == BaccratCard.NoTrade ? 0 : inputValue != CurrentPredict25.Value ? -CurrentPredict25.Volume : CurrentPredict25.Volume);
+                Trade_LastStepProfit += lastStepProfit25;
             }
             if (ThreadMode.HasFlag(ThreadMode.Three_Six))
             {
-                LastStepProfit += (CurrentPredict36.Value == BaccratCard.NoTrade ? 0 : inputValue != CurrentPredict36.Value ? -CurrentPredict36.Volume : CurrentPredict36.Volume);
+                Trade_LastStepProfit += lastStepProfit36;
             }
             if (ThreadMode.HasFlag(ThreadMode.Four_Seven))
             {
-                LastStepProfit += (CurrentPredict47.Value == BaccratCard.NoTrade ? 0 : inputValue != CurrentPredict47.Value ? -CurrentPredict47.Volume : CurrentPredict47.Volume);
+                Trade_LastStepProfit += lastStepProfit47;
             }
             if (ThreadMode.HasFlag(ThreadMode.Five_Eight))
             {
-                LastStepProfit += (CurrentPredict58.Value == BaccratCard.NoTrade ? 0 : inputValue != CurrentPredict58.Value ? -CurrentPredict58.Volume : CurrentPredict58.Volume);
+                Trade_LastStepProfit += lastStepProfit58;
             }
             if (ThreadMode.HasFlag(ThreadMode.Six_One))
             {
-                LastStepProfit += (CurrentPredict61.Value == BaccratCard.NoTrade ? 0 : inputValue != CurrentPredict61.Value ? -CurrentPredict61.Volume : CurrentPredict61.Volume);
+                Trade_LastStepProfit += lastStepProfit61;
             }
             if (ThreadMode.HasFlag(ThreadMode.Seven_Two))
             {
-                LastStepProfit += (CurrentPredict72.Value == BaccratCard.NoTrade ? 0 : inputValue != CurrentPredict72.Value ? -CurrentPredict72.Volume : CurrentPredict72.Volume);
+                Trade_LastStepProfit += lastStepProfit72;
             }
             if (ThreadMode.HasFlag(ThreadMode.Eight_Three))
             {
-                LastStepProfit += (CurrentPredict83.Value == BaccratCard.NoTrade ? 0 : inputValue != CurrentPredict83.Value ? -CurrentPredict83.Volume : CurrentPredict83.Volume);
+                Trade_LastStepProfit += lastStepProfit83;
             }
-            TotalProfit += LastStepProfit;
+            Trade_TotalProfit += Trade_LastStepProfit;
             #endregion
 
             #region Update coeffs based on input
@@ -289,7 +360,7 @@ namespace CalculationLogic
             #endregion
 
             #region Save all coeffs for rollback (If trader makes a mistake and want to re-trade last position
-            HistoryCoeffs.Add(new HistoryCoeff
+            HistoryCoeffs.Add(new HistoryInfo
             {
                 Diff14 = CurrentPredict14.Diff_Coff,
                 Same14 = CurrentPredict14.Same_Coff, 
@@ -316,7 +387,18 @@ namespace CalculationLogic
                 SavedPredict58 = CurrentPredict58,
                 SavedPredict61 = CurrentPredict61,
                 SavedPredict72 = CurrentPredict72,
-                SavedPredict83 = CurrentPredict83
+                SavedPredict83 = CurrentPredict83, 
+
+                SavedTotalProfit = Trade_TotalProfit, 
+
+                AccumulatedProfit14 = Profit14, 
+                AccumulatedProfit25 = Profit25, 
+                AccumulatedProfit36 = Profit36, 
+                AccumulatedProfit47 = Profit47, 
+                AccumulatedProfit58 = Profit58, 
+                AccumulatedProfit61 = Profit61, 
+                AccumulatedProfit72 = Profit72, 
+                AccumulatedProfit83 = Profit83
 
             });
             #endregion
@@ -334,7 +416,7 @@ namespace CalculationLogic
             TradeEightToThreeCards.Clear();
 
             TradeOneToFourCalculator.Reset();
-            TradeOneToFourCalculator.Reset();
+            TradeTwoToFiveCalculator.Reset();
             TradeThreeToSixCalculator.Reset();
             TradeFourToSevenCalculator.Reset();
             TradeFiveToEightCalculator.Reset();
@@ -346,7 +428,16 @@ namespace CalculationLogic
 
             HistoryCoeffs.Clear();
 
-            TotalProfit = 0;
+            Trade_TotalProfit =
+            Trade_LastStepProfit =
+            Profit14 =
+            Profit25 =
+            Profit36 =
+            Profit47 =
+            Profit58 =
+            Profit61 =
+            Profit72 =
+            Profit83 = 0;
 
             MasterPredict = new QuadruplePredict { Value = BaccratCard.NoTrade, Volume = 0 };
 
@@ -393,7 +484,7 @@ namespace CalculationLogic
 
             //Set coeff for calculators
             var lastCoeffs = HistoryCoeffs.Count > 0 ? HistoryCoeffs.FindLast(c => 1 == 1)
-                                    : default (HistoryCoeff) ;
+                                    : default (HistoryInfo) ;
             if (lastCoeffs != null)
             {
                 TradeOneToFourCalculator.UpdateCoeff(false, lastCoeffs.Same14, lastCoeffs.Diff14);
@@ -414,11 +505,27 @@ namespace CalculationLogic
                 CurrentPredict61 = lastCoeffs.SavedPredict61;
                 CurrentPredict72 = lastCoeffs.SavedPredict72;
                 CurrentPredict83 = lastCoeffs.SavedPredict83;
+
+                Trade_TotalProfit = lastCoeffs.SavedTotalProfit;
+
+                Profit14 = lastCoeffs.AccumulatedProfit14;
+                Profit25 = lastCoeffs.AccumulatedProfit25;
+                Profit36 = lastCoeffs.AccumulatedProfit36;
+                Profit47 = lastCoeffs.AccumulatedProfit47;
+                Profit58 = lastCoeffs.AccumulatedProfit58;
+                Profit61 = lastCoeffs.AccumulatedProfit61;
+                Profit72 = lastCoeffs.AccumulatedProfit72;
+                Profit83 = lastCoeffs.AccumulatedProfit83;
             }
+        }
+
+        public BaccratCard ShowLastCard()
+        {
+            return MasterID > 0 ? MasterList[MasterList.Count - 1] : default;
         }
     }
 
-    public class HistoryCoeff
+    public class HistoryInfo
     { 
         public int Same14 { get; set; }
         public int Same36 { get; set; }
@@ -448,6 +555,17 @@ namespace CalculationLogic
         public QuadrupleResult SavedPredict61 { get; set; }
         public QuadrupleResult SavedPredict72 { get; set; }
         public QuadrupleResult SavedPredict83 { get; set; }
+
+        public int AccumulatedProfit14 { get; set; }
+        public int AccumulatedProfit25 { get; set; }
+        public int AccumulatedProfit36 { get; set; }
+        public int AccumulatedProfit47 { get; set; }
+        public int AccumulatedProfit58 { get; set; }
+        public int AccumulatedProfit61 { get; set; }
+        public int AccumulatedProfit72 { get; set; }
+        public int AccumulatedProfit83 { get; set; }
+
+        public int SavedTotalProfit { get; set; }
     }
 
 
