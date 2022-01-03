@@ -224,6 +224,7 @@
     <Content Include="Cards\9S.jpg" />
     <Content Include="Cards\CardBackBlue.jpg" />
     <Content Include="Cards\CardBackRed.jpg" />
+    <None Include="Resources\camera-icon-png.png" />
     <None Include="Resources\160041651.jpg" />
     <None Include="Resources\download.png" />
   </ItemGroup>

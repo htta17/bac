@@ -13,6 +13,7 @@ using Newtonsoft.Json;
 using Midas;
 using System.Text.RegularExpressions;
 using Midas.Utils;
+using System.Drawing.Imaging;
 
 namespace Baccarat
 {
@@ -29,7 +30,7 @@ namespace Baccarat
                 Directory.CreateDirectory("Logs");
             }
 
-            FILENAME = string.Format(FileFormatCSV, DateTime.Now);
+            FILENAME_DATETIME = DateTime.Now;
 
             if (DateTime.Now > DateTime.Parse("2022-06-01"))
             {
@@ -52,15 +53,23 @@ namespace Baccarat
 
         BaccaratDBContext BaccaratDBContext { get; set; }
 
-        private string FILENAME = null;
+        private DateTime? FILENAME_DATETIME = null;
         private const string LogTitle = "ID,Time,Card,Loss/Profit,Total\r\n";
-        private const string FileFormatCSV = "{0:yyyyMMdd_HHmmss}.csv";
-        const string LOG_FILE_FORMAT = "Logs\\Midas_{0}";
+        const string LOG_FILE_FORMAT = "Logs\\Midas_{0:yyyyMMdd_HHmmss}.csv";
+        const string IMAGE_FORMAT = "Logs\\Midas_{0:yyyyMMdd_HHmmss}_{1}.jpeg"; 
         string FULL_PATH_FILE
         {
             get
             {
-                return string.Format(LOG_FILE_FORMAT, FILENAME);
+                return string.Format(LOG_FILE_FORMAT, FILENAME_DATETIME.Value);
+            }
+        }
+
+        string FULL_PATH_IMAGE
+        {
+            get
+            {
+                return string.Format(IMAGE_FORMAT, FILENAME_DATETIME.Value, Screenshot_Counter);
             }
         }
 
@@ -115,7 +124,9 @@ namespace Baccarat
             txt_1.Text = "";
             txtValue.Text = "";
             txtVolume.Text = "";
-            FILENAME = string.Format(FileFormatCSV, DateTime.Now);
+            FILENAME_DATETIME = DateTime.Now;
+
+            Screenshot_Counter = 0;
 
             QuadrupleMaster.ResetAll();
             lbl_ClickedReport.Text = "Bắt đầu phiên....";
@@ -326,11 +337,7 @@ namespace Baccarat
 
         private void BaccaratQuad2_FormClosing(object sender, FormClosingEventArgs e)
         {
-            BaccaratDBContext.Dispose();
-
-            var total = QuadrupleMaster.Trade_TotalProfit;
-
-            //SlackWebHookSender.SendMessage($"Kết thúc phiên, kết quả: { total }.", "brothers-project");
+            BaccaratDBContext.Dispose();            
         }
 
         #region Import file to database
@@ -369,6 +376,7 @@ namespace Baccarat
             }
 
             var folderChoose = new FolderBrowserDialog();
+            folderChoose.SelectedPath = Directory.GetCurrentDirectory();
             var folderPath = "";
             if (folderChoose.ShowDialog() == DialogResult.OK)
             {
@@ -387,40 +395,47 @@ namespace Baccarat
                 ImportFiles(file);
             }
             MessageBox.Show("Import thành công.");
-
-            //var openFileDialog = new OpenFileDialog();
-
-            //if (openFileDialog.ShowDialog() == DialogResult.OK)
-            //{
-            //    var fullFilePathName = openFileDialog.FileName;
-            //    var fileName = fullFilePathName.Split('\\').Last();
-            //    var existedSession = BaccaratDBContext.Sessions.AsQueryable()
-            //                                .FirstOrDefault(c => c.ImportFileName == fileName);
-            //    if (existedSession != null)
-            //    {
-            //        MessageBox.Show("This file was imported to database");
-            //        return; 
-            //    }
-
-            //    var allLines = File.ReadAllLines(fullFilePathName).ToList();
-            //    foreach (var line in allLines)
-            //    {
-            //        var texts = line.Split(',');
-            //        var card = texts[2].ToUpper();
-            //        if (card == BANKER_VALUE || card == PLAYER_VALUE)
-            //        {
-            //            var inputValue = card == BANKER_VALUE
-            //                   ? BaccratCard.Banker : BaccratCard.Player;
-
-            //            ProcessInput(inputValue, fileName);
-            //        }
-            //    }
-            //    FinishSession();
-
-            //    MessageBox.Show("Import thành công.");                
-            //}
         }
 
         #endregion
+
+        #region Take screen shot
+        private void TakeScreenshot()
+        {
+            try
+            {
+                Rectangle bounds = Screen.FromControl(this).Bounds;
+                using (Bitmap bitmap = new Bitmap(bounds.Width, bounds.Height))
+                {
+                    using (Graphics g = Graphics.FromImage(bitmap))
+                    {
+                        g.CopyFromScreen(new Point(0, 0), Point.Empty, bounds.Size);
+                    }
+                    bitmap.Save(FULL_PATH_IMAGE, ImageFormat.Jpeg);
+                }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("Error" + e.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            
+        }
+
+        #endregion
+
+        private int Screenshot_Counter = 0;
+
+        private void btnCamera_Click(object sender, EventArgs e)
+        {
+            if (FILENAME_DATETIME.HasValue)
+            {
+                Screenshot_Counter++;
+                TakeScreenshot();
+            }
+            else
+            {
+                MessageBox.Show("Xin mời bắt đầu phiên. Chương trình chỉ chụp ảnh màn hình khi đã bắt đầu phiên", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
     }
 }
