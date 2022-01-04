@@ -56,7 +56,9 @@ namespace Baccarat
         private DateTime? FILENAME_DATETIME = null;
         private const string LogTitle = "ID,Time,Card,Loss/Profit,Total\r\n";
         const string LOG_FILE_FORMAT = "Logs\\Midas_{0:yyyyMMdd_HHmmss}.csv";
-        const string IMAGE_FORMAT = "Logs\\Midas_{0:yyyyMMdd_HHmmss}_{1}.jpeg"; 
+        const string IMAGE_FORMAT = "Logs\\Midas_{0:yyyyMMdd_HHmmss}_{1}.jpeg";
+        private int Screenshot_Counter = 0;
+
         string FULL_PATH_FILE
         {
             get
@@ -337,7 +339,8 @@ namespace Baccarat
 
         private void BaccaratQuad2_FormClosing(object sender, FormClosingEventArgs e)
         {
-            BaccaratDBContext.Dispose();            
+            BaccaratDBContext.Dispose();
+            TakeScreenshot(false);
         }
 
         #region Import file to database
@@ -400,7 +403,7 @@ namespace Baccarat
         #endregion
 
         #region Take screen shot
-        private void TakeScreenshot()
+        private void TakeScreenshot(bool showMessage)
         {
             try
             {
@@ -416,26 +419,35 @@ namespace Baccarat
             }
             catch (Exception e)
             {
-                MessageBox.Show("Error" + e.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                if (showMessage)
+                {
+                    MessageBox.Show("Error" + e.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }                
             }
             
         }
 
         #endregion
 
-        private int Screenshot_Counter = 0;
-
         private void btnCamera_Click(object sender, EventArgs e)
         {
             if (FILENAME_DATETIME.HasValue)
             {
                 Screenshot_Counter++;
-                TakeScreenshot();
+                TakeScreenshot(true);
             }
             else
             {
                 MessageBox.Show("Xin mời bắt đầu phiên. Chương trình chỉ chụp ảnh màn hình khi đã bắt đầu phiên", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        private void btnCamera_MouseEnter(object sender, EventArgs e)
+        {
+            var button = (sender as Button);
+            var text = button.Name == btnBackward.Name ? "Lùi về bước trước" : "Chụp ảnh màn hình"; 
+
+            toolTip.SetToolTip((sender as Button), text);
         }
     }
 }
