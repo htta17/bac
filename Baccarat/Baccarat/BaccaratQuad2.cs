@@ -108,6 +108,12 @@ namespace Baccarat
             WriteLogNDatabase(inputValue, importFileName);
         }
 
+        private void PlaySound(BaccratCard inputValue)
+        {
+            System.Media.SoundPlayer player = new System.Media.SoundPlayer(inputValue == BaccratCard.Banker ? @"Sound\Banker.wav" : @"Sound\Player.wav");
+            player.Play();
+        }
+
         private void btnCalculate_Click(object sender, EventArgs e)
         {
             if (txt_1.Text == "")
@@ -117,6 +123,8 @@ namespace Baccarat
             }
             var inputValue = txt_1.Text == BANKER_VALUE
                                ? BaccratCard.Banker : BaccratCard.Player;
+
+            //PlaySound(inputValue);
 
             ProcessInput(inputValue, null);
         }
