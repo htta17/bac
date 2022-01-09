@@ -110,8 +110,15 @@ namespace Baccarat
 
         private void PlaySound(BaccratCard inputValue)
         {
-            System.Media.SoundPlayer player = new System.Media.SoundPlayer(inputValue == BaccratCard.Banker ? @"Sound\Banker.wav" : @"Sound\Player.wav");
-            player.Play();
+            try
+            {
+                System.Media.SoundPlayer player = new System.Media.SoundPlayer(inputValue == BaccratCard.Banker ? @"Sound\Banker.wav" : @"Sound\Player.wav");
+                player.Play();
+            }
+            catch
+            { 
+            
+            }           
         }
 
         private void btnCalculate_Click(object sender, EventArgs e)
