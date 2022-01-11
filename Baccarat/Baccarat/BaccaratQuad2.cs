@@ -48,8 +48,7 @@ namespace Baccarat
 
         BaccaratQuadrupleMaster QuadrupleMaster { get; set; }
 
-        const string BANKER_VALUE = "BANKER";
-        const string PLAYER_VALUE = "PLAYER";
+       
 
         BaccaratDBContext BaccaratDBContext { get; set; }
 
@@ -128,7 +127,7 @@ namespace Baccarat
                 MessageBox.Show("Vui lòng nhập giá trị");
                 return;
             }
-            var inputValue = txt_1.Text == BANKER_VALUE
+            var inputValue = txt_1.Text == Constants.BANKER_VALUE
                                ? BaccratCard.Banker : BaccratCard.Player;
 
             //PlaySound(inputValue);
@@ -255,7 +254,7 @@ namespace Baccarat
         private void btn10_MouseHover(object sender, EventArgs e)
         {
             var button = (sender as Button);
-            if (button.Text == PLAYER_VALUE)
+            if (button.Text == Constants.PLAYER_VALUE)
             {
                 button.BackColor = Color.FromArgb(23, 120, 200);
             }
@@ -267,7 +266,7 @@ namespace Baccarat
         private void btn120_MouseLeave(object sender, EventArgs e)
         {
             var button = (sender as Button);
-            if (button.Text == PLAYER_VALUE)
+            if (button.Text == Constants.PLAYER_VALUE)
             {
                 button.BackColor = Color.Blue;
             }
@@ -280,7 +279,7 @@ namespace Baccarat
         private void txt_8_TextChanged(object sender, EventArgs e)
         {
             var textBox = (sender as TextBox);
-            textBox.ForeColor = textBox.Text == BANKER_VALUE ? Color.Red : textBox.Text == PLAYER_VALUE ? Color.Blue : Color.Black;
+            textBox.ForeColor = textBox.Text == Constants.BANKER_VALUE ? Color.Red : textBox.Text == Constants.PLAYER_VALUE ? Color.Blue : Color.Black;
 
             textBox.BackColor = textBox.Text == "" ? Color.White : Color.FromArgb(255, 255, 192);
         }
@@ -375,9 +374,9 @@ namespace Baccarat
             {
                 var texts = line.Split(',');
                 var card = texts[2].ToUpper();
-                if (card == BANKER_VALUE || card == PLAYER_VALUE)
+                if (card == Constants.BANKER_VALUE || card == Constants.PLAYER_VALUE)
                 {
-                    var inputValue = card == BANKER_VALUE
+                    var inputValue = card == Constants.BANKER_VALUE
                            ? BaccratCard.Banker : BaccratCard.Player;
 
                     ProcessInput(inputValue, fileName);

@@ -55,7 +55,7 @@ namespace CalculationLogic
             Profit72 =
             Profit83 = 0;
 
-            MasterPredict = new QuadruplePredict { Value = BaccratCard.NoTrade, Volume = 0 };
+            MasterPredict = new BaccaratPredict { Value = BaccratCard.NoTrade, Volume = 0 };
 
             ThreadMode = threadMode;
 
@@ -146,7 +146,7 @@ namespace CalculationLogic
 
         private ThreadMode ThreadMode { get; set; }
 
-        public QuadruplePredict MasterPredict { get; internal set; }
+        public BaccaratPredict MasterPredict { get; internal set; }
 
         QuadrupleResult CurrentPredict14 = new QuadrupleResult { Value = BaccratCard.NoTrade, Volume = 0 };
         QuadrupleResult CurrentPredict25 = new QuadrupleResult { Value = BaccratCard.NoTrade, Volume = 0 };
@@ -439,7 +439,7 @@ namespace CalculationLogic
             Profit72 =
             Profit83 = 0;
 
-            MasterPredict = new QuadruplePredict { Value = BaccratCard.NoTrade, Volume = 0 };
+            MasterPredict = new BaccaratPredict { Value = BaccratCard.NoTrade, Volume = 0 };
 
             CurrentPredict14 = new QuadrupleResult { Value = BaccratCard.NoTrade, Volume = 0 };
             CurrentPredict25 = new QuadrupleResult { Value = BaccratCard.NoTrade, Volume = 0 };

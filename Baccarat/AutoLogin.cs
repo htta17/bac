@@ -24,6 +24,20 @@ namespace Midas
 
             Timer.Interval = 1000 * 60 * 5; //5 mins
             Timer.Tick += Timer_Tick;
+
+            try
+            {
+                Driver = new ChromeDriver(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
+            }
+            catch (DriverServiceNotFoundException ex)
+            {
+                btnTest.Visible = false;
+                MessageBox.Show("Vui lòng download Chrome Driver tại: http://chromedriver.storage.googleapis.com/index.html. \r\n\r\n" + ex.Message);
+            }
+            catch (Exception ex)
+            { 
+                //
+            }
         }
 
         private void Timer_Tick(object sender, EventArgs e)
@@ -57,16 +71,19 @@ namespace Midas
 
         }
 
-        Timer Timer = new Timer(); 
-        private readonly ChromeDriver Driver = new ChromeDriver(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
+        Timer Timer = new Timer();
+        private readonly ChromeDriver Driver = null; 
 
         private void AutoLogin_FormClosing(object sender, FormClosingEventArgs e)
         {
-            Driver.Quit();
+            Driver?.Quit();
         }
 
         private void btnTest_Click(object sender, EventArgs e)
         {
+            if (Driver == null)
+                return; 
+
             try
             {
                 Driver.Navigate().GoToUrl("https://www.jbbodds.com/vi-vn");
@@ -94,6 +111,9 @@ namespace Midas
 
         private void AutoLogin_Load(object sender, EventArgs e)
         {
+            if (Driver == null)
+                return;
+
             Driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(20.0);
             Driver.Manage().Window.Maximize();
         }

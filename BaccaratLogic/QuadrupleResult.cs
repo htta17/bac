@@ -4,7 +4,7 @@ using System.Text;
 
 namespace CalculationLogic
 {
-    public class QuadruplePredict
+    public class BaccaratPredict
     {
         public BaccratCard Value { get; set; }
         public int Volume { get; set; }

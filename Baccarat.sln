@@ -5,7 +5,9 @@ VisualStudioVersion = 16.0.30523.141
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Baccarat", "Baccarat\Baccarat.csproj", "{3C9AA06D-9C4D-4DF4-98A4-C283331AEFC5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalculationLogic", "BaccaratLogic\CalculationLogic.csproj", "{108B2F59-E15C-4E94-84A5-1F94C12CC7E6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CalculationLogic", "BaccaratLogic\CalculationLogic.csproj", "{108B2F59-E15C-4E94-84A5-1F94C12CC7E6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DatabaseContext", "DatabaseContext\DatabaseContext.csproj", "{F57CE220-AD3A-4C92-A426-D3BDF1550FB5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{108B2F59-E15C-4E94-84A5-1F94C12CC7E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{108B2F59-E15C-4E94-84A5-1F94C12CC7E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{108B2F59-E15C-4E94-84A5-1F94C12CC7E6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F57CE220-AD3A-4C92-A426-D3BDF1550FB5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F57CE220-AD3A-4C92-A426-D3BDF1550FB5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F57CE220-AD3A-4C92-A426-D3BDF1550FB5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F57CE220-AD3A-4C92-A426-D3BDF1550FB5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

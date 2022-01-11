@@ -94,6 +94,12 @@
     <Compile Include="Baccarat\BaccaratQuad2.Designer.cs">
       <DependentUpon>BaccaratQuad2.cs</DependentUpon>
     </Compile>
+    <Compile Include="Baccarat\BaccaratRootAlg.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Baccarat\BaccaratRootAlg.Designer.cs">
+      <DependentUpon>BaccaratRootAlg.cs</DependentUpon>
+    </Compile>
     <Compile Include="frmMain.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -108,8 +114,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="DBContext\Result.cs" />
-    <Compile Include="DBContext\Session.cs" />
     <Compile Include="DBContext\SetConnection.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -147,6 +151,9 @@
     <EmbeddedResource Include="Baccarat\BaccaratQuad2.resx">
       <DependentUpon>BaccaratQuad2.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Baccarat\BaccaratRootAlg.resx">
+      <DependentUpon>BaccaratRootAlg.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="frmMain.resx">
       <DependentUpon>frmMain.cs</DependentUpon>
     </EmbeddedResource>
@@ -182,6 +189,10 @@
     <ProjectReference Include="..\BaccaratLogic\CalculationLogic.csproj">
       <Project>{108b2f59-e15c-4e94-84a5-1f94c12cc7e6}</Project>
       <Name>CalculationLogic</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DatabaseContext\DatabaseContext.csproj">
+      <Project>{f57ce220-ad3a-4c92-a426-d3bdf1550fb5}</Project>
+      <Name>DatabaseContext</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -252,6 +263,8 @@
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -5,8 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Midas
 {  
     public class Session
-    {
-      
+    {      
         public Session()
         {
             this.Results = new HashSet<Result>();
