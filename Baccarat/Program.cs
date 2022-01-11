@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Midas;
 using Midas.Utils;
 
 namespace Baccarat
@@ -18,7 +19,7 @@ namespace Baccarat
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             StartApp.LoadRegistryConnectionString();
-            Application.Run(new BaccaratQuad2());
+            Application.Run(new AutoLogin());
         }
     }
 }
