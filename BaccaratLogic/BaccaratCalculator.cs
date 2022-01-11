@@ -5,11 +5,7 @@ using System.Text;
 
 namespace CalculationLogic
 {
-    public class BaccaratResult
-    { 
-        public int Volume { get; set; }
-        public int Value { get; set; }    
-    }
+    
 
     /// <summary>
     /// This class is built to get fast results, in case it takes too long time to process 
@@ -24,12 +20,7 @@ namespace CalculationLogic
         public int Value { get; set; }
     }  
 
-    public class CalculatorItem
-    { 
-        public List<int> DetailArray { get; set; }
-
-        public int Value { get; set; }
-    }
+    
     public class BaccaratCalculator
     {
         public BaccaratCalculator()
