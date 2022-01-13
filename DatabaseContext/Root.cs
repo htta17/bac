@@ -1,6 +1,6 @@
 using System;
 
-namespace Midas
+namespace DatabaseContext
 {  
     public class Root
     {
@@ -8,5 +8,7 @@ namespace Midas
         public short Card { get; set; }
         public DateTime InputDateTime { get; set; }
         public int Coeff { get; set; }
+
+        public int GlobalOrder { get; set; }
     }
 }

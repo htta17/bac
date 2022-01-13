@@ -10,6 +10,7 @@ namespace Midas
     using System;
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
+    using DatabaseContext;
     
     public class BaccaratDBContext : GlobalDBContext
     {

@@ -1,5 +1,5 @@
 
-namespace Midas
+namespace DatabaseContext
 {  
     public class Result
     {

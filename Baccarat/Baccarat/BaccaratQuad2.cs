@@ -14,6 +14,7 @@ using Midas;
 using System.Text.RegularExpressions;
 using Midas.Utils;
 using System.Drawing.Imaging;
+using DatabaseContext;
 
 namespace Baccarat
 {

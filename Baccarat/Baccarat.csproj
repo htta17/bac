@@ -186,9 +186,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\BaccaratLogic\CalculationLogic.csproj">
-      <Project>{108b2f59-e15c-4e94-84a5-1f94c12cc7e6}</Project>
-      <Name>CalculationLogic</Name>
+    <ProjectReference Include="..\CoreLogic\CoreLogic.csproj">
+      <Project>{7481a4a5-8032-4271-a159-ae56bf609069}</Project>
+      <Name>CoreLogic</Name>
     </ProjectReference>
     <ProjectReference Include="..\DatabaseContext\DatabaseContext.csproj">
       <Project>{f57ce220-ad3a-4c92-a426-d3bdf1550fb5}</Project>

@@ -77,6 +77,8 @@ namespace Midas.Baccarat
             this.txt_1.Size = new System.Drawing.Size(439, 56);
             this.txt_1.TabIndex = 111;
             this.txt_1.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.txt_1.TextChanged += new System.EventHandler(this.txt_1_TextChanged);
+            this.txt_1.DoubleClick += new System.EventHandler(this.txt_8_DoubleClick);
             // 
             // btn11
             // 
@@ -188,6 +190,7 @@ namespace Midas.Baccarat
             this.Controls.Add(this.btn10);
             this.Name = "BaccaratRootAlg";
             this.Text = "Giải thuật gốc cây.....rau muống";
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.BaccaratQuad_KeyDown);
             this.ResumeLayout(false);
             this.PerformLayout();
 

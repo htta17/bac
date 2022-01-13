@@ -9,10 +9,12 @@ namespace CalculationLogic
     /// </summary>
     public class BaccaratRoot
     {
-        public BaccaratRoot()
+        public BaccaratRoot(IEnumerable<BaccratCard> savedCards)
         {
             Cards = new List<BaccratCard>();
+
             SaveCards = new List<BaccratCard>();
+            SaveCards.AddRange(savedCards);
         }
 
         /// <summary>
