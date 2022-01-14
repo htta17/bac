@@ -1,4 +1,5 @@
 ﻿using CalculationLogic;
+using Midas.Utils;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,9 +18,28 @@ namespace Midas.Baccarat
         {
             this.KeyPreview = true;
             InitializeComponent();
+
+            if (string.IsNullOrEmpty(StartApp.GlobalConnectionString))
+            {
+                StartApp.LoadRegistryConnectionString();
+            }
+
+            BaccaratRootCalculator = new BaccaratRootCalculator(StartApp.GlobalConnectionString);
+
+            
+
+            if (BaccaratRootCalculator.GlobalOrder > 0)
+            {
+                var lastcard = BaccaratRootCalculator.ShowLastCard();
+                lbl_ClickedReport.Text = "Đã ghi nhận " + BaccaratRootCalculator.GlobalOrder + ": " + lastcard.ToString();
+            }
+            else
+            {
+                lbl_ClickedReport.Text = "Chưa có dữ liệu";
+            }            
         }
 
-         
+         private BaccaratRootCalculator BaccaratRootCalculator { get; set; }
 
         private void btn51_Click(object sender, EventArgs e)
         {
@@ -79,14 +99,15 @@ namespace Midas.Baccarat
                                ? BaccratCard.Banker : BaccratCard.Player;
 
             ProcessInput(inputValue);
-
         }
 
         private void ProcessInput(BaccratCard inputValue)
         {
-            //
-            //ToDo: Change predict
-            BaccaratPredict predict = new BaccaratPredict {Value = BaccratCard.NoTrade, Volume = 0 };
+            //Add card
+            BaccaratRootCalculator.AddNewCard(inputValue);
+
+            //Predict
+            var predict = BaccaratRootCalculator.Predict();
 
             txtValue.Text = predict.Value.ToString();
             txtValue.ForeColor = predict.Value == BaccratCard.NoTrade ? Color.Black :
@@ -95,7 +116,7 @@ namespace Midas.Baccarat
             txtVolume.Text = predict.Volume.ToString();
 
             //ToDo: Change
-            lbl_ClickedReport.Text = "Đã ghi nhận " + 0 + ": " + txt_1.Text;
+            lbl_ClickedReport.Text = "Đã ghi nhận " + BaccaratRootCalculator.GlobalOrder + ": " + txt_1.Text;
             txt_1.Text = "";
         }
 

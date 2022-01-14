@@ -51,8 +51,7 @@
     <Compile Include="BaccaratCalculator.cs" />
     <Compile Include="BaccaratQuadruple.cs" />
     <Compile Include="BaccaratQuadrupleMaster.cs" />
-    <Compile Include="BaccaratRoot.cs" />
-    <Compile Include="BaccaratRootMaster.cs" />
+    <Compile Include="BaccaratRootCalculator.cs" />
     <Compile Include="BaccaratSimulator\BaccaratSimulatorGame.cs" />
     <Compile Include="BaccaratSimulator\Card.cs" />
     <Compile Include="BaccaratSimulator\Deck.cs" />
