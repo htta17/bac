@@ -130,5 +130,21 @@ namespace Midas.Baccarat
         {
             (sender as TextBox).Text = "";
         }
+
+        private void btnBackward_Click(object sender, EventArgs e)
+        {
+            if (MessageBox.Show("Bạn chắc chắn xóa bước cuối chứ?", "Quan trọng", MessageBoxButtons.YesNo) != DialogResult.Yes)
+                return;
+
+            BaccaratRootCalculator.Backward();
+        }
+
+        private void btnBackward_MouseEnter(object sender, EventArgs e)
+        {
+            var button = (sender as Button);
+            var text = button.Name == btnBackward.Name ? "Lùi về bước trước" : "Chụp ảnh màn hình";
+
+            toolTip1.SetToolTip((sender as Button), text);
+        }
     }
 }

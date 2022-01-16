@@ -14,8 +14,35 @@ namespace CalculationLogic
     {
         public BaccaratRootCalculator(string connectionString)
         {
-            BaccaratDBContext = new GlobalDBContext(connectionString);     
+            BaccaratDBContext = new GlobalDBContext(connectionString);
 
+            Reset();
+        }
+        GlobalDBContext BaccaratDBContext { get; set; }
+
+        public int GlobalOrder { get; private set; } = 0;
+
+        public BaccratCard ShowLastCard()
+        {
+            if (MainRoots.Count > 0)
+                return (BaccratCard)MainRoots.Last().Card;
+            return BaccratCard.NoTrade;
+        }
+
+        public void Backward()
+        {
+            if (MainRoots.Count > 0)
+            {
+                var lastItem = MainRoots.Last();
+                BaccaratDBContext.DeleteRoot(lastItem.ID);
+                MainRoots.RemoveAt(MainRoots.Count - 1);
+            }
+            Reset();
+        }
+
+
+        public void Reset()
+        {
             var rootCount = BaccaratDBContext.Roots.Count();
             MainRoots = BaccaratDBContext.Roots
                                         .OrderBy(c => c.ID)
@@ -36,6 +63,13 @@ namespace CalculationLogic
             }
             else
             {
+                GlobalOrder = 0;
+                MainCoeff = 1;
+                Coeff0 = 1;
+                Coeff1 = 1;
+                Coeff2 = 1;
+                Coeff3 = 1;
+                AllSubCoeff = 1;
                 CurrentPredicts = new List<BaccaratPredict>();
             }
 
@@ -44,16 +78,7 @@ namespace CalculationLogic
             Roots2 = MainRoots.Where(c => c.GlobalOrder % 4 == 2).ToList();
             Roots3 = MainRoots.Where(c => c.GlobalOrder % 4 == 3).ToList();
         }
-        GlobalDBContext BaccaratDBContext { get; set; }
 
-        public int GlobalOrder { get; private set; } = 0;
-
-        public BaccratCard ShowLastCard()
-        {
-            if (MainRoots.Count > 0)
-                return (BaccratCard)MainRoots.Last().Card;
-            return BaccratCard.NoTrade;
-        }        
         private List<Root> MainRoots { get; set; }
 
         private List<Root> Roots0 { get; set; }
@@ -92,7 +117,7 @@ namespace CalculationLogic
                 {
                     var profit0 = UpdateCurrentCoeff(card, 1, Coeff0);
                     Coeff0 = profit0.Item2;
-                    lastRoot.Profit0 = profit0.Item1;
+                    lastRoot.Profit0 = profit0.Item1;                    
                 }
                 else if (GlobalOrder  % 4 == 1)
                 {
@@ -112,6 +137,11 @@ namespace CalculationLogic
                     Coeff3 = profit3.Item2;
                     lastRoot.Profit3 = profit3.Item1;
                 }
+
+                //Tính toán cho AllSubCoeff
+                var allSubProfit = UpdateCurrentCoeff(card, 5, AllSubCoeff);
+                AllSubCoeff = allSubProfit.Item2;
+                lastRoot.AllSubProfit = allSubProfit.Item1;
 
                 //Cập nhật lại DB
                 BaccaratDBContext.UpdateRoot(lastRoot);
@@ -136,7 +166,6 @@ namespace CalculationLogic
                 Profit1 = 0,
                 Profit2 = 0,
                 Profit3 = 0,
-                AllSubProfit = 0,
 
                 GlobalOrder = GlobalOrder, 
                 ListCurrentPredicts = ""
@@ -204,26 +233,7 @@ namespace CalculationLogic
 
         public BaccaratPredict Predict()
         {
-            var mainThread = PredicThread(MainRoots, MainCoeff);
-            /*
-            var subThread = new BaccaratPredict { };
-            if (GlobalOrder % 4 == 0)
-            {
-                subThread = PredicThread(Roots0, Coeff0);
-            }
-            else if (GlobalOrder % 4 == 1)
-            {
-                subThread = PredicThread(Roots1, Coeff1);
-            }
-            else if (GlobalOrder % 4 == 2)
-            {
-                subThread = PredicThread(Roots2, Coeff2);
-            }
-            else if (GlobalOrder % 4 == 3)
-            {
-                subThread = PredicThread(Roots3, Coeff3);
-            }
-            */
+            var mainThread = PredicThread(MainRoots, MainCoeff);           
 
             var thread0 = PredicThread(Roots0, Coeff0);
             var thread1 = PredicThread(Roots1, Coeff1);
@@ -235,8 +245,9 @@ namespace CalculationLogic
                                 _predictGlobalOrder % 4 == 1 ? thread1 :
                                 _predictGlobalOrder % 4 == 2 ? thread2 :
                                 thread3;
-            var volume = (int)mainThread.Value * mainThread.Volume
-                            + (int)subThread.Value * subThread.Volume;
+
+            var volume = (int)mainThread.Value * mainThread.Volume  //Main thread                            
+                           + (int)subThread.Value * (subThread.Volume + AllSubCoeff) ;   //Dùng cho trường hợp hệ số từng thread đi riêng rẽ
 
             var result = new BaccaratPredict
             {
@@ -252,7 +263,7 @@ namespace CalculationLogic
                 thread1,
                 thread2,
                 thread3,
-                //result
+                subThread //All subs thread
             });
 
             //Update Root 
