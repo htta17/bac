@@ -13,15 +13,20 @@ namespace DatabaseContext
         /// </summary>
         public int MainCoeff { get; set; }
 
-        /// <summary>
-        /// Hệ số của sub thead
-        /// </summary>
-        public int SubCoeff { get; set; }
+        public int Coeff0 { get;  set; }
+        public int Coeff1 { get;  set; }
+        public int Coeff2 { get;  set; }
+        public int Coeff3 { get;  set; }
+        public int AllSubCoeff { get;  set; }
 
-        /// <summary>
-        /// Hệ số của main + sub, đi riêng rẽ 
-        /// </summary>
-        public int GlobalCoeff { get; set; }
+        public int MainProfit { get; set; }
+        public int Profit0 { get;  set; }
+        public int Profit1 { get;  set; }
+        public int Profit2 { get;  set; }
+        public int Profit3 { get;  set; }
+        public int AllSubProfit { get;  set; }
+
+        public string ListCurrentPredicts { get; set; }
 
         /// <summary>
         /// Số thứ tự tổng quan

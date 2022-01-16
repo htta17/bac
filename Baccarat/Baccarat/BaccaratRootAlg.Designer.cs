@@ -190,6 +190,7 @@ namespace Midas.Baccarat
             this.Controls.Add(this.btn10);
             this.Name = "BaccaratRootAlg";
             this.Text = "Giải thuật gốc cây.....rau muống";
+            this.TopMost = true;
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.BaccaratQuad_KeyDown);
             this.ResumeLayout(false);
             this.PerformLayout();

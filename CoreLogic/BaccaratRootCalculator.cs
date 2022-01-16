@@ -1,4 +1,5 @@
 ﻿using DatabaseContext;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,24 +14,35 @@ namespace CalculationLogic
     {
         public BaccaratRootCalculator(string connectionString)
         {
-            BaccaratDBContext = new GlobalDBContext(connectionString);                       
-
-            SaveCards = new List<BaccratCard>();
+            BaccaratDBContext = new GlobalDBContext(connectionString);     
 
             var rootCount = BaccaratDBContext.Roots.Count();
-            Roots = BaccaratDBContext.Roots
+            MainRoots = BaccaratDBContext.Roots
                                         .OrderBy(c => c.ID)
                                         .Skip(rootCount > 100 ? rootCount - 100 : 0)
                                         .Take(rootCount > 100 ? 100 : rootCount)
-                                        .ToList();            
+                                        .ToList();
 
-            SaveCards.AddRange(Roots.Select(c => (BaccratCard)c.Card));
-            
-            if (Roots.Count() > 0)
+            if (MainRoots.Count() > 0)
             {
-                GlobalOrder = Roots.Last().GlobalOrder;
-                MainCoeff = Roots.Last().MainCoeff;
-            }            
+                GlobalOrder = MainRoots.Last().GlobalOrder;
+                MainCoeff = MainRoots.Last().MainCoeff;
+                Coeff0 = MainRoots.Last().Coeff0;
+                Coeff1 = MainRoots.Last().Coeff1;
+                Coeff2 = MainRoots.Last().Coeff2;
+                Coeff3 = MainRoots.Last().Coeff3;
+                AllSubCoeff = MainRoots.Last().AllSubCoeff;
+                CurrentPredicts = JsonConvert.DeserializeObject<List<BaccaratPredict>>(MainRoots.Last().ListCurrentPredicts);
+            }
+            else
+            {
+                CurrentPredicts = new List<BaccaratPredict>();
+            }
+
+            Roots0 = MainRoots.Where(c => c.GlobalOrder % 4 == 0).ToList();
+            Roots1 = MainRoots.Where(c => c.GlobalOrder % 4 == 1).ToList();
+            Roots2 = MainRoots.Where(c => c.GlobalOrder % 4 == 2).ToList();
+            Roots3 = MainRoots.Where(c => c.GlobalOrder % 4 == 3).ToList();
         }
         GlobalDBContext BaccaratDBContext { get; set; }
 
@@ -38,76 +50,143 @@ namespace CalculationLogic
 
         public BaccratCard ShowLastCard()
         {
-            if (SaveCards.Count > 0)
-                return SaveCards.Last();
+            if (MainRoots.Count > 0)
+                return (BaccratCard)MainRoots.Last().Card;
             return BaccratCard.NoTrade;
-        }
-        
-        
-        private List<BaccratCard> SaveCards { get; set; }
-        private List<Root> Roots { get; set; }
+        }        
+        private List<Root> MainRoots { get; set; }
 
-        
+        private List<Root> Roots0 { get; set; }
+        private List<Root> Roots1 { get; set; }
+        private List<Root> Roots2 { get; set; }
+        private List<Root> Roots3 { get; set; }
+
         public int MainCoeff { get; private set; } = 1;
-        
+        public int Coeff0 { get; private set; } = 1;
+        public int Coeff1 { get; private set; } = 1;
+        public int Coeff2 { get; private set; } = 1;
+        public int Coeff3 { get; private set; } = 1;
+        public int AllSubCoeff { get; private set; } = 1;       
 
+        public List<BaccaratPredict> CurrentPredicts { get; set; }
+
+        
         public void AddNewCard(BaccratCard card)
         {
             if (card == BaccratCard.NoTrade)
                 throw new Exception("Input card must be Banker or Player");
 
-            var currentMainPredict = PredictMainThread();
-            var currentSubPredict = PredictSubThread();
+            //Start  to add new card
+            GlobalOrder++;
 
-            if (currentMainPredict.Value != BaccratCard.NoTrade)
+            //Update coeff (get the current predict and compare to card)
+            if (CurrentPredicts.Count > 0)
             {
-                if (currentMainPredict.Value == card) //Đoán đúng
+                var lastRoot = MainRoots.Last();
+
+                var mainProfit = UpdateCurrentCoeff(card, 0, MainCoeff);
+                MainCoeff = mainProfit.Item2;
+                lastRoot.MainProfit = mainProfit.Item1;
+
+                if (GlobalOrder  % 4 == 0)
                 {
-                    if (MainCoeff > 1) MainCoeff = MainCoeff - 1;
+                    var profit0 = UpdateCurrentCoeff(card, 1, Coeff0);
+                    Coeff0 = profit0.Item2;
+                    lastRoot.Profit0 = profit0.Item1;
                 }
-                else
+                else if (GlobalOrder  % 4 == 1)
                 {
-                    MainCoeff = MainCoeff + 1;
+                    var profit1 = UpdateCurrentCoeff(card, 2, Coeff1);
+                    Coeff1 = profit1.Item2;
+                    lastRoot.Profit1 = profit1.Item1;
                 }
+                else if (GlobalOrder  % 4 == 2)
+                {
+                    var profit2 = UpdateCurrentCoeff(card, 3, Coeff2);
+                    Coeff2 = profit2.Item2;
+                    lastRoot.Profit2 = profit2.Item1;
+                }
+                else if (GlobalOrder  % 4 ==3)
+                {
+                    var profit3 = UpdateCurrentCoeff(card, 4, Coeff3);
+                    Coeff3 = profit3.Item2;
+                    lastRoot.Profit3 = profit3.Item1;
+                }
+
+                //Cập nhật lại DB
+                BaccaratDBContext.UpdateRoot(lastRoot);
             }
 
-            var currentRoot = Roots.FirstOrDefault(c => c.GlobalOrder == GlobalOrder - 3);
-            var subCoeff = currentRoot == null ? 1 : currentRoot.SubCoeff; 
-            if (currentSubPredict.Value != BaccratCard.NoTrade)
-            {
-                if (currentSubPredict.Value == card) //Đoán đúng
-                {
-                    if (subCoeff > 1) subCoeff = subCoeff - 1;
-                }
-                else
-                {
-                    subCoeff = subCoeff + 1;
-                }
-            }
-
-            SaveCards.Add(card); 
-
-            SaveToDatabase(card, subCoeff);
-        }
-
-
-        private void SaveToDatabase(BaccratCard baccratCard, int SubCoeff)
-        {
-            GlobalOrder++;            
+            
             var datetimeNow = DateTime.Now;
             var newRoot = new Root
             {
-                Card = (short)baccratCard,
-                InputDateTime = datetimeNow,
-                GlobalCoeff = 0 ,
+                Card = (short)card,
+                InputDateTime = datetimeNow,                
+                
                 MainCoeff = MainCoeff,
-                SubCoeff = SubCoeff,
-                GlobalOrder = GlobalOrder
+                Coeff0 = Coeff0,
+                Coeff1 = Coeff1,
+                Coeff2 = Coeff2,
+                Coeff3 = Coeff3,
+                AllSubCoeff = AllSubCoeff,
+
+                MainProfit = 0,
+                Profit0 = 0,
+                Profit1 = 0,
+                Profit2 = 0,
+                Profit3 = 0,
+                AllSubProfit = 0,
+
+                GlobalOrder = GlobalOrder, 
+                ListCurrentPredicts = ""
             };            
+
+            //Add for main root
+            MainRoots.Add(newRoot);
+
+            //Add for sub roots
+            if (GlobalOrder % 4 == 0)
+                Roots0.Add(newRoot);
+            else if (GlobalOrder % 4 == 1)
+                Roots1.Add(newRoot);
+            else if (GlobalOrder % 4 == 2)
+                Roots2.Add(newRoot); 
+            else if (GlobalOrder % 4 == 3)
+                Roots3.Add(newRoot);
+
             BaccaratDBContext.AddRoot(newRoot);
         }
 
-        private BaccaratPredict PredictNextCard(List<BaccratCard> cards)
+        /// <summary>
+        /// Update Coeff and return Profit
+        /// </summary>
+        /// <param name="card">Thẻ vừa bốc</param>
+        /// <param name="index">Thứ tự trong CurrentPredicts, bắt đầu từ 0</param>
+        /// <param name="Coeff">Hệ số cần cập nhật</param>
+        /// <returns></returns>
+        private Tuple<int,int> UpdateCurrentCoeff(BaccratCard card, int index, int Coeff)
+        {
+            var threadPredict0 = CurrentPredicts[index];
+            var profit = 0;
+            if (threadPredict0.Value != BaccratCard.NoTrade)
+            {
+                if (threadPredict0.Value != card)
+                {
+                    profit = -Coeff; //Âm tiền
+                    Coeff = Coeff + 2; //Tăng hệ số
+                }
+                else
+                {
+                    profit = Coeff; // Lụm tiền
+                    if (Coeff >= 3) //Giảm hệ số hoặc giữ nguyên
+                        Coeff = Coeff - 2;
+                }
+            }
+            return Tuple.Create<int,int>( profit, Coeff) ; 
+        }
+
+        private BaccaratPredict PredictNextCard(List<BaccratCard> cards, int volume)
         {
             if (cards.Count < 3)
                 return new BaccaratPredict { Value = BaccratCard.NoTrade, Volume = 0 };
@@ -117,7 +196,7 @@ namespace CalculationLogic
                 return new BaccaratPredict
                 {
                     Value = cards[2] == BaccratCard.Banker ? BaccratCard.Player : BaccratCard.Banker,
-                    Volume = 1
+                    Volume = volume
                 };
             }
             return new BaccaratPredict { Value = BaccratCard.NoTrade, Volume = 0 };
@@ -125,48 +204,76 @@ namespace CalculationLogic
 
         public BaccaratPredict Predict()
         {
-            var mainThreadPredict = PredictMainThread();
-            mainThreadPredict.Volume = MainCoeff; 
-            
-            var subThreadPredict = PredictSubThread();
-            var currentRoot = Roots.FirstOrDefault(c => c.GlobalOrder == GlobalOrder - 3);
-            subThreadPredict.Volume = currentRoot == null ? 1 : currentRoot.SubCoeff;
+            var mainThread = PredicThread(MainRoots, MainCoeff);
+            /*
+            var subThread = new BaccaratPredict { };
+            if (GlobalOrder % 4 == 0)
+            {
+                subThread = PredicThread(Roots0, Coeff0);
+            }
+            else if (GlobalOrder % 4 == 1)
+            {
+                subThread = PredicThread(Roots1, Coeff1);
+            }
+            else if (GlobalOrder % 4 == 2)
+            {
+                subThread = PredicThread(Roots2, Coeff2);
+            }
+            else if (GlobalOrder % 4 == 3)
+            {
+                subThread = PredicThread(Roots3, Coeff3);
+            }
+            */
 
-            var volume = (int)mainThreadPredict.Value * mainThreadPredict.Volume
-                            + (int)subThreadPredict.Value * subThreadPredict.Volume;
+            var thread0 = PredicThread(Roots0, Coeff0);
+            var thread1 = PredicThread(Roots1, Coeff1);
+            var thread2 = PredicThread(Roots2, Coeff2);
+            var thread3 = PredicThread(Roots3, Coeff3);
+
+            var _predictGlobalOrder = GlobalOrder + 1;
+            var subThread = _predictGlobalOrder % 4 == 0 ? thread0 :
+                                _predictGlobalOrder % 4 == 1 ? thread1 :
+                                _predictGlobalOrder % 4 == 2 ? thread2 :
+                                thread3;
+            var volume = (int)mainThread.Value * mainThread.Volume
+                            + (int)subThread.Value * subThread.Volume;
 
             var result = new BaccaratPredict
             {
-                Value = volume > 0 ? BaccratCard.Banker : volume == 0 ? BaccratCard.NoTrade : BaccratCard.Player , 
+                Value = volume > 0 ? BaccratCard.Banker : volume == 0 ? BaccratCard.NoTrade : BaccratCard.Player,
                 Volume = Math.Abs(volume)
             };
+
+            CurrentPredicts.Clear();
+            CurrentPredicts.AddRange(new List<BaccaratPredict>
+            {
+                mainThread,
+                thread0,
+                thread1,
+                thread2,
+                thread3,
+                //result
+            });
+
+            //Update Root 
+            if (MainRoots.Count > 0)
+            {
+                var lastRoot = MainRoots.Last();
+                lastRoot.ListCurrentPredicts = JsonConvert.SerializeObject(CurrentPredicts);
+                BaccaratDBContext.UpdateRoot(lastRoot);
+            }           
+
             return result;
         }
 
-        private BaccaratPredict PredictMainThread()
+        private BaccaratPredict PredicThread(List<Root> roots, int volume)
         {
-            var skip = SaveCards.Count > 3 ? SaveCards.Count - 3 : 0;
-            var take = SaveCards.Count > 3 ? 3 : SaveCards.Count;
-            var mainThreadCards = SaveCards.Skip(skip).Take(take).ToList();
-            return PredictNextCard(mainThreadCards);
-        }
-
-        private BaccaratPredict PredictSubThread()
-        {
-            var _subThreadCards = new List<BaccratCard>();
-            var lastPosition = SaveCards.Count - 1;
-
-            //Tại vị trí 11, lấy các điểm: 0, 4, 8 để dự đoán điểm 12
-            //Tại vị trí N, lấy các điểm N - 11, N - 7 và N - 3 để dự đoán N + 1
-            if (lastPosition >= 11) 
-            {
-                _subThreadCards.AddRange(new List<BaccratCard>
-                {   SaveCards[lastPosition - 11],
-                    SaveCards[lastPosition - 7],
-                    SaveCards[lastPosition - 3]
-                });
-            }
-            return PredictNextCard(_subThreadCards);
-        }
+            var skip = roots.Count > 3 ? roots.Count - 3 : 0;
+            var take = roots.Count > 3 ? 3 : roots.Count;
+            var mainThreadCards = roots.Skip(skip).Take(take)
+                                        .Select(c => (BaccratCard)c.Card)
+                                        .ToList();
+            return PredictNextCard(mainThreadCards, volume);
+        }       
     }
 }

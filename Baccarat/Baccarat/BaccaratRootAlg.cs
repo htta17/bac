@@ -24,9 +24,7 @@ namespace Midas.Baccarat
                 StartApp.LoadRegistryConnectionString();
             }
 
-            BaccaratRootCalculator = new BaccaratRootCalculator(StartApp.GlobalConnectionString);
-
-            
+            BaccaratRootCalculator = new BaccaratRootCalculator(StartApp.GlobalConnectionString);            
 
             if (BaccaratRootCalculator.GlobalOrder > 0)
             {
