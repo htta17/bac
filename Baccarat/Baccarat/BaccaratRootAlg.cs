@@ -37,7 +37,9 @@ namespace Midas.Baccarat
             }            
         }
 
-         private BaccaratRootCalculator BaccaratRootCalculator { get; set; }
+        private BaccaratRootCalculator BaccaratRootCalculator { get; set; }
+
+        
 
         private void btn51_Click(object sender, EventArgs e)
         {
@@ -142,9 +144,17 @@ namespace Midas.Baccarat
         private void btnBackward_MouseEnter(object sender, EventArgs e)
         {
             var button = (sender as Button);
-            var text = button.Name == btnBackward.Name ? "Lùi về bước trước" : "Chụp ảnh màn hình";
+            var text = button.Name == btnBackward.Name ? "Lùi về bước trước" : "Reset";
 
             toolTip1.SetToolTip((sender as Button), text);
+        }
+
+        private void btnReset_Click(object sender, EventArgs e)
+        {
+            if (MessageBox.Show("Bạn chắc chắn chứ?", "Quan trọng lắm, đọc kĩ nè!!!", MessageBoxButtons.YesNo) != DialogResult.Yes)
+                return;
+
+            BaccaratRootCalculator.Reset();
         }
     }
 }

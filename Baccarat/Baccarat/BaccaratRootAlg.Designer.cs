@@ -43,6 +43,7 @@ namespace Midas.Baccarat
             this.txtVolume = new System.Windows.Forms.TextBox();
             this.btnBackward = new System.Windows.Forms.Button();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.btnReset = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // lbl_ClickedReport
@@ -186,14 +187,31 @@ namespace Midas.Baccarat
             this.btnBackward.Size = new System.Drawing.Size(45, 44);
             this.btnBackward.TabIndex = 120;
             this.btnBackward.UseVisualStyleBackColor = true;
+            this.btnBackward.Visible = false;
             this.btnBackward.Click += new System.EventHandler(this.btnBackward_Click);
             this.btnBackward.MouseEnter += new System.EventHandler(this.btnBackward_MouseEnter);
+            // 
+            // btnReset
+            // 
+            this.btnReset.BackColor = System.Drawing.SystemColors.Control;
+            this.btnReset.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.btnReset.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnReset.ForeColor = System.Drawing.Color.Red;
+            this.btnReset.Location = new System.Drawing.Point(81, 584);
+            this.btnReset.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.btnReset.Name = "btnReset";
+            this.btnReset.Size = new System.Drawing.Size(119, 44);
+            this.btnReset.TabIndex = 121;
+            this.btnReset.Text = "RESET";
+            this.btnReset.UseVisualStyleBackColor = false;
+            this.btnReset.Click += new System.EventHandler(this.btnReset_Click);
             // 
             // BaccaratRootAlg
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(479, 660);
+            this.Controls.Add(this.btnReset);
             this.Controls.Add(this.btnBackward);
             this.Controls.Add(this.label24);
             this.Controls.Add(this.label17);
@@ -230,5 +248,6 @@ namespace Midas.Baccarat
         private System.Windows.Forms.TextBox txtVolume;
         private System.Windows.Forms.Button btnBackward;
         private System.Windows.Forms.ToolTip toolTip1;
+        private System.Windows.Forms.Button btnReset;
     }
 }
