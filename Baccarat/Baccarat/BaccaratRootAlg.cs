@@ -1,13 +1,8 @@
 ﻿using CalculationLogic;
 using Midas.Utils;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Midas.Baccarat
@@ -33,13 +28,11 @@ namespace Midas.Baccarat
             }
             else
             {
-                lbl_ClickedReport.Text = "Chưa có dữ liệu";
+                lbl_ClickedReport.Text = "Bắt đầu chơi";
             }            
         }
 
         private BaccaratRootCalculator BaccaratRootCalculator { get; set; }
-
-        
 
         private void btn51_Click(object sender, EventArgs e)
         {
@@ -139,6 +132,19 @@ namespace Midas.Baccarat
                 return;
 
             BaccaratRootCalculator.Backward();
+
+            //Predict
+            var predict = BaccaratRootCalculator.Predict();
+
+            txtValue.Text = predict.Value.ToString();
+            txtValue.ForeColor = predict.Value == BaccratCard.NoTrade ? Color.Black :
+                                            predict.Value == BaccratCard.Banker ? Color.Red : Color.Blue;
+            txtVolume.ForeColor = txtValue.ForeColor;
+            txtVolume.Text = predict.Volume.ToString();
+
+            //ToDo: Change
+            lbl_ClickedReport.Text = "Đã ghi nhận " + BaccaratRootCalculator.GlobalOrder + ": " + BaccaratRootCalculator.ShowLastCard();
+            txt_1.Text = "";
         }
 
         private void btnBackward_MouseEnter(object sender, EventArgs e)
@@ -155,6 +161,16 @@ namespace Midas.Baccarat
                 return;
 
             BaccaratRootCalculator.Reset();
+
+            if (BaccaratRootCalculator.GlobalOrder > 0)
+            {
+                var lastcard = BaccaratRootCalculator.ShowLastCard();
+                lbl_ClickedReport.Text = "Đã ghi nhận " + BaccaratRootCalculator.GlobalOrder + ": " + lastcard.ToString();
+            }
+            else
+            {
+                lbl_ClickedReport.Text = "Bắt đầu chơi";
+            }
         }
     }
 }

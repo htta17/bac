@@ -187,7 +187,6 @@ namespace Midas.Baccarat
             this.btnBackward.Size = new System.Drawing.Size(45, 44);
             this.btnBackward.TabIndex = 120;
             this.btnBackward.UseVisualStyleBackColor = true;
-            this.btnBackward.Visible = false;
             this.btnBackward.Click += new System.EventHandler(this.btnBackward_Click);
             this.btnBackward.MouseEnter += new System.EventHandler(this.btnBackward_MouseEnter);
             // 

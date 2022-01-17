@@ -377,7 +377,7 @@ namespace CalculationLogic
                 var lastRoot = MainRoots.Last();
                 lastRoot.ListCurrentPredicts = JsonConvert.SerializeObject(CurrentPredicts);
                 BaccaratDBContext.UpdateRoot(lastRoot);
-            }           
+            }
 
             return result;
         }
