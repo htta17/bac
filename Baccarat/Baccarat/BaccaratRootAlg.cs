@@ -99,6 +99,12 @@ namespace Midas.Baccarat
             //Add card
             BaccaratRootCalculator.AddNewCard(inputValue);
 
+            ProcessUI();
+        }
+
+
+        private void ProcessUI()
+        {
             //Predict
             var predict = BaccaratRootCalculator.Predict();
 
@@ -109,7 +115,7 @@ namespace Midas.Baccarat
             txtVolume.Text = predict.Volume.ToString();
 
             //ToDo: Change
-            lbl_ClickedReport.Text = "Đã ghi nhận " + BaccaratRootCalculator.GlobalOrder + ": " + txt_1.Text;
+            lbl_ClickedReport.Text = "Đã ghi nhận " + BaccaratRootCalculator.GlobalOrder + ": " + BaccaratRootCalculator.ShowLastCard();
             txt_1.Text = "";
         }
 
@@ -133,18 +139,8 @@ namespace Midas.Baccarat
 
             BaccaratRootCalculator.Backward();
 
-            //Predict
-            var predict = BaccaratRootCalculator.Predict();
+            ProcessUI();
 
-            txtValue.Text = predict.Value.ToString();
-            txtValue.ForeColor = predict.Value == BaccratCard.NoTrade ? Color.Black :
-                                            predict.Value == BaccratCard.Banker ? Color.Red : Color.Blue;
-            txtVolume.ForeColor = txtValue.ForeColor;
-            txtVolume.Text = predict.Volume.ToString();
-
-            //ToDo: Change
-            lbl_ClickedReport.Text = "Đã ghi nhận " + BaccaratRootCalculator.GlobalOrder + ": " + BaccaratRootCalculator.ShowLastCard();
-            txt_1.Text = "";
         }
 
         private void btnBackward_MouseEnter(object sender, EventArgs e)
