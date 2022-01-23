@@ -112,7 +112,7 @@ namespace Baccarat
         {
             try
             {
-                System.Media.SoundPlayer player = new System.Media.SoundPlayer(inputValue == BaccratCard.Banker ? @"Sound\Banker.wav" : @"Sound\Player.wav");
+                System.Media.SoundPlayer player = new System.Media.SoundPlayer(inputValue == BaccratCard.Banker ? @"Sound\Speech On.wav" : @"Sound\Speech Off.wav");
                 player.Play();
             }
             catch
