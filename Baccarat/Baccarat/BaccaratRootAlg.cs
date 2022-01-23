@@ -1,4 +1,6 @@
 ﻿using CalculationLogic;
+using Microsoft.Win32;
+using Midas.Configuration;
 using Midas.Utils;
 using System;
 using System.Drawing;
@@ -19,7 +21,13 @@ namespace Midas.Baccarat
                 StartApp.LoadRegistryConnectionString();
             }
 
-            BaccaratRootCalculator = new BaccaratRootCalculator(StartApp.GlobalConnectionString);            
+            BaccaratRootCalculator = new BaccaratRootCalculator(StartApp.GlobalConnectionString);
+
+            var _moneyCoeff = Registry.GetValue(REG_PATH, REG_MONEY_COEFF_KEY, string.Empty).ToString();            
+            if (string.IsNullOrEmpty(_moneyCoeff))
+            {
+                SetCoeffDisplay();
+            }            
 
             if (BaccaratRootCalculator.GlobalOrder > 0)
             {
@@ -33,6 +41,12 @@ namespace Midas.Baccarat
         }
 
         private BaccaratRootCalculator BaccaratRootCalculator { get; set; }
+
+        //Hệ số của unit 
+        private int MoneyCoeff { get; set; }
+        const string REG_PATH = "HKEY_CURRENT_USER\\MidasSoft";
+        const string REG_MONEY_COEFF_KEY = "MoneyCoeff";
+        const string REG_MONEY_DISPLAYTYPE_KEY = "DisplayType";
 
         private void btn51_Click(object sender, EventArgs e)
         {
@@ -78,7 +92,22 @@ namespace Midas.Baccarat
             {
                 btnCalculate_Click(null, null);
                 e.SuppressKeyPress = true;
-            }            
+            }
+            if (e.Shift && e.Control && e.KeyCode == Keys.K)
+            {
+                SetCoeffDisplay();
+            }
+        }
+
+        private void SetCoeffDisplay()
+        {
+            var setMoneyCoeff = new SetMoneyCoeff();
+            setMoneyCoeff.ShowDialog();
+            var _moneyCoeff = Registry.GetValue(REG_PATH, REG_MONEY_COEFF_KEY, string.Empty).ToString();
+            var _displayType = Registry.GetValue(REG_PATH, REG_MONEY_DISPLAYTYPE_KEY, string.Empty).ToString();
+            
+            MoneyCoeff = int.Parse(_moneyCoeff) / 1000;
+            lbUnit.Text = int.Parse(_displayType) == 1 ? ",000" : "K";
         }
 
         private void btnCalculate_Click(object sender, EventArgs e)
@@ -112,7 +141,7 @@ namespace Midas.Baccarat
             txtValue.ForeColor = predict.Value == BaccratCard.NoTrade ? Color.Black :
                                             predict.Value == BaccratCard.Banker ? Color.Red : Color.Blue;
             txtVolume.ForeColor = txtValue.ForeColor;
-            txtVolume.Text = predict.Volume.ToString();
+            txtVolume.Text = (predict.Volume * MoneyCoeff).ToString();
 
             //ToDo: Change
             lbl_ClickedReport.Text = "Đã ghi nhận " + BaccaratRootCalculator.GlobalOrder + ": " + BaccaratRootCalculator.ShowLastCard();

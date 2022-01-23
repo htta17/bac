@@ -35,7 +35,7 @@ namespace Midas.Baccarat
             this.txt_1 = new System.Windows.Forms.TextBox();
             this.btn11 = new System.Windows.Forms.Button();
             this.btn10 = new System.Windows.Forms.Button();
-            this.label24 = new System.Windows.Forms.Label();
+            this.lbUnit = new System.Windows.Forms.Label();
             this.label17 = new System.Windows.Forms.Label();
             this.label12 = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
@@ -116,21 +116,21 @@ namespace Midas.Baccarat
             this.btn10.MouseEnter += new System.EventHandler(this.btn10_MouseHover);
             this.btn10.MouseLeave += new System.EventHandler(this.btn120_MouseLeave);
             // 
-            // label24
+            // lbUnit
             // 
-            this.label24.AutoSize = true;
-            this.label24.Font = new System.Drawing.Font("Microsoft Sans Serif", 16.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label24.Location = new System.Drawing.Point(421, 521);
-            this.label24.Name = "label24";
-            this.label24.Size = new System.Drawing.Size(31, 32);
-            this.label24.TabIndex = 119;
-            this.label24.Text = "u";
+            this.lbUnit.AutoSize = true;
+            this.lbUnit.Font = new System.Drawing.Font("Microsoft Sans Serif", 16.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbUnit.Location = new System.Drawing.Point(390, 524);
+            this.lbUnit.Name = "lbUnit";
+            this.lbUnit.Size = new System.Drawing.Size(31, 32);
+            this.lbUnit.TabIndex = 119;
+            this.lbUnit.Text = "u";
             // 
             // label17
             // 
             this.label17.AutoSize = true;
             this.label17.Font = new System.Drawing.Font("Microsoft Sans Serif", 16.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label17.Location = new System.Drawing.Point(183, 521);
+            this.label17.Location = new System.Drawing.Point(173, 521);
             this.label17.Name = "label17";
             this.label17.Size = new System.Drawing.Size(47, 32);
             this.label17.TabIndex = 118;
@@ -158,23 +158,27 @@ namespace Midas.Baccarat
             // 
             // txtValue
             // 
+            this.txtValue.BackColor = System.Drawing.Color.White;
             this.txtValue.Font = new System.Drawing.Font("Microsoft Sans Serif", 16.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtValue.Location = new System.Drawing.Point(22, 521);
             this.txtValue.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.txtValue.Name = "txtValue";
+            this.txtValue.ReadOnly = true;
             this.txtValue.Size = new System.Drawing.Size(145, 38);
             this.txtValue.TabIndex = 115;
             this.txtValue.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // txtVolume
             // 
+            this.txtVolume.BackColor = System.Drawing.Color.White;
             this.txtVolume.Font = new System.Drawing.Font("Microsoft Sans Serif", 16.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtVolume.Location = new System.Drawing.Point(239, 521);
             this.txtVolume.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.txtVolume.Name = "txtVolume";
-            this.txtVolume.Size = new System.Drawing.Size(161, 38);
+            this.txtVolume.ReadOnly = true;
+            this.txtVolume.Size = new System.Drawing.Size(145, 38);
             this.txtVolume.TabIndex = 114;
-            this.txtVolume.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.txtVolume.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
             // btnBackward
             // 
@@ -212,7 +216,7 @@ namespace Midas.Baccarat
             this.ClientSize = new System.Drawing.Size(479, 660);
             this.Controls.Add(this.btnReset);
             this.Controls.Add(this.btnBackward);
-            this.Controls.Add(this.label24);
+            this.Controls.Add(this.lbUnit);
             this.Controls.Add(this.label17);
             this.Controls.Add(this.label12);
             this.Controls.Add(this.label11);
@@ -239,7 +243,7 @@ namespace Midas.Baccarat
         private System.Windows.Forms.TextBox txt_1;
         private System.Windows.Forms.Button btn11;
         private System.Windows.Forms.Button btn10;
-        private System.Windows.Forms.Label label24;
+        private System.Windows.Forms.Label lbUnit;
         private System.Windows.Forms.Label label17;
         private System.Windows.Forms.Label label12;
         private System.Windows.Forms.Label label11;
