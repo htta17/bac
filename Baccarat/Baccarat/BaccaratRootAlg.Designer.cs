@@ -209,6 +209,7 @@ namespace Midas.Baccarat
             this.btnReset.Text = "RESET";
             this.btnReset.UseVisualStyleBackColor = false;
             this.btnReset.Click += new System.EventHandler(this.btnReset_Click);
+            this.btnReset.MouseEnter += new System.EventHandler(this.btnBackward_MouseEnter);
             // 
             // btnSeeLog
             // 
@@ -224,6 +225,7 @@ namespace Midas.Baccarat
             this.btnSeeLog.Text = "LOG";
             this.btnSeeLog.UseVisualStyleBackColor = false;
             this.btnSeeLog.Click += new System.EventHandler(this.btnSeeLog_Click);
+            this.btnSeeLog.MouseEnter += new System.EventHandler(this.btnBackward_MouseEnter);
             // 
             // BaccaratRootAlg
             // 

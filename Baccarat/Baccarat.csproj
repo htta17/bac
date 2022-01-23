@@ -100,6 +100,12 @@
     <Compile Include="Baccarat\BaccaratRootAlg.Designer.cs">
       <DependentUpon>BaccaratRootAlg.cs</DependentUpon>
     </Compile>
+    <Compile Include="Baccarat\ShowLog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Baccarat\ShowLog.Designer.cs">
+      <DependentUpon>ShowLog.cs</DependentUpon>
+    </Compile>
     <Compile Include="Configuration\SetMoneyCoeff.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -126,6 +132,7 @@
     <Compile Include="Configuration\SetConnection.Designer.cs">
       <DependentUpon>SetConnection.cs</DependentUpon>
     </Compile>
+    <Compile Include="Utils\RichTextBoxExtensions.cs" />
     <Compile Include="Utils\DatabaseUtil.cs" />
     <Compile Include="Utils\GenerateAllThreadLogs.cs" />
     <Compile Include="Utils\SlackWebhookSender.cs" />
@@ -159,6 +166,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Baccarat\BaccaratRootAlg.resx">
       <DependentUpon>BaccaratRootAlg.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Baccarat\ShowLog.resx">
+      <DependentUpon>ShowLog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Configuration\SetMoneyCoeff.resx">
       <DependentUpon>SetMoneyCoeff.cs</DependentUpon>
@@ -259,13 +269,13 @@
     <Content Include="Cards\9S.jpg" />
     <Content Include="Cards\CardBackBlue.jpg" />
     <Content Include="Cards\CardBackRed.jpg" />
-    <Content Include="Sound\Alarm10.wav">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="Sound\Speech Off.wav">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Sound\Speech On.wav">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Sound\Windows Logon.wav">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <None Include="Resources\camera-icon-png.png" />

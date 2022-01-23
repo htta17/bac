@@ -158,7 +158,7 @@ namespace Midas.Baccarat
             {
                 var soundFile = input == 1 ? @"Sound\Speech On.wav" :
                                 input == 2 ? @"Sound\Speech Off.wav"
-                                : @"Sound\Alarm10.wav";
+                                : @"Sound\Windows Logon.wav";
                 System.Media.SoundPlayer player = new System.Media.SoundPlayer(soundFile);
                 player.Play();
             }
@@ -214,7 +214,9 @@ namespace Midas.Baccarat
         private void btnBackward_MouseEnter(object sender, EventArgs e)
         {
             var button = (sender as Button);
-            var text = button.Name == btnBackward.Name ? "Lùi về bước trước" : "Reset";
+            var text = button.Name == btnBackward.Name ? "Lùi về bước trước" :
+                        button.Name == btnReset.Name ? "Reset" : 
+                        "Xem lịch sử 50 bước gần nhất" ;
 
             toolTip1.SetToolTip((sender as Button), text);
         }
@@ -239,6 +241,11 @@ namespace Midas.Baccarat
 
         private void btnSeeLog_Click(object sender, EventArgs e)
         {
+            var N = 50;
+            var last20records = BaccaratRootCalculator.RootsHistory(N);
+
+            var showForm = new ShowLog(N, last20records);
+            showForm.ShowDialog();
 
         }
     }

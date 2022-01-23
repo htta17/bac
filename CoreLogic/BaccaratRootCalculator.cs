@@ -163,8 +163,7 @@ namespace CalculationLogic
                 return string.Format(LOG_FILE_FORMAT, FILENAME_DATETIME.Value);
             }
         }
-
-
+        
         public void AddNewCard(BaccratCard card)
         {
             if (card == BaccratCard.NoTrade)
@@ -390,6 +389,49 @@ namespace CalculationLogic
                                         .Select(c => (BaccratCard)c.Card)
                                         .ToList();
             return PredictNextCard(mainThreadCards, volume);
-        }       
+        }
+
+        /// <summary>
+        /// Show [N] last steps
+        /// </summary>
+        /// <param name="N">Number of steps you want to see</param>
+        /// <returns></returns>
+        public List<BaccaratPredict> RootsHistory(int N = 50)
+        { 
+            var rootCount = BaccaratDBContext.Roots.Count();
+            var historyRoots = BaccaratDBContext.Roots
+                                        .OrderBy(c => c.ID)
+                                        .Skip(rootCount > N ? rootCount - N : 0)
+                                        .Take(rootCount > N ? N : rootCount)
+                                        .ToList();
+            var baccaratPredicts = new List<BaccaratPredict>();            
+            for (int i = 0; i < historyRoots.Count; i++)
+            {
+                if (i == 0)
+                {
+                    baccaratPredicts.Add(new BaccaratPredict
+                    {
+                        Volume = 1,
+                        Value = (BaccratCard)historyRoots[i].Card
+                    });
+                }
+                else
+                {
+                    if (historyRoots[i].Card == historyRoots[i - 1].Card)
+                    {
+                        baccaratPredicts[baccaratPredicts.Count - 1].Volume += 1;
+                    }
+                    else
+                    {
+                        baccaratPredicts.Add(new BaccaratPredict
+                        {
+                            Volume = 1,
+                            Value = (BaccratCard)historyRoots[i].Card
+                        });
+                    }                
+                }
+            }
+            return baccaratPredicts;
+        }
     }
 }
