@@ -259,10 +259,19 @@
     <Content Include="Cards\9S.jpg" />
     <Content Include="Cards\CardBackBlue.jpg" />
     <Content Include="Cards\CardBackRed.jpg" />
+    <Content Include="Sound\Alarm10.wav">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Sound\Banker.wav">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Sound\Player.wav">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Sound\Speech Off.wav">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Sound\Speech On.wav">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <None Include="Resources\camera-icon-png.png" />

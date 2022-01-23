@@ -44,6 +44,7 @@ namespace Midas.Baccarat
             this.btnBackward = new System.Windows.Forms.Button();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.btnReset = new System.Windows.Forms.Button();
+            this.btnSeeLog = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // lbl_ClickedReport
@@ -209,11 +210,27 @@ namespace Midas.Baccarat
             this.btnReset.UseVisualStyleBackColor = false;
             this.btnReset.Click += new System.EventHandler(this.btnReset_Click);
             // 
+            // btnSeeLog
+            // 
+            this.btnSeeLog.BackColor = System.Drawing.SystemColors.Control;
+            this.btnSeeLog.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.btnSeeLog.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnSeeLog.ForeColor = System.Drawing.Color.Black;
+            this.btnSeeLog.Location = new System.Drawing.Point(217, 583);
+            this.btnSeeLog.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.btnSeeLog.Name = "btnSeeLog";
+            this.btnSeeLog.Size = new System.Drawing.Size(119, 44);
+            this.btnSeeLog.TabIndex = 122;
+            this.btnSeeLog.Text = "LOG";
+            this.btnSeeLog.UseVisualStyleBackColor = false;
+            this.btnSeeLog.Click += new System.EventHandler(this.btnSeeLog_Click);
+            // 
             // BaccaratRootAlg
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(479, 660);
+            this.Controls.Add(this.btnSeeLog);
             this.Controls.Add(this.btnReset);
             this.Controls.Add(this.btnBackward);
             this.Controls.Add(this.lbUnit);
@@ -252,5 +269,6 @@ namespace Midas.Baccarat
         private System.Windows.Forms.Button btnBackward;
         private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.Button btnReset;
+        private System.Windows.Forms.Button btnSeeLog;
     }
 }

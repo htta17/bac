@@ -23,11 +23,20 @@ namespace Midas.Baccarat
 
             BaccaratRootCalculator = new BaccaratRootCalculator(StartApp.GlobalConnectionString);
 
-            var _moneyCoeff = Registry.GetValue(REG_PATH, REG_MONEY_COEFF_KEY, string.Empty).ToString();            
+            var _moneyCoeff = Registry.GetValue(REG_PATH, REG_MONEY_COEFF_KEY, string.Empty).ToString();
+            var _displayType = Registry.GetValue(REG_PATH, REG_MONEY_DISPLAYTYPE_KEY, string.Empty).ToString();
+
+            
             if (string.IsNullOrEmpty(_moneyCoeff))
             {
                 SetCoeffDisplay();
-            }            
+            }
+            else
+            {
+                MoneyCoeff = int.Parse(_moneyCoeff) / 1000;
+                lbUnit.Text = int.Parse(_displayType) == 1 ? ",000" : "K";
+            }
+            
 
             if (BaccaratRootCalculator.GlobalOrder > 0)
             {
@@ -128,9 +137,36 @@ namespace Midas.Baccarat
             //Add card
             BaccaratRootCalculator.AddNewCard(inputValue);
 
+            var soundPlay = 4;  //No sound
+            if (inputValue == BaccratCard.Banker)
+                soundPlay = 1;
+            else if (inputValue == BaccratCard.Player)
+                soundPlay = 2;
+            PlaySound(soundPlay);
+
             ProcessUI();
         }
+        /// <summary>
+        /// Play sound
+        /// </summary>
+        /// <param name="input">1: Banker, 2: Player, 3: Trade, 4: No sound</param>
+        private void PlaySound(int input)
+        {
+            if (input == 4)
+                return; 
+            try
+            {
+                var soundFile = input == 1 ? @"Sound\Speech On.wav" :
+                                input == 2 ? @"Sound\Speech Off.wav"
+                                : @"Sound\Alarm10.wav";
+                System.Media.SoundPlayer player = new System.Media.SoundPlayer(soundFile);
+                player.Play();
+            }
+            catch
+            {
 
+            }
+        }
 
         private void ProcessUI()
         {
@@ -146,6 +182,9 @@ namespace Midas.Baccarat
             //ToDo: Change
             lbl_ClickedReport.Text = "Đã ghi nhận " + BaccaratRootCalculator.GlobalOrder + ": " + BaccaratRootCalculator.ShowLastCard();
             txt_1.Text = "";
+
+            if (predict.Volume > 0)
+                PlaySound(3);
         }
 
         private void txt_1_TextChanged(object sender, EventArgs e)
@@ -196,6 +235,11 @@ namespace Midas.Baccarat
             {
                 lbl_ClickedReport.Text = "Bắt đầu chơi";
             }
+        }
+
+        private void btnSeeLog_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
