@@ -433,5 +433,16 @@ namespace CalculationLogic
             }
             return baccaratPredicts;
         }
+
+        public string EndSessionReport()
+        {
+            var text = $"Tổng kết lúc { DateTime.Now: yyyy-MM-dd HH:mm:ss}.\r\n" +
+                        $"Phiên chính: `{MainAccumulate}` units.\r\n" +
+                        $"Các phiên con (1-4): `{Accumulate0}`, `{Accumulate1}`, `{Accumulate2}`, `{Accumulate3}` units.\r\n" +
+                        $"Phiên tổng hợp của 4 phiên con: `{AllSubAccumulate}` units.\r\n" +
+                        $"TỔNG KẾT: `{MainAccumulate + Accumulate0 + Accumulate1 + Accumulate2 + Accumulate3 + AllSubAccumulate}` units.\r\n";
+                
+            return text;
+        }
     }
 }

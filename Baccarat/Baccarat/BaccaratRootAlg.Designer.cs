@@ -41,10 +41,10 @@ namespace Midas.Baccarat
             this.label11 = new System.Windows.Forms.Label();
             this.txtValue = new System.Windows.Forms.TextBox();
             this.txtVolume = new System.Windows.Forms.TextBox();
-            this.btnBackward = new System.Windows.Forms.Button();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.btnReset = new System.Windows.Forms.Button();
             this.btnSeeLog = new System.Windows.Forms.Button();
+            this.btnBackward = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // lbl_ClickedReport
@@ -181,20 +181,6 @@ namespace Midas.Baccarat
             this.txtVolume.TabIndex = 114;
             this.txtVolume.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
-            // btnBackward
-            // 
-            this.btnBackward.BackgroundImage = global::Midas.Properties.Resources._160041651;
-            this.btnBackward.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.btnBackward.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnBackward.Location = new System.Drawing.Point(22, 583);
-            this.btnBackward.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.btnBackward.Name = "btnBackward";
-            this.btnBackward.Size = new System.Drawing.Size(45, 44);
-            this.btnBackward.TabIndex = 120;
-            this.btnBackward.UseVisualStyleBackColor = true;
-            this.btnBackward.Click += new System.EventHandler(this.btnBackward_Click);
-            this.btnBackward.MouseEnter += new System.EventHandler(this.btnBackward_MouseEnter);
-            // 
             // btnReset
             // 
             this.btnReset.BackColor = System.Drawing.SystemColors.Control;
@@ -227,6 +213,20 @@ namespace Midas.Baccarat
             this.btnSeeLog.Click += new System.EventHandler(this.btnSeeLog_Click);
             this.btnSeeLog.MouseEnter += new System.EventHandler(this.btnBackward_MouseEnter);
             // 
+            // btnBackward
+            // 
+            this.btnBackward.BackgroundImage = global::Midas.Properties.Resources._160041651;
+            this.btnBackward.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.btnBackward.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnBackward.Location = new System.Drawing.Point(22, 583);
+            this.btnBackward.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.btnBackward.Name = "btnBackward";
+            this.btnBackward.Size = new System.Drawing.Size(45, 44);
+            this.btnBackward.TabIndex = 120;
+            this.btnBackward.UseVisualStyleBackColor = true;
+            this.btnBackward.Click += new System.EventHandler(this.btnBackward_Click);
+            this.btnBackward.MouseEnter += new System.EventHandler(this.btnBackward_MouseEnter);
+            // 
             // BaccaratRootAlg
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -249,6 +249,7 @@ namespace Midas.Baccarat
             this.Name = "BaccaratRootAlg";
             this.Text = "Giải thuật gốc cây.....rau muống";
             this.TopMost = true;
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.BaccaratRootAlg_FormClosing);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.BaccaratQuad_KeyDown);
             this.ResumeLayout(false);
             this.PerformLayout();

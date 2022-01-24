@@ -248,5 +248,18 @@ namespace Midas.Baccarat
             showForm.ShowDialog();
 
         }
+
+        private void BaccaratRootAlg_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            try
+            {
+                var text = BaccaratRootCalculator.EndSessionReport();
+                SlackWebHookSender.SendMessage(text, "important-report", "Closing-app-report", ":boom:");
+            }
+            catch
+            {
+
+            }
+        }
     }
 }
