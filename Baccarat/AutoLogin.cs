@@ -126,14 +126,19 @@ namespace Midas
             if (Enabled)
             {
                 Timer.Start();
-                button1.Text = "Stop"; 
+                btnTakePhoto.Text = "Stop"; 
             }
             else 
             {
                 Timer.Stop();
-                button1.Text = "Start";
+                btnTakePhoto.Text = "Start";
             }
             
+        }
+
+        private void btnCamera_Click(object sender, EventArgs e)
+        {
+            TakeScreenshot(false);
         }
     }
 }

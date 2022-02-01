@@ -43,16 +43,14 @@ namespace Baccarat
             this.btn11 = new System.Windows.Forms.Button();
             this.txt_1 = new System.Windows.Forms.TextBox();
             this.tabControls = new System.Windows.Forms.TabControl();
-            this.tabPage1 = new System.Windows.Forms.TabPage();
-            this.label1 = new System.Windows.Forms.Label();
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.btnImport = new System.Windows.Forms.Button();
             this.btnProcessData = new System.Windows.Forms.Button();
             this.btnCamera = new System.Windows.Forms.Button();
             this.btnBackward = new System.Windows.Forms.Button();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
+            this.btnSeeLog = new System.Windows.Forms.Button();
             this.tabControls.SuspendLayout();
-            this.tabPage1.SuspendLayout();
             this.tabPage3.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -132,12 +130,12 @@ namespace Baccarat
             // btnReset
             // 
             this.btnReset.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnReset.Location = new System.Drawing.Point(11, 12);
+            this.btnReset.Location = new System.Drawing.Point(118, 722);
             this.btnReset.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.btnReset.Name = "btnReset";
-            this.btnReset.Size = new System.Drawing.Size(147, 71);
+            this.btnReset.Size = new System.Drawing.Size(102, 44);
             this.btnReset.TabIndex = 105;
-            this.btnReset.Text = "GREATER\r\nRESET";
+            this.btnReset.Text = "RESET";
             this.btnReset.UseVisualStyleBackColor = true;
             this.btnReset.Click += new System.EventHandler(this.btnReset_Click);
             // 
@@ -200,38 +198,15 @@ namespace Baccarat
             // 
             // tabControls
             // 
-            this.tabControls.Controls.Add(this.tabPage1);
             this.tabControls.Controls.Add(this.tabPage3);
             this.tabControls.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tabControls.Location = new System.Drawing.Point(12, 574);
             this.tabControls.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.tabControls.Name = "tabControls";
             this.tabControls.SelectedIndex = 0;
-            this.tabControls.Size = new System.Drawing.Size(433, 143);
+            this.tabControls.Size = new System.Drawing.Size(378, 143);
             this.tabControls.TabIndex = 113;
             this.tabControls.Visible = false;
-            // 
-            // tabPage1
-            // 
-            this.tabPage1.BackColor = System.Drawing.SystemColors.Control;
-            this.tabPage1.Controls.Add(this.label1);
-            this.tabPage1.Controls.Add(this.btnReset);
-            this.tabPage1.Location = new System.Drawing.Point(4, 34);
-            this.tabPage1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.tabPage1.Size = new System.Drawing.Size(425, 105);
-            this.tabPage1.TabIndex = 0;
-            this.tabPage1.Text = "Thao tác";
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 16.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(83, 148);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(0, 32);
-            this.label1.TabIndex = 115;
             // 
             // tabPage3
             // 
@@ -241,7 +216,7 @@ namespace Baccarat
             this.tabPage3.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.tabPage3.Name = "tabPage3";
             this.tabPage3.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.tabPage3.Size = new System.Drawing.Size(425, 105);
+            this.tabPage3.Size = new System.Drawing.Size(370, 105);
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "Xử lý";
             this.tabPage3.UseVisualStyleBackColor = true;
@@ -301,11 +276,28 @@ namespace Baccarat
             this.btnBackward.Click += new System.EventHandler(this.btnBackward_Click);
             this.btnBackward.MouseEnter += new System.EventHandler(this.btnCamera_MouseEnter);
             // 
+            // btnSeeLog
+            // 
+            this.btnSeeLog.BackColor = System.Drawing.SystemColors.Control;
+            this.btnSeeLog.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.btnSeeLog.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnSeeLog.ForeColor = System.Drawing.Color.Black;
+            this.btnSeeLog.Location = new System.Drawing.Point(226, 722);
+            this.btnSeeLog.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.btnSeeLog.Name = "btnSeeLog";
+            this.btnSeeLog.Size = new System.Drawing.Size(100, 44);
+            this.btnSeeLog.TabIndex = 123;
+            this.btnSeeLog.Text = "LOG";
+            this.btnSeeLog.UseVisualStyleBackColor = false;
+            this.btnSeeLog.Click += new System.EventHandler(this.btnSeeLog_Click);
+            // 
             // BaccaratQuad2
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(463, 820);
+            this.Controls.Add(this.btnSeeLog);
+            this.Controls.Add(this.btnReset);
             this.Controls.Add(this.btnCamera);
             this.Controls.Add(this.btnBackward);
             this.Controls.Add(this.tabControls);
@@ -328,8 +320,6 @@ namespace Baccarat
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.BaccaratQuad2_FormClosing);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.BaccaratQuad_KeyDown);
             this.tabControls.ResumeLayout(false);
-            this.tabPage1.ResumeLayout(false);
-            this.tabPage1.PerformLayout();
             this.tabPage3.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -350,13 +340,12 @@ namespace Baccarat
         private System.Windows.Forms.Button btn11;
         private System.Windows.Forms.TextBox txt_1;
         private System.Windows.Forms.TabControl tabControls;
-        private System.Windows.Forms.TabPage tabPage1;
         private System.Windows.Forms.TabPage tabPage3;
         private System.Windows.Forms.Button btnProcessData;
-        private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button btnBackward;
         private System.Windows.Forms.Button btnImport;
         private System.Windows.Forms.Button btnCamera;
         private System.Windows.Forms.ToolTip toolTip;
+        private System.Windows.Forms.Button btnSeeLog;
     }
 }

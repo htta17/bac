@@ -47,9 +47,7 @@ namespace Baccarat
             BaccaratDBContext = new BaccaratDBContext();
         }
 
-        BaccaratQuadrupleMaster QuadrupleMaster { get; set; }
-
-       
+        BaccaratQuadrupleMaster QuadrupleMaster { get; set; }       
 
         BaccaratDBContext BaccaratDBContext { get; set; }
 
@@ -105,20 +103,36 @@ namespace Baccarat
             lbl_ClickedReport.Text = "Đã ghi nhận " + QuadrupleMaster.MasterID + ": " + txt_1.Text;
             txt_1.Text = "";
 
+            var soundPlay = 4;  //No sound
+            if (inputValue == BaccratCard.Banker)
+                soundPlay = 1;
+            else if (inputValue == BaccratCard.Player)
+                soundPlay = 2;
+            PlaySound(soundPlay);
+
             WriteLogNDatabase(inputValue, importFileName);
         }
 
-        private void PlaySound(BaccratCard inputValue)
+        /// <summary>
+        /// Play sound
+        /// </summary>
+        /// <param name="input">1: Banker, 2: Player, 3: Trade, 4: No sound</param>
+        private void PlaySound(int input)
         {
+            if (input == 4)
+                return;
             try
             {
-                System.Media.SoundPlayer player = new System.Media.SoundPlayer(inputValue == BaccratCard.Banker ? @"Sound\Speech On.wav" : @"Sound\Speech Off.wav");
+                var soundFile = input == 1 ? @"Sound\Speech On.wav" :
+                                input == 2 ? @"Sound\Speech Off.wav"
+                                : @"Sound\Windows Logon.wav";
+                System.Media.SoundPlayer player = new System.Media.SoundPlayer(soundFile);
                 player.Play();
             }
             catch
-            { 
-            
-            }           
+            {
+
+            }
         }
 
         private void btnCalculate_Click(object sender, EventArgs e)
@@ -130,8 +144,6 @@ namespace Baccarat
             }
             var inputValue = txt_1.Text == Constants.BANKER_VALUE
                                ? BaccratCard.Banker : BaccratCard.Player;
-
-            //PlaySound(inputValue);
 
             ProcessInput(inputValue, null);
         }
@@ -463,6 +475,11 @@ namespace Baccarat
             var text = button.Name == btnBackward.Name ? "Lùi về bước trước" : "Chụp ảnh màn hình"; 
 
             toolTip.SetToolTip((sender as Button), text);
+        }
+
+        private void btnSeeLog_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

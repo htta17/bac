@@ -31,9 +31,10 @@ namespace Midas
         {
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.btnTakePhoto = new System.Windows.Forms.Button();
             this.btnTest = new System.Windows.Forms.Button();
             this.tabPage2 = new System.Windows.Forms.TabPage();
-            this.button1 = new System.Windows.Forms.Button();
+            this.btnCamera = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.SuspendLayout();
@@ -51,7 +52,8 @@ namespace Midas
             // 
             // tabPage1
             // 
-            this.tabPage1.Controls.Add(this.button1);
+            this.tabPage1.Controls.Add(this.btnCamera);
+            this.tabPage1.Controls.Add(this.btnTakePhoto);
             this.tabPage1.Controls.Add(this.btnTest);
             this.tabPage1.Location = new System.Drawing.Point(4, 25);
             this.tabPage1.Name = "tabPage1";
@@ -61,13 +63,23 @@ namespace Midas
             this.tabPage1.Text = "MANUAL";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
+            // btnTakePhoto
+            // 
+            this.btnTakePhoto.Location = new System.Drawing.Point(31, 150);
+            this.btnTakePhoto.Name = "btnTakePhoto";
+            this.btnTakePhoto.Size = new System.Drawing.Size(166, 53);
+            this.btnTakePhoto.TabIndex = 1;
+            this.btnTakePhoto.Text = "Start ";
+            this.btnTakePhoto.UseVisualStyleBackColor = true;
+            this.btnTakePhoto.Click += new System.EventHandler(this.button1_Click);
+            // 
             // btnTest
             // 
             this.btnTest.Location = new System.Drawing.Point(31, 63);
             this.btnTest.Name = "btnTest";
-            this.btnTest.Size = new System.Drawing.Size(75, 34);
+            this.btnTest.Size = new System.Drawing.Size(166, 53);
             this.btnTest.TabIndex = 0;
-            this.btnTest.Text = "button1";
+            this.btnTest.Text = "Login";
             this.btnTest.UseVisualStyleBackColor = true;
             this.btnTest.Click += new System.EventHandler(this.btnTest_Click);
             // 
@@ -81,15 +93,18 @@ namespace Midas
             this.tabPage2.Text = "tabPage2";
             this.tabPage2.UseVisualStyleBackColor = true;
             // 
-            // button1
+            // btnCamera
             // 
-            this.button1.Location = new System.Drawing.Point(31, 150);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(166, 53);
-            this.button1.TabIndex = 1;
-            this.button1.Text = "Start take photo";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.btnCamera.BackgroundImage = global::Midas.Properties.Resources.camera_icon_png;
+            this.btnCamera.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.btnCamera.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnCamera.Location = new System.Drawing.Point(31, 218);
+            this.btnCamera.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.btnCamera.Name = "btnCamera";
+            this.btnCamera.Size = new System.Drawing.Size(45, 44);
+            this.btnCamera.TabIndex = 115;
+            this.btnCamera.UseVisualStyleBackColor = true;
+            this.btnCamera.Click += new System.EventHandler(this.btnCamera_Click);
             // 
             // AutoLogin
             // 
@@ -113,6 +128,7 @@ namespace Midas
         private System.Windows.Forms.TabPage tabPage1;
         private System.Windows.Forms.TabPage tabPage2;
         private System.Windows.Forms.Button btnTest;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button btnTakePhoto;
+        private System.Windows.Forms.Button btnCamera;
     }
 }
