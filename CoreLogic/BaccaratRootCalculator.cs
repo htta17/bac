@@ -38,13 +38,22 @@ namespace CalculationLogic
 
         public void Backward()
         {
-            if (MainRoots.Count > 0)
-            {
-                var lastItem = MainRoots.Last();
-                BaccaratDBContext.DeleteRoot(lastItem.ID);
-                MainRoots.RemoveAt(MainRoots.Count - 1);
-            }
-            Reload(false);
+            if (MainRoots.Count == 0)
+                return;
+            
+            var lastItem = MainRoots.Last();
+            var deletedProfitInfo = new List<int> 
+            { 
+                lastItem.MainProfit, 
+                lastItem.Profit0, 
+                lastItem.Profit1,
+                lastItem.Profit2,
+                lastItem.Profit3, 
+                lastItem.AllSubProfit
+            };
+            BaccaratDBContext.DeleteRoot(lastItem.ID);
+            MainRoots.RemoveAt(MainRoots.Count - 1);
+            Reload(false, deletedProfitInfo);                        
         }
 
         public void Reset()
@@ -59,13 +68,14 @@ namespace CalculationLogic
             Coeff3 = 1;
             AllSubCoeff = 1;
             CurrentPredicts = new List<BaccaratPredict>();
-           
 
-            MainAccumulate = 0;
-            Accumulate0 = 0;
-            Accumulate1 = 0;
-            Accumulate2 = 0;
-            Accumulate3 = 0;
+
+            MainAccumulate =
+            Accumulate0 =
+            Accumulate1 =
+            Accumulate2 =
+            Accumulate3 =
+            AllSubAccumulate = 0;
 
             Roots0 = new List<Root>();
             Roots1 = new List<Root>();
@@ -77,7 +87,7 @@ namespace CalculationLogic
         }
 
 
-        public void Reload(bool ressetFileName)
+        public void Reload(bool ressetFileName, List<int> deletedProfitInfo = null)
         {
             var rootCount = BaccaratDBContext.Roots.Count();
             MainRoots = BaccaratDBContext.Roots
@@ -96,6 +106,20 @@ namespace CalculationLogic
                 Coeff3 = MainRoots.Last().Coeff3;
                 AllSubCoeff = MainRoots.Last().AllSubCoeff;
                 CurrentPredicts = JsonConvert.DeserializeObject<List<BaccaratPredict>>(MainRoots.Last().ListCurrentPredicts);
+
+                //Khi user nhấn nút BACK (ressetFileName = false), lấy lại các thông tin về tích lũy bằng cách
+                //      trừ đi Profit cuả record đã xóa (Móa, tâm trí không tập trung phải gõ ngơ ngơ thế này) 
+                //      ví dụ đi ha: 
+                //          Thôi để sau
+                if (ressetFileName == false && deletedProfitInfo != null)
+                {
+                    MainAccumulate -= deletedProfitInfo[0]; 
+                    Accumulate0 -= deletedProfitInfo[1];
+                    Accumulate1 -= deletedProfitInfo[2];
+                    Accumulate2 -= deletedProfitInfo[3];
+                    Accumulate3 -= deletedProfitInfo[4];
+                    AllSubAccumulate -= deletedProfitInfo[5];
+                }
             }
             else
             {
@@ -106,14 +130,18 @@ namespace CalculationLogic
                 Coeff2 = 1;
                 Coeff3 = 1;
                 AllSubCoeff = 1;
+
+                MainAccumulate =
+                Accumulate0 =
+                Accumulate1 =
+                Accumulate2 =
+                Accumulate3 =
+                AllSubAccumulate = 0;
+
                 CurrentPredicts = new List<BaccaratPredict>();
             }
 
-            MainAccumulate = 0;
-            Accumulate0 = 0;
-            Accumulate1 = 0;
-            Accumulate2 = 0;
-            Accumulate3 = 0;
+            
 
             Roots0 = MainRoots.Where(c => c.GlobalOrder % 4 == 0).ToList();
             Roots1 = MainRoots.Where(c => c.GlobalOrder % 4 == 1).ToList();
@@ -211,8 +239,6 @@ namespace CalculationLogic
                     lastRoot.Profit3 = profit3.Item1;
                     Accumulate3 += profit3.Item1;
                 }
-
-
 
                 //Tính toán cho AllSubCoeff
                 var allSubProfit = UpdateCurrentCoeff(card, 5, AllSubCoeff);
