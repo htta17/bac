@@ -46,7 +46,8 @@ namespace Midas.Baccarat
             else
             {
                 lbl_ClickedReport.Text = "Bắt đầu chơi";
-            }            
+            }
+            ProcessUI();
         }
 
         private BaccaratRootCalculator BaccaratRootCalculator { get; set; }
@@ -208,7 +209,6 @@ namespace Midas.Baccarat
             BaccaratRootCalculator.Backward();
 
             ProcessUI();
-
         }
 
         private void btnBackward_MouseEnter(object sender, EventArgs e)

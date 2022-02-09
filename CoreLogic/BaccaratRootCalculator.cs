@@ -141,8 +141,6 @@ namespace CalculationLogic
                 CurrentPredicts = new List<BaccaratPredict>();
             }
 
-            
-
             Roots0 = MainRoots.Where(c => c.GlobalOrder % 4 == 0).ToList();
             Roots1 = MainRoots.Where(c => c.GlobalOrder % 4 == 1).ToList();
             Roots2 = MainRoots.Where(c => c.GlobalOrder % 4 == 2).ToList();

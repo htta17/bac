@@ -20,7 +20,7 @@ namespace Baccarat
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             StartApp.LoadRegistryConnectionString();
-            Application.Run(new BaccaratQuad2());
+            Application.Run(new BaccaratRootAlg());
         }
     }
 }
