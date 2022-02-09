@@ -186,14 +186,15 @@ namespace Midas.Baccarat
             this.btnReset.BackColor = System.Drawing.SystemColors.Control;
             this.btnReset.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.btnReset.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnReset.ForeColor = System.Drawing.Color.Red;
-            this.btnReset.Location = new System.Drawing.Point(81, 584);
+            this.btnReset.ForeColor = System.Drawing.Color.Green;
+            this.btnReset.Location = new System.Drawing.Point(73, 583);
             this.btnReset.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.btnReset.Name = "btnReset";
             this.btnReset.Size = new System.Drawing.Size(119, 44);
             this.btnReset.TabIndex = 121;
             this.btnReset.Text = "RESET";
             this.btnReset.UseVisualStyleBackColor = false;
+            this.btnReset.Visible = false;
             this.btnReset.Click += new System.EventHandler(this.btnReset_Click);
             this.btnReset.MouseEnter += new System.EventHandler(this.btnBackward_MouseEnter);
             // 

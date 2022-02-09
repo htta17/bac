@@ -1,5 +1,9 @@
-﻿using System;
+﻿using CoreLogic;
+using DatabaseContext;
+using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace CalculationLogic
@@ -22,7 +26,7 @@ namespace CalculationLogic
         /// Initial BaccaratQuadrupleMaster
         /// </summary>
         /// <param name="threadMode">2 or 4. Default is 4</param>
-        public BaccaratQuadrupleMaster(ThreadMode threadMode)
+        public BaccaratQuadrupleMaster(ThreadMode threadMode, string connectionString)
         {
             TradeOneToFourCards = new List<BaccratCard>();
             TradeTwoToFiveCards = new List<BaccratCard>();
@@ -59,18 +63,27 @@ namespace CalculationLogic
 
             ThreadMode = threadMode;
 
-            HistoryCoeffs = new List<HistoryInfo>();
+            HistoryCoeffs = new List<QuadrupleResult_HistoryInfo>();
+
+            BaccaratDBContext = new GlobalDBContext(connectionString);
+
+            
+            if (!Directory.Exists("Logs"))
+            {
+                Directory.CreateDirectory("Logs");
+            }
         }
-        
+
+        GlobalDBContext BaccaratDBContext { get; set; } 
+
         List<BaccratCard> MasterList { get; set; }        
-        List<HistoryInfo> HistoryCoeffs { get; set; }
+        List<QuadrupleResult_HistoryInfo> HistoryCoeffs { get; set; }
 
         BaccaratQuadruple TradeFiveToEightCalculator { get; set; }
         List<BaccratCard> TradeFiveToEightCards { get; set; }
 
         BaccaratQuadruple TradeSixToOneCalculator { get; set; }
         List<BaccratCard> TradeSixToOneCards { get; set; }
-
 
         BaccaratQuadruple TradeOneToFourCalculator { get; set; }
         List<BaccratCard> TradeOneToFourCards { get; set; }
@@ -147,6 +160,8 @@ namespace CalculationLogic
         private ThreadMode ThreadMode { get; set; }
 
         public BaccaratPredict MasterPredict { get; internal set; }
+
+        private Session CurrentSession { get; set; }
 
         QuadrupleResult CurrentPredict14 = new QuadrupleResult { Value = BaccratCard.NoTrade, Volume = 0 };
         QuadrupleResult CurrentPredict25 = new QuadrupleResult { Value = BaccratCard.NoTrade, Volume = 0 };
@@ -360,7 +375,7 @@ namespace CalculationLogic
             #endregion
 
             #region Save all coeffs for rollback (If trader makes a mistake and want to re-trade last position
-            HistoryCoeffs.Add(new HistoryInfo
+            HistoryCoeffs.Add(new QuadrupleResult_HistoryInfo
             {
                 Diff14 = CurrentPredict14.Diff_Coff,
                 Same14 = CurrentPredict14.Same_Coff, 
@@ -402,6 +417,63 @@ namespace CalculationLogic
 
             });
             #endregion
+
+
+            #region Save to database
+            var datetimeNow = DateTime.Now;
+            if (MasterID == 1)
+            {
+                CurrentSession = new Session
+                {
+                    StartDateTime = DateTime.Now,
+                    ImportFileName = string.Empty
+                };
+
+                BaccaratDBContext.AddSession(CurrentSession);
+            }
+            BaccaratDBContext.AddResult(new Result
+            {
+                Card = (short)(inputValue == BaccratCard.Banker ? 1 : -1),
+                InputDateTime = datetimeNow,
+                SessionID = CurrentSession.ID
+            });
+
+            if (CurrentSession != null)
+            {
+                CurrentSession.NoOfSteps = MasterID;
+                CurrentSession.Profit14 = Profit14;
+                CurrentSession.Profit25 = Profit25;
+                CurrentSession.Profit36 = Profit36;
+                CurrentSession.Profit47 = Profit47;
+                CurrentSession.Profit58 = Profit58;
+                CurrentSession.Profit61 = Profit61;
+                CurrentSession.Profit72 = Profit72;
+                CurrentSession.Profit83 = Profit83;
+
+                BaccaratDBContext.UpdateSession(CurrentSession);
+            }
+            #endregion
+
+            //Save to log (for now)            
+            if (MasterID == 1)
+            {
+                File.AppendAllText(FULL_PATH_FILE, LogTitle);
+            }
+            var logger = string.Format("{0},{1:yyyy-MM-dd HH:mm:ss},{2},{3},{4}\r\n",
+                                        MasterID,
+                                        datetimeNow,
+                                        inputValue,
+                                        Trade_LastStepProfit == 0 ? "" : Trade_LastStepProfit.ToString(),
+                                        Trade_TotalProfit);
+           
+            try
+            {
+                File.AppendAllText(FULL_PATH_FILE, logger);
+            }
+            catch
+            {
+                //MessageBox.Show("Vui lòng đóng file CSV khi đang ghi, sau đó nhấn nút OK");
+            }
         }
 
         public void ResetAll()
@@ -484,7 +556,7 @@ namespace CalculationLogic
 
             //Set coeff for calculators
             var lastCoeffs = HistoryCoeffs.Count > 0 ? HistoryCoeffs.FindLast(c => 1 == 1)
-                                    : default (HistoryInfo) ;
+                                    : default (QuadrupleResult_HistoryInfo) ;
             if (lastCoeffs != null)
             {
                 TradeOneToFourCalculator.UpdateCoeff(false, lastCoeffs.Same14, lastCoeffs.Diff14);
@@ -517,56 +589,50 @@ namespace CalculationLogic
                 Profit72 = lastCoeffs.AccumulatedProfit72;
                 Profit83 = lastCoeffs.AccumulatedProfit83;
             }
+
+
+            //Remove last step from data
+            var lastResult = BaccaratDBContext.Results
+                                    .AsQueryable()
+                                    .Where(c => c.SessionID == CurrentSession.ID)
+                                    .OrderByDescending(c => c.ID)
+                                    .FirstOrDefault();
+            if (lastResult != null)
+            {
+                BaccaratDBContext.DeleteResult(lastResult.ID);
+            }
+
+
+            //Update log file 
+            var allLines = File.ReadAllLines(FULL_PATH_FILE).ToList();
+            if (allLines.Count > 1)
+            {
+                allLines.RemoveAt(allLines.Count - 1);
+            }
+            File.WriteAllLines(FULL_PATH_FILE, allLines.ToArray());
         }
+
+        private DateTime? FILENAME_DATETIME = null;
+        private const string LogTitle = "ID,Time,Card,Loss/Profit,Total\r\n";
+        const string LOG_FILE_FORMAT = "Logs\\{0:yyyy-MM-dd}\\{0:HH.mm.ss}.csv";        
+
+
+        string FULL_PATH_FILE
+        {
+            get
+            {
+                if (FILENAME_DATETIME == null)
+                {
+                    FILENAME_DATETIME = DateTime.Now;
+                }
+                return string.Format(LOG_FILE_FORMAT, FILENAME_DATETIME.Value);
+            }
+        }
+
 
         public BaccratCard ShowLastCard()
         {
             return MasterID > 0 ? MasterList[MasterList.Count - 1] : default;
         }
     }
-
-    public class HistoryInfo
-    { 
-        public int Same14 { get; set; }
-        public int Same36 { get; set; }
-        public int Same58 { get; set; }
-        public int Same72 { get; set; }
-
-        public int Same25 { get; set; }
-        public int Same47 { get; set; }
-        public int Same61 { get; set; }
-        public int Same83 { get; set; }
-
-        public int Diff14 { get; set; }
-        public int Diff36 { get; set; }
-        public int Diff58 { get; set; }
-        public int Diff72 { get; set; }
-
-        public int Diff25 { get; set; }
-        public int Diff47 { get; set; }
-        public int Diff61 { get; set; }
-        public int Diff83 { get; set; }
-
-        public QuadrupleResult SavedPredict14 { get; set; }
-        public QuadrupleResult SavedPredict25 { get; set; }
-        public QuadrupleResult SavedPredict36 { get; set; }
-        public QuadrupleResult SavedPredict47 { get; set; }
-        public QuadrupleResult SavedPredict58 { get; set; }
-        public QuadrupleResult SavedPredict61 { get; set; }
-        public QuadrupleResult SavedPredict72 { get; set; }
-        public QuadrupleResult SavedPredict83 { get; set; }
-
-        public int AccumulatedProfit14 { get; set; }
-        public int AccumulatedProfit25 { get; set; }
-        public int AccumulatedProfit36 { get; set; }
-        public int AccumulatedProfit47 { get; set; }
-        public int AccumulatedProfit58 { get; set; }
-        public int AccumulatedProfit61 { get; set; }
-        public int AccumulatedProfit72 { get; set; }
-        public int AccumulatedProfit83 { get; set; }
-
-        public int SavedTotalProfit { get; set; }
-    }
-
-
 }

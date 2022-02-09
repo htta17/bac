@@ -24,12 +24,14 @@ namespace Baccarat
         {
             this.KeyPreview = true;
             InitializeComponent();
-            QuadrupleMaster = new BaccaratQuadrupleMaster(ThreadMode.Five_Eight | ThreadMode.One_Four);
-
-            if (!Directory.Exists("Logs"))
+            if (string.IsNullOrEmpty(StartApp.GlobalConnectionString))
             {
-                Directory.CreateDirectory("Logs");
+                StartApp.LoadRegistryConnectionString();
             }
+
+            QuadrupleMaster = new BaccaratQuadrupleMaster(ThreadMode.Five_Eight | ThreadMode.One_Four, StartApp.GlobalConnectionString);
+
+            
 
             FILENAME_DATETIME = DateTime.Now;
 
@@ -39,31 +41,28 @@ namespace Baccarat
                 this.Close();
             }
 
-            if (string.IsNullOrEmpty(StartApp.GlobalConnectionString))
-            {
-                StartApp.LoadRegistryConnectionString();
-            }
+            
 
-            BaccaratDBContext = new BaccaratDBContext();
+            //BaccaratDBContext = new BaccaratDBContext();
         }
 
         BaccaratQuadrupleMaster QuadrupleMaster { get; set; }       
 
-        BaccaratDBContext BaccaratDBContext { get; set; }
+        //BaccaratDBContext BaccaratDBContext { get; set; }
 
         private DateTime? FILENAME_DATETIME = null;
         private const string LogTitle = "ID,Time,Card,Loss/Profit,Total\r\n";
-        const string LOG_FILE_FORMAT = "Logs\\Midas_{0:yyyyMMdd_HHmmss}.csv";
+        //const string LOG_FILE_FORMAT = "Logs\\Midas_{0:yyyyMMdd_HHmmss}.csv";
         const string IMAGE_FORMAT = "Logs\\Midas_{0:yyyyMMdd_HHmmss}_{1}.jpeg";
         private int Screenshot_Counter = 0;
 
-        string FULL_PATH_FILE
-        {
-            get
-            {
-                return string.Format(LOG_FILE_FORMAT, FILENAME_DATETIME.Value);
-            }
-        }
+        //string FULL_PATH_FILE
+        //{
+        //    get
+        //    {
+        //        return string.Format(LOG_FILE_FORMAT, FILENAME_DATETIME.Value);
+        //    }
+        //}
 
         string FULL_PATH_IMAGE
         {
@@ -110,7 +109,7 @@ namespace Baccarat
                 soundPlay = 2;
             PlaySound(soundPlay);
 
-            WriteLogNDatabase(inputValue, importFileName);
+            //WriteLogNDatabase(inputValue, importFileName);
         }
 
         /// <summary>
@@ -170,75 +169,7 @@ namespace Baccarat
             FinishSession();
         }
 
-        private void WriteLogNDatabase(BaccratCard baccratCard, string importFileName)
-        {
-            //Save to database
-            var datetimeNow = DateTime.Now;
-            if (QuadrupleMaster.MasterID == 1)
-            {
-                CurrentSession = new Session
-                {
-                    StartDateTime = DateTime.Now,
-                    ImportFileName = importFileName
-                };
-
-                BaccaratDBContext.AddSession(CurrentSession);
-            }
-
-
-            BaccaratDBContext.AddResult(new Result
-            {
-                Card = (short)(baccratCard == BaccratCard.Banker ? 1 : -1),
-                InputDateTime = datetimeNow,
-                SessionID = CurrentSession.ID
-            });
-
-            if (CurrentSession != null)
-            {
-                CurrentSession.NoOfSteps = QuadrupleMaster.MasterID;
-                CurrentSession.Profit14 = QuadrupleMaster.Profit14;
-                CurrentSession.Profit25 = QuadrupleMaster.Profit25;
-                CurrentSession.Profit36 = QuadrupleMaster.Profit36;
-                CurrentSession.Profit47 = QuadrupleMaster.Profit47;
-                CurrentSession.Profit58 = QuadrupleMaster.Profit58;
-                CurrentSession.Profit61 = QuadrupleMaster.Profit61;
-                CurrentSession.Profit72 = QuadrupleMaster.Profit72;
-                CurrentSession.Profit83 = QuadrupleMaster.Profit83;
-
-                BaccaratDBContext.UpdateSession(CurrentSession);
-            }
-
-            //Save to log (for now)
-            if (string.IsNullOrEmpty(importFileName))
-            {
-                if (QuadrupleMaster.MasterID == 1)
-                {
-                    File.AppendAllText(FULL_PATH_FILE, LogTitle);
-                }
-                var logger = string.Format("{0},{1:yyyy-MM-dd HH:mm:ss},{2},{3},{4}\r\n",
-                                            QuadrupleMaster.MasterID,
-                                            datetimeNow,
-                                            baccratCard,
-                                            QuadrupleMaster.Trade_LastStepProfit == 0 ? "" : QuadrupleMaster.Trade_LastStepProfit.ToString(),
-                                            QuadrupleMaster.Trade_TotalProfit);
-
-                //If file is opened. 
-                var saved = false;
-                while (!saved)
-                {
-                    try
-                    {
-                        File.AppendAllText(FULL_PATH_FILE, logger);
-                        saved = true;
-                    }
-                    catch
-                    {
-                        MessageBox.Show("Vui lòng đóng file CSV khi đang ghi, sau đó nhấn nút OK");
-                    }
-                }
-            }
-
-        }
+        
 
         private void txt_8_DoubleClick(object sender, EventArgs e)
         {
@@ -333,25 +264,6 @@ namespace Baccarat
 
             QuadrupleMaster.Reverse();
 
-            //Update database
-            var lastResult = BaccaratDBContext.Results
-                                    .AsQueryable()
-                                    .Where(c => c.SessionID == CurrentSession.ID)
-                                    .OrderByDescending(c => c.ID)
-                                    .FirstOrDefault();
-            if (lastResult != null)
-            {
-                BaccaratDBContext.DeleteResult(lastResult.ID);
-            }
-
-            //Update log file 
-            var allLines = File.ReadAllLines(FULL_PATH_FILE).ToList();
-            if (allLines.Count > 1)
-            {
-                allLines.RemoveAt(allLines.Count - 1);
-            }
-            File.WriteAllLines(FULL_PATH_FILE, allLines.ToArray());
-
             //Update UI
             if (QuadrupleMaster.MasterID > 0)
             {
@@ -366,7 +278,7 @@ namespace Baccarat
 
         private void BaccaratQuad2_FormClosing(object sender, FormClosingEventArgs e)
         {
-            BaccaratDBContext.Dispose();
+            //BaccaratDBContext.Dispose();
             TakeScreenshot(false);
         }
 
@@ -374,13 +286,6 @@ namespace Baccarat
         private void ImportFiles(string fullFilePathName)
         {
             var fileName = fullFilePathName.Split('\\').Last();
-            var existedSession = BaccaratDBContext.Sessions.AsQueryable()
-                                        .FirstOrDefault(c => c.ImportFileName == fileName);
-            if (existedSession != null)
-            {
-                MessageBox.Show("This file was imported to database");
-                return;
-            }
 
             var allLines = File.ReadAllLines(fullFilePathName).ToList();
             foreach (var line in allLines)

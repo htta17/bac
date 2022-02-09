@@ -23,11 +23,12 @@ namespace CalculationLogic
             {
                 Directory.CreateDirectory("Logs");
             }
-            
         }
         GlobalDBContext BaccaratDBContext { get; set; }
 
         public int GlobalOrder { get; private set; } = 0;
+
+        public int LocalOrder { get; private set; } = 0;
 
         public BaccratCard ShowLastCard()
         {
@@ -59,13 +60,17 @@ namespace CalculationLogic
             Coeff3 = 1;
             AllSubCoeff = 1;
             CurrentPredicts = new List<BaccaratPredict>();
-           
 
-            MainAccumulate = 0;
-            Accumulate0 = 0;
-            Accumulate1 = 0;
-            Accumulate2 = 0;
-            Accumulate3 = 0;
+
+            MainAccumulate =
+            Accumulate0 =
+            Accumulate1 =
+            Accumulate2 =
+            Accumulate3 =
+            AllSubAccumulate = 0;
+
+            Main_Max = Max0 = Max1 = Max2 = Max3 = MaxAllSub = 0;
+            Main_Min = Min0 = Min1 = Min2 = Min3 = MinAllSub = 0;
 
             Roots0 = new List<Root>();
             Roots1 = new List<Root>();
@@ -96,6 +101,33 @@ namespace CalculationLogic
                 Coeff3 = MainRoots.Last().Coeff3;
                 AllSubCoeff = MainRoots.Last().AllSubCoeff;
                 CurrentPredicts = JsonConvert.DeserializeObject<List<BaccaratPredict>>(MainRoots.Last().ListCurrentPredicts);
+
+                var latestLogFile = MainRoots.Last().LogFile;
+                if (string.IsNullOrEmpty(latestLogFile))
+                {
+                    FILENAME_DATETIME = DateTime.Now;
+                    WriteFirstTime = true;
+                }
+                else
+                {
+                    var countForLocal = BaccaratDBContext.Roots.Where(c => c.LogFile == latestLogFile).Count();
+                    if (countForLocal < 300)
+                    {
+                        var splitDateTimes = latestLogFile.Split('\\', '.', '-');
+                        FILENAME_DATETIME = new DateTime(int.Parse(splitDateTimes[1]),
+                            int.Parse(splitDateTimes[2]),
+                            int.Parse(splitDateTimes[3]),
+                            int.Parse(splitDateTimes[4]),
+                            int.Parse(splitDateTimes[5]),
+                            int.Parse(splitDateTimes[6]));
+                        WriteFirstTime = false; 
+                    }
+                    else
+                    {
+                        FILENAME_DATETIME = DateTime.Now;
+                        WriteFirstTime = true;
+                    }
+                }
             }
             else
             {
@@ -119,12 +151,6 @@ namespace CalculationLogic
             Roots1 = MainRoots.Where(c => c.GlobalOrder % 4 == 1).ToList();
             Roots2 = MainRoots.Where(c => c.GlobalOrder % 4 == 2).ToList();
             Roots3 = MainRoots.Where(c => c.GlobalOrder % 4 == 3).ToList();
-
-            if (ressetFileName)
-            {
-                FILENAME_DATETIME = DateTime.Now;
-                WriteFirstTime = true;
-            }
         }
 
         private List<Root> MainRoots { get; set; }
@@ -147,6 +173,20 @@ namespace CalculationLogic
         public int Accumulate2 { get; private set; }
         public int Accumulate3 { get; private set; }
         public int AllSubAccumulate { get; private set; }
+
+        public int Main_Max { get; private set; }
+        public int Main_Min { get; private set; }
+        public int Max0 { get; private set; }
+        public int Min0 { get; private set; }
+        public int Max1 { get; private set; }
+        public int Min1 { get; private set; }
+        public int Max2 { get; private set; }
+        public int Min2 { get; private set; }
+        public int Max3 { get; private set; }
+        public int Min3 { get; private set; }
+
+        public int MaxAllSub { get; private set; }
+        public int MinAllSub { get; private set; }
 
         public List<BaccaratPredict> CurrentPredicts { get; set; }
 
@@ -212,12 +252,26 @@ namespace CalculationLogic
                     Accumulate3 += profit3.Item1;
                 }
 
-
-
                 //Tính toán cho AllSubCoeff
                 var allSubProfit = UpdateCurrentCoeff(card, 5, AllSubCoeff);
                 AllSubCoeff = allSubProfit.Item2;
                 lastRoot.AllSubProfit = allSubProfit.Item1;
+
+                //Cập nhật max, min
+                if (Main_Max < MainAccumulate) Main_Max = MainAccumulate;
+                if (Main_Min > MainAccumulate) Main_Min = MainAccumulate;
+
+                if (Max0 < Accumulate0) Max0 = Accumulate0;
+                if (Min0 > Accumulate0) Min0 = Accumulate0;
+                
+                if (Max1 < Accumulate1) Max1 = Accumulate1;
+                if (Min1 > Accumulate1) Min1 = Accumulate1;
+                
+                if (Max2 < Accumulate2) Max2 = Accumulate2;
+                if (Min2 > Accumulate2) Min2 = Accumulate2;
+
+                if (Max3 < Accumulate3) Max3 = Accumulate3;
+                if (Min3 > Accumulate3) Min3 = Accumulate3;
 
                 //Cập nhật lại DB
                 BaccaratDBContext.UpdateRoot(lastRoot);
@@ -272,7 +326,8 @@ namespace CalculationLogic
                 Profit3 = 0,
 
                 GlobalOrder = GlobalOrder, 
-                ListCurrentPredicts = ""
+                ListCurrentPredicts = "",
+                LogFile = FULL_PATH_FILE
             };            
 
             //Add for main root
@@ -307,13 +362,13 @@ namespace CalculationLogic
                 if (threadPredict0.Value != card)
                 {
                     profit = -Coeff; //Âm tiền
-                    //Coeff = Coeff + 2; //Tăng hệ số
+                    Coeff = Coeff + 2; //Tăng hệ số
                 }
                 else
                 {
                     profit = Coeff; // Lụm tiền
-                    //if (Coeff >= 3) //Giảm hệ số hoặc giữ nguyên
-                    //    Coeff = Coeff - 2;
+                    if (Coeff >= 3) //Giảm hệ số hoặc giữ nguyên
+                        Coeff = Coeff - 2;
                 }
             }
             return Tuple.Create<int,int>( profit, Coeff) ; 
@@ -329,7 +384,7 @@ namespace CalculationLogic
                 return new BaccaratPredict
                 {
                     Value = cards[2] == BaccratCard.Banker ? BaccratCard.Player : BaccratCard.Banker,
-                    Volume = 1//ToDo: Remove volume
+                    Volume = volume
                 };
             }
             return new BaccaratPredict { Value = BaccratCard.NoTrade, Volume = 0 };

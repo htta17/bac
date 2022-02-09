@@ -46,7 +46,9 @@ namespace Midas.Baccarat
             else
             {
                 lbl_ClickedReport.Text = "Bắt đầu chơi";
-            }            
+            }
+
+            ProcessUI();
         }
 
         private BaccaratRootCalculator BaccaratRootCalculator { get; set; }
@@ -251,15 +253,15 @@ namespace Midas.Baccarat
 
         private void BaccaratRootAlg_FormClosing(object sender, FormClosingEventArgs e)
         {
-            try
-            {
-                var text = BaccaratRootCalculator.EndSessionReport();
-                SlackWebHookSender.SendMessage(text, "important-report", "Closing-app-report", ":boom:");
-            }
-            catch
-            {
+            //try
+            //{
+            //    var text = BaccaratRootCalculator.EndSessionReport();
+            //    SlackWebHookSender.SendMessage(text, "important-report", "Closing-app-report", ":boom:");
+            //}
+            //catch
+            //{
 
-            }
+            //}
         }
     }
 }

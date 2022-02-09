@@ -27,10 +27,23 @@ namespace DatabaseContext
         public int AllSubProfit { get;  set; }
 
         public string ListCurrentPredicts { get; set; }
+        public string MinMaxAccumulate { get; set; }
 
         /// <summary>
         /// Số thứ tự tổng quan
         /// </summary>
         public int GlobalOrder { get; set; }
+
+        public string LogFile { get; set; }
+    }
+
+    public class ProcessSaveInfo
+    {
+        public int MainAccumulate { get; private set; }
+        public int Accumulate0 { get; private set; }
+        public int Accumulate1 { get; private set; }
+        public int Accumulate2 { get; private set; }
+        public int Accumulate3 { get; private set; }
+        public int AllSubAccumulate { get; private set; }
     }
 }
