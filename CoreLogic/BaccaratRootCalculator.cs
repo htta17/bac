@@ -41,19 +41,10 @@ namespace CalculationLogic
             if (MainRoots.Count == 0)
                 return;
             
-            var lastItem = MainRoots.Last();
-            var deletedProfitInfo = new List<int> 
-            { 
-                lastItem.MainProfit, 
-                lastItem.Profit0, 
-                lastItem.Profit1,
-                lastItem.Profit2,
-                lastItem.Profit3, 
-                lastItem.AllSubProfit
-            };
+            var lastItem = MainRoots.Last();            
             BaccaratDBContext.DeleteRoot(lastItem.ID);
             MainRoots.RemoveAt(MainRoots.Count - 1);
-            Reload(false, deletedProfitInfo);                        
+            Reload(false);                        
         }
 
         public void Reset()
@@ -87,7 +78,7 @@ namespace CalculationLogic
         }
 
 
-        public void Reload(bool ressetFileName, List<int> deletedProfitInfo = null)
+        public void Reload(bool ressetFileName)
         {
             var rootCount = BaccaratDBContext.Roots.Count();
             MainRoots = BaccaratDBContext.Roots
@@ -98,27 +89,28 @@ namespace CalculationLogic
 
             if (MainRoots.Count() > 0)
             {
-                GlobalOrder = MainRoots.Last().GlobalOrder;
-                MainCoeff = MainRoots.Last().MainCoeff;
-                Coeff0 = MainRoots.Last().Coeff0;
-                Coeff1 = MainRoots.Last().Coeff1;
-                Coeff2 = MainRoots.Last().Coeff2;
-                Coeff3 = MainRoots.Last().Coeff3;
-                AllSubCoeff = MainRoots.Last().AllSubCoeff;
-                CurrentPredicts = JsonConvert.DeserializeObject<List<BaccaratPredict>>(MainRoots.Last().ListCurrentPredicts);
+                var lastItem = MainRoots.Last();
+                GlobalOrder = lastItem.GlobalOrder;
+                MainCoeff = lastItem.MainCoeff;
+                Coeff0 = lastItem.Coeff0;
+                Coeff1 = lastItem.Coeff1;
+                Coeff2 = lastItem.Coeff2;
+                Coeff3 = lastItem.Coeff3;
+                AllSubCoeff = lastItem.AllSubCoeff;
+                CurrentPredicts = JsonConvert.DeserializeObject<List<BaccaratPredict>>(lastItem.ListCurrentPredicts);
 
                 //Khi user nhấn nút BACK (ressetFileName = false), lấy lại các thông tin về tích lũy bằng cách
                 //      trừ đi Profit cuả record đã xóa (Móa, tâm trí không tập trung phải gõ ngơ ngơ thế này) 
                 //      ví dụ đi ha: 
                 //          Thôi để sau
-                if (ressetFileName == false && deletedProfitInfo != null)
+                if (ressetFileName == false )
                 {
-                    MainAccumulate -= deletedProfitInfo[0]; 
-                    Accumulate0 -= deletedProfitInfo[1];
-                    Accumulate1 -= deletedProfitInfo[2];
-                    Accumulate2 -= deletedProfitInfo[3];
-                    Accumulate3 -= deletedProfitInfo[4];
-                    AllSubAccumulate -= deletedProfitInfo[5];
+                    MainAccumulate -= lastItem.MainProfit; 
+                    Accumulate0 -= lastItem.Profit0;
+                    Accumulate1 -= lastItem.Profit1;
+                    Accumulate2 -= lastItem.Profit2;
+                    Accumulate3 -= lastItem.Profit3;
+                    AllSubAccumulate -= lastItem.AllSubProfit;
                 }
             }
             else
@@ -200,7 +192,7 @@ namespace CalculationLogic
             var logger = "";
 
             //Update coeff (get the current predict and compare to card)
-            if (CurrentPredicts.Count > 0)
+            if (CurrentPredicts.Count > 0 && MainRoots.Count > 0)
             {
                 var lastRoot = MainRoots.Last();
 
