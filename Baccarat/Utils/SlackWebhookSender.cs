@@ -18,6 +18,9 @@ namespace Midas.Utils
         //const string SlackWebHookUrl = "https://hooks.slack.com/services/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";
         public static bool SendMessage(string message, string channel , string userName = "MidasSoft Auto Notifier", string icon = ":interrobang:")
         {
+            if (File.Exists("D:\\no_slack_sending.txt"))
+                return true;
+            
             var body = new
             {
                 text = message,
