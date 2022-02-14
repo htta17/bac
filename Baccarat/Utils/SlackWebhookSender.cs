@@ -19,8 +19,10 @@ namespace Midas.Utils
         public static bool SendMessage(string message, string channel , string userName = "MidasSoft Auto Notifier", string icon = ":interrobang:")
         {
             if (File.Exists("D:\\no_slack_sending.txt"))
-                return true;
-            
+            {
+                channel = "test-report";
+            }                
+
             var body = new
             {
                 text = message,
@@ -48,7 +50,7 @@ namespace Midas.Utils
 
                 return responseString.Equals("ok", StringComparison.OrdinalIgnoreCase);
             }
-            catch 
+            catch (Exception ex)
             {                
                 return false;
             }

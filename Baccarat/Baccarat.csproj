@@ -278,6 +278,7 @@
     <Content Include="Sound\Windows Logon.wav">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="SQL\Run 2020.02.14.txt" />
     <None Include="Resources\camera-icon-png.png" />
     <None Include="Resources\160041651.jpg" />
     <None Include="Resources\download.png" />
