@@ -42,3 +42,11 @@ UPDATE Roots SET Flat095Profit1 = Profit1  WHERE NOT(Card = 1 AND Profit1 > 0)
 UPDATE Roots SET Flat095Profit2 = Profit2  WHERE NOT(Card = 1 AND Profit2 > 0)
 UPDATE Roots SET Flat095Profit3 = Profit3  WHERE NOT(Card = 1 AND Profit3 > 0)
 UPDATE Roots SET Flat095AllSub = AllSubProfit WHERE NOT(Card = 1 AND AllSubProfit > 0)
+
+UPDATE Roots SET 
+	[ModMainCoeff] = 11,
+	[ModCoeff0] = 11,
+	[ModCoeff1] = 11,
+	[ModCoeff2] = 11,
+	[ModCoeff3] = 11,
+	[ModAllSubCoeff] = 11

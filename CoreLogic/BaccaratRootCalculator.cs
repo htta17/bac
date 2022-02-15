@@ -13,8 +13,9 @@ namespace CalculationLogic
     public class AccumulateProfit<T>
         where T : struct, IConvertible
     {
-        
-        
+        /// <summary>
+        /// Main Thread
+        /// </summary>
         public T Main { get; set; }
         public T Sub0 { get; set; }
         public T Sub1 { get; set; }
@@ -143,11 +144,11 @@ namespace CalculationLogic
             if (!Directory.Exists("Logs"))
             {
                 Directory.CreateDirectory("Logs");
-            }
-            
+            }            
         }
-        GlobalDBContext BaccaratDBContext { get; set; }
 
+        
+        GlobalDBContext BaccaratDBContext { get; set; }
         public int GlobalOrder { get; private set; } = 0;
 
         public BaccratCard ShowLastCard()
@@ -192,7 +193,6 @@ namespace CalculationLogic
             WriteFirstTime = true;
         }
 
-
         public void Reload(bool ressetFileName)
         {
             var rootCount = BaccaratDBContext.Roots.Count();
@@ -206,29 +206,26 @@ namespace CalculationLogic
             {
                 var lastItem = MainRoots.Last();
                 GlobalOrder = lastItem.GlobalOrder;
-                
-                FlatCoeff.Main = lastItem.MainCoeff;
-                FlatCoeff.Sub0 =  lastItem.Coeff0;
-                FlatCoeff.Sub1 = lastItem.Coeff1;
-                FlatCoeff.Sub2 = lastItem.Coeff2;
-                FlatCoeff.Sub3 = lastItem.Coeff3;
-                FlatCoeff.AllSub = lastItem.AllSubCoeff;
 
-                ModCoeff.Main = lastItem.ModMainCoeff;
-                ModCoeff.Sub0 = lastItem.ModCoeff0;
-                ModCoeff.Sub1 = lastItem.ModCoeff1;
-                ModCoeff.Sub2 = lastItem.ModCoeff2;
-                ModCoeff.Sub3 = lastItem.ModCoeff3;
-                ModCoeff.AllSub = lastItem.ModAllSubCoeff;
-
-                CurrentPredicts = JsonConvert.DeserializeObject<List<BaccaratPredict>>(lastItem.ListCurrentPredicts);
-
-                //Khi user nhấn nút BACK (ressetFileName = false), lấy lại các thông tin về tích lũy bằng cách
-                //      trừ đi Profit cuả record đã xóa (Móa, tâm trí không tập trung phải gõ ngơ ngơ thế này) 
-                //      ví dụ đi ha: 
-                //          Thôi để sau
-                if (ressetFileName == false )
+                if (ressetFileName)
                 {
+                    FlatCoeff.SetValue(1);
+                    ModCoeff.SetValue(Eleven);
+
+                    AccumulateFlat100.Reset();
+                    AccumulateFlat095.Reset();
+                    AccumulateMod100.Reset();
+                    AccumulateMod095.Reset();
+                }
+                else
+                {
+                    FlatCoeff.Main = lastItem.MainCoeff;
+                    FlatCoeff.Sub0 = lastItem.Coeff0;
+                    FlatCoeff.Sub1 = lastItem.Coeff1;
+                    FlatCoeff.Sub2 = lastItem.Coeff2;
+                    FlatCoeff.Sub3 = lastItem.Coeff3;
+                    FlatCoeff.AllSub = lastItem.AllSubCoeff;
+
                     AccumulateFlat100.Main -= lastItem.MainProfit;
                     AccumulateFlat100.Sub0 -= lastItem.Profit0;
                     AccumulateFlat100.Sub1 -= lastItem.Profit1;
@@ -242,7 +239,37 @@ namespace CalculationLogic
                     AccumulateFlat095.Sub2 -= lastItem.Flat095Profit2;
                     AccumulateFlat095.Sub3 -= lastItem.Flat095Profit3;
                     AccumulateFlat095.AllSub -= lastItem.Flat095AllSub;
+
+                    ModCoeff.Main = lastItem.ModMainCoeff;
+                    ModCoeff.Sub0 = lastItem.ModCoeff0;
+                    ModCoeff.Sub1 = lastItem.ModCoeff1;
+                    ModCoeff.Sub2 = lastItem.ModCoeff2;
+                    ModCoeff.Sub3 = lastItem.ModCoeff3;
+                    ModCoeff.AllSub = lastItem.ModAllSubCoeff;
+
+                    AccumulateMod100.Main -= lastItem.ModMainProfit;
+                    AccumulateMod100.Sub0 -= lastItem.ModProfit0;
+                    AccumulateMod100.Sub1 -= lastItem.ModProfit1;
+                    AccumulateMod100.Sub2 -= lastItem.ModProfit2;
+                    AccumulateMod100.Sub3 -= lastItem.ModProfit3;
+                    AccumulateMod100.AllSub -= lastItem.ModAllSubProfit;
+
+                    AccumulateMod095.Main -= lastItem.Mod095Main;
+                    AccumulateMod095.Sub0 -= lastItem.Mod095Profit0;
+                    AccumulateMod095.Sub1 -= lastItem.Mod095Profit1;
+                    AccumulateMod095.Sub2 -= lastItem.Mod095Profit2;
+                    AccumulateMod095.Sub3 -= lastItem.Mod095Profit3;
+                    AccumulateMod095.AllSub -= lastItem.Mod095AllSub;
                 }
+                
+
+                CurrentPredicts = JsonConvert.DeserializeObject<List<BaccaratPredict>>(lastItem.ListCurrentPredicts);
+
+                //Khi user nhấn nút BACK (ressetFileName = false), lấy lại các thông tin về tích lũy bằng cách
+                //      trừ đi Profit cuả record đã xóa (Móa, tâm trí không tập trung phải gõ ngơ ngơ thế này) 
+                //      ví dụ đi ha: 
+                //          Thôi để sau
+                
             }
             else
             {
@@ -252,7 +279,9 @@ namespace CalculationLogic
                 ModCoeff.SetValue(Eleven);
 
                 AccumulateFlat100.Reset();
-                AccumulateFlat095.Reset();                
+                AccumulateFlat095.Reset();
+                AccumulateMod100.Reset();
+                AccumulateMod095.Reset();
 
                 CurrentPredicts = new List<BaccaratPredict>();
             }
@@ -320,26 +349,30 @@ namespace CalculationLogic
             "Profit3 (Flat),Accumulate3 (Flat)," +
             "All Sub Profit (Flat), All Sub Accumulate  (Flat), SUM FLAT," +
 
+            /*
             "Main Profit (0.95),Main Accumulate (0.95)," +
             "Profit0 (0.95),Accumulate0 (0.95)," +
             "Profit1 (0.95),Accumulate1 (0.95)," +
             "Profit2 (0.95),Accumulate2 (0.95)," +
             "Profit3 (0.95),Accumulate3 (0.95), " +
             "All Sub Profit (0.95), All Sub Accumulate  (0.95), SUM FLAT 0.95," +
+            */
 
             "Main Profit (Mod),Main Accumulate (Mod)," +
             "Profit0 (Mod),Accumulate0 (Mod)," +
             "Profit1 (Mod),Accumulate1 (Mod)," +
             "Profit2 (Mod),Accumulate2 (Mod)," +
             "Profit3 (Mod),Accumulate3 (FModlat)," +
-            "All Sub Profit (Flat), All Sub Accumulate  (Mod), SUM MOD," +
+            "All Sub Profit (Flat), All Sub Accumulate  (Mod), SUM MOD" +
 
+            /*
             "Main Profit (Mod 0.95),Main Accumulate (Mod 0.95)," +
             "Profit0 (Mod 0.95),Accumulate0 (Mod 0.95)," +
             "Profit1 (Mod 0.95),Accumulate1 (Mod 0.95)," +
             "Profit2 (Mod 0.95),Accumulate2 (Mod 0.95)," +
             "Profit3 (Mod 0.95),Accumulate3 (Mod 0.95), " +
             "All Sub Profit (0.95), All Sub Accumulate  (0.95), SUM MOD 0.95" +
+            */
 
             " \r\n";
         const string LOG_FILE_FORMAT = "Logs\\{0:yyyy-MM-dd}\\{0:HH.mm.ss}.csv";
@@ -461,10 +494,10 @@ namespace CalculationLogic
 
                     var modAllSubProfit = UpdateCurrentCoeff(card, 11, ModCoeff.AllSub, LowRiskIcrement);
                     ModCoeff.AllSub = modAllSubProfit.Coeff;
-                    lastRoot.AllSubProfit = modAllSubProfit.Profit;
-                    lastRoot.Flat095AllSub = modAllSubProfit.ComissionedProfit;
-                    AccumulateFlat100.AllSub += modAllSubProfit.Profit;
-                    AccumulateFlat095.AllSub += modAllSubProfit.ComissionedProfit;
+                    lastRoot.ModAllSubProfit = modAllSubProfit.Profit;
+                    lastRoot.Mod095AllSub = modAllSubProfit.ComissionedProfit;
+                    AccumulateMod100.AllSub += modAllSubProfit.Profit;
+                    AccumulateMod095.AllSub += modAllSubProfit.ComissionedProfit;
                 }
                 #endregion
 
@@ -478,14 +511,32 @@ namespace CalculationLogic
                                 $"{lastRoot.Profit1},{AccumulateFlat100.Sub1}," +
                                 $"{lastRoot.Profit2},{AccumulateFlat100.Sub2}," +
                                 $"{lastRoot.Profit3},{AccumulateFlat100.Sub3}," +
-                                $"{lastRoot.AllSubProfit}, {AccumulateFlat100.AllSub}, {AccumulateFlat100.AllSub * 2 + AccumulateFlat100.Main}, " +
+                                $"{lastRoot.AllSubProfit}, {AccumulateFlat100.AllSub}, {AccumulateFlat100.SumAll() }, " +
 
+                                /*
                                 $"{lastRoot.Flat095Main},{AccumulateFlat095.Main}," +
                                 $"{lastRoot.Flat095Profit0},{AccumulateFlat095.Sub0}," +
                                 $"{lastRoot.Flat095Profit1},{AccumulateFlat095.Sub1}," +
                                 $"{lastRoot.Flat095Profit2},{AccumulateFlat095.Sub2}," +
                                 $"{lastRoot.Flat095Profit3},{AccumulateFlat095.Sub3}," +
-                                $"{lastRoot.Flat095AllSub}, {AccumulateFlat095.AllSub}, {AccumulateFlat095.AllSub * 2 + AccumulateFlat095.Main}" +
+                                $"{lastRoot.Flat095AllSub}, {AccumulateFlat095.AllSub}, {AccumulateFlat095.SumAll() }," +
+                                */
+
+                                $"{lastRoot.ModMainProfit},{AccumulateMod100.Main}," +
+                                $"{lastRoot.ModProfit0},{AccumulateMod100.Sub0}," +
+                                $"{lastRoot.ModProfit1},{AccumulateMod100.Sub1}," +
+                                $"{lastRoot.ModProfit2},{AccumulateMod100.Sub2}," +
+                                $"{lastRoot.ModProfit3},{AccumulateMod100.Sub3}," +
+                                $"{lastRoot.ModAllSubProfit}, {AccumulateMod100.AllSub}, {AccumulateMod100.SumAll() }" +
+
+                                /*
+                                $"{lastRoot.Mod095Main},{AccumulateMod095.Main}," +
+                                $"{lastRoot.Mod095Profit0},{AccumulateMod095.Sub0}," +
+                                $"{lastRoot.Mod095Profit1},{AccumulateMod095.Sub1}," +
+                                $"{lastRoot.Mod095Profit2},{AccumulateMod095.Sub2}," +
+                                $"{lastRoot.Mod095Profit3},{AccumulateMod095.Sub3}," +
+                                $"{lastRoot.Mod095AllSub}, {AccumulateMod095.AllSub}, {AccumulateMod095.SumAll() }" +
+                                */
 
                                 $" \r\n";
 
@@ -494,7 +545,7 @@ namespace CalculationLogic
             {
                 logger = $"{GlobalOrder},{DateTime.Now},{card} \r\n";
 
-                for (var i = 1; i <= 24; i++) //Có 24 cột cả thảy
+                for (var i = 1; i <= 26; i++) //Có 24 cột cả thảy
                     logger += ",0";
             }
 
@@ -541,7 +592,28 @@ namespace CalculationLogic
                 Flat095Profit1 = 0, 
                 Flat095Profit2 = 0,
                 Flat095Profit3 = 0, 
-                Flat095AllSub = 0,                
+                Flat095AllSub = 0, 
+
+                ModMainCoeff = ModCoeff.Main,
+                ModCoeff0 = ModCoeff.Sub0,
+                ModCoeff1 = ModCoeff.Sub1,
+                ModCoeff2 = ModCoeff.Sub2,
+                ModCoeff3 = ModCoeff.Sub3,
+                ModAllSubCoeff = ModCoeff.AllSub,
+
+                ModMainProfit = 0,
+                ModProfit0 = 0,
+                ModProfit1 = 0,
+                ModProfit2 = 0,
+                ModProfit3 = 0,
+                ModAllSubProfit = 0,
+
+                Mod095Main = 0,
+                Mod095Profit0 = 0,
+                Mod095Profit1 = 0,
+                Mod095Profit2 = 0,
+                Mod095Profit3 = 0,
+                Mod095AllSub = 0,
 
                 GlobalOrder = GlobalOrder, 
                 ListCurrentPredicts = ""
@@ -627,22 +699,65 @@ namespace CalculationLogic
             var thread2 = PredicThread(Roots2, FlatCoeff.Sub2);
             var thread3 = PredicThread(Roots3, FlatCoeff.Sub3);
 
+            var modMainThread = PredicThread(MainRoots, ModCoeff.Main);
+            var modThread0 = PredicThread(Roots0, ModCoeff.Sub0);
+            var modThread1 = PredicThread(Roots1, ModCoeff.Sub1);
+            var modThread2 = PredicThread(Roots2, ModCoeff.Sub2);
+            var modThread3 = PredicThread(Roots3, ModCoeff.Sub3);
+            
+
             var _predictGlobalOrder = GlobalOrder + 1;
-            var subThread = _predictGlobalOrder % 4 == 0 ? thread0 :
-                                _predictGlobalOrder % 4 == 1 ? thread1 :
-                                _predictGlobalOrder % 4 == 2 ? thread2 :
-                                thread3;
+            var subThread = default(BaccaratPredict);
+            var modsubThread = default(BaccaratPredict);
+            var modAllSubThread = default(BaccaratPredict);
 
-            var volume = (int)mainThread.Value * mainThread.Volume  //Main thread                            
-                           + (int)subThread.Value * (subThread.Volume + FlatCoeff.AllSub) ;   //Dùng cho trường hợp hệ số từng thread đi riêng rẽ
-
-            var result = new BaccaratPredict
+            if (_predictGlobalOrder % 4 == 0)
             {
-                Value = volume > 0 ? BaccratCard.Banker : volume == 0 ? BaccratCard.NoTrade : BaccratCard.Player,
-                Volume = Math.Abs(volume)
+                subThread = thread0;
+                modsubThread = modThread0;
+                modAllSubThread = PredicThread(Roots0, ModCoeff.AllSub);
+            }
+            else if (_predictGlobalOrder % 4 == 1)
+            {
+                subThread = thread1;
+                modsubThread = modThread1;
+                modAllSubThread = PredicThread(Roots1, ModCoeff.AllSub);
+            }
+            else if (_predictGlobalOrder % 4 == 2)
+            {
+                subThread = thread2;
+                modsubThread = modThread2;
+                modAllSubThread = PredicThread(Roots2, ModCoeff.AllSub);
+            }
+            else
+            {
+                subThread = thread3;
+                modsubThread = modThread3;
+                modAllSubThread = PredicThread(Roots3, ModCoeff.AllSub);
+            }
+
+            var volumeFlat = (int)mainThread.Value * mainThread.Volume  //Main thread                            
+                           + (int)subThread.Value * (subThread.Volume + FlatCoeff.AllSub) ;
+
+            var volumeMod = (int)modMainThread.Value * modMainThread.Volume
+                                + (int)modsubThread.Value * modsubThread.Volume
+                                + (int)modAllSubThread.Value * modAllSubThread.Volume;
+
+            var resultFlat = new BaccaratPredict
+            {
+                Value = volumeFlat > 0 ? BaccratCard.Banker : volumeFlat == 0 ? BaccratCard.NoTrade : BaccratCard.Player,
+                Volume = Math.Abs(volumeFlat)
+            };
+            var resultMod = new BaccaratPredict
+            {
+                Value = volumeMod > 0 ? BaccratCard.Banker : volumeMod == 0 ? BaccratCard.NoTrade : BaccratCard.Player,
+                Volume = Math.Abs(volumeMod)
             };
 
-            CurrentPredicts.Clear();
+            if (CurrentPredicts == null)
+                CurrentPredicts = new List<BaccaratPredict>();
+            else
+                CurrentPredicts.Clear();
             CurrentPredicts.AddRange(new List<BaccaratPredict>
             {
                 mainThread,
@@ -650,7 +765,14 @@ namespace CalculationLogic
                 thread1,
                 thread2,
                 thread3,
-                subThread //All subs thread
+                subThread,
+
+                modMainThread,
+                modThread0, 
+                modThread1, 
+                modThread2, 
+                modThread3, 
+                modAllSubThread
             });
 
             //Update Root 
@@ -660,8 +782,8 @@ namespace CalculationLogic
                 lastRoot.ListCurrentPredicts = JsonConvert.SerializeObject(CurrentPredicts);
                 BaccaratDBContext.UpdateRoot(lastRoot);
             }
-
-            return result;
+            
+            return 1 == 1 ? resultFlat : resultMod;           
         }
 
         private BaccaratPredict PredicThread(List<Root> roots, int volume)
@@ -719,24 +841,12 @@ namespace CalculationLogic
 
         public string EndSessionReport()
         {
-            var basic100Accumulate  = AccumulateFlat100.Main +
-                                    AccumulateFlat100.Sub0 +
-                                    AccumulateFlat100.Sub1 +
-                                    AccumulateFlat100.Sub2 +
-                                    AccumulateFlat100.Sub3 +
-                                    AccumulateFlat100.AllSub;
-
-            var basic95ccumulate = AccumulateFlat095.Main +
-                                   AccumulateFlat095.Sub0 +
-                                   AccumulateFlat095.Sub1 +
-                                   AccumulateFlat095.Sub2 +
-                                   AccumulateFlat095.Sub3 +
-                                   AccumulateFlat095.AllSub;
             var text = $"Tổng kết lúc { DateTime.Now: yyyy-MM-dd HH:mm:ss} tại máy {Environment.MachineName}:\r\n" +
                         "Format: Phiên chính, phiên con 1-4, phiên tổng hợp của 4 phiên con\r\n" +
-                        $"Flat: `{AccumulateFlat100.Main}`, `{AccumulateFlat100.Sub0}`, `{ AccumulateFlat100.Sub1}`, `{AccumulateFlat100.Sub2}`, `{AccumulateFlat100.Sub3}`, `{ AccumulateFlat100.AllSub}`, Tổng: `{basic100Accumulate}`  units.\r\n" +
-                        $"Flat (0.95):  `{AccumulateFlat095.Main}`, `{AccumulateFlat095.Sub0}`, `{ AccumulateFlat095.Sub1}`, `{AccumulateFlat095.Sub2}`, `{AccumulateFlat095.Sub3}`, `{ AccumulateFlat095.AllSub}`, Tổng: `{basic95ccumulate}`  units.\r\n";
-                
+                        $":one: Flat: `{AccumulateFlat100.Main}`, `{AccumulateFlat100.Sub0}`, `{ AccumulateFlat100.Sub1}`, `{AccumulateFlat100.Sub2}`, `{AccumulateFlat100.Sub3}`, `{ AccumulateFlat100.AllSub}`, Tổng: `{AccumulateFlat100.SumAll()}`  units.\r\n" +
+                        $":two: Flat (0.95):  `{AccumulateFlat095.Main}`, `{AccumulateFlat095.Sub0}`, `{ AccumulateFlat095.Sub1}`, `{AccumulateFlat095.Sub2}`, `{AccumulateFlat095.Sub3}`, `{ AccumulateFlat095.AllSub}`, Tổng: `{AccumulateFlat095.SumAll() }`  units.\r\n" +
+                        $":three: Modification: `{AccumulateMod100.Main}`, `{AccumulateMod100.Sub0}`, `{ AccumulateMod100.Sub1}`, `{AccumulateMod100.Sub2}`, `{AccumulateMod100.Sub3}`, `{ AccumulateMod100.AllSub}`, Tổng: `{AccumulateMod100.SumAll()}`  units.\r\n" +
+                        $":four: Modification (0.95):  `{AccumulateMod095.Main}`, `{AccumulateMod095.Sub0}`, `{ AccumulateMod095.Sub1}`, `{AccumulateMod095.Sub2}`, `{AccumulateMod095.Sub3}`, `{ AccumulateMod095.AllSub}`, Tổng: `{AccumulateMod095.SumAll() }`  units.\r\n"; 
             return text;
         }
     }
