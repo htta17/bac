@@ -342,12 +342,18 @@ namespace CalculationLogic
         private DateTime? FILENAME_DATETIME = null;
         private const string LogTitle = 
             "ID,Time,Card," +
-            "Main Profit (Flat),Main Accumulate (Flat)," +
-            "Profit0 (Flat),Accumulate0 (Flat)," +
-            "Profit1 (Flat),Accumulate1 (Flat)," +
-            "Profit2 (Flat),Accumulate2 (Flat)," +
-            "Profit3 (Flat),Accumulate3 (Flat)," +
-            "All Sub Profit (Flat), All Sub Accumulate  (Flat), SUM FLAT," +
+            //"Main Profit (Flat)," +
+            "Main Accumulate (Flat)," +
+            //"Profit0 (Flat)," +
+            "Accumulate0 (Flat)," +
+            //"Profit1 (Flat)," +
+            "Accumulate1 (Flat)," +
+            //"Profit2 (Flat)," +
+            "Accumulate2 (Flat)," +
+            //"Profit3 (Flat)," +
+            "Accumulate3 (Flat)," +
+            //"All Sub Profit (Flat), " +
+            "All Sub Accumulate  (Flat), SUM FLAT," +
 
             /*
             "Main Profit (0.95),Main Accumulate (0.95)," +
@@ -358,12 +364,18 @@ namespace CalculationLogic
             "All Sub Profit (0.95), All Sub Accumulate  (0.95), SUM FLAT 0.95," +
             */
 
-            "Main Profit (Mod),Main Accumulate (Mod)," +
-            "Profit0 (Mod),Accumulate0 (Mod)," +
-            "Profit1 (Mod),Accumulate1 (Mod)," +
-            "Profit2 (Mod),Accumulate2 (Mod)," +
-            "Profit3 (Mod),Accumulate3 (FModlat)," +
-            "All Sub Profit (Flat), All Sub Accumulate  (Mod), SUM MOD" +
+            //"Main Profit (Mod)," +
+            "Main Accumulate (Mod)," +
+            //"Profit0 (Mod)," +
+            "Accumulate0 (Mod)," +
+            //"Profit1 (Mod)," +
+            "Accumulate1 (Mod)," +
+            //"Profit2 (Mod)," +
+            "Accumulate2 (Mod)," +
+            //"Profit3 (Mod)," +
+            "Accumulate3 (Mod)," +
+            //"All Sub Profit (Flat), " +
+            "All Sub Accumulate (Mod), SUM MOD" +
 
             /*
             "Main Profit (Mod 0.95),Main Accumulate (Mod 0.95)," +
@@ -506,12 +518,18 @@ namespace CalculationLogic
 
                 //Ghi vào log
                 logger = $"{GlobalOrder},{DateTime.Now},{card}," +
-                                $"{lastRoot.MainProfit},{AccumulateFlat100.Main}," +
-                                $"{lastRoot.Profit0},{AccumulateFlat100.Sub0}," +
-                                $"{lastRoot.Profit1},{AccumulateFlat100.Sub1}," +
-                                $"{lastRoot.Profit2},{AccumulateFlat100.Sub2}," +
-                                $"{lastRoot.Profit3},{AccumulateFlat100.Sub3}," +
-                                $"{lastRoot.AllSubProfit}, {AccumulateFlat100.AllSub}, {AccumulateFlat100.SumAll() }, " +
+                                //$"{lastRoot.MainProfit}," +
+                                $"{AccumulateFlat100.Main}," +
+                                //$"{lastRoot.Profit0}," +
+                                $"{AccumulateFlat100.Sub0}," +
+                                //$"{lastRoot.Profit1}," +
+                                $"{AccumulateFlat100.Sub1}," +
+                                //$"{lastRoot.Profit2}," +
+                                $"{AccumulateFlat100.Sub2}," +
+                                //$"{lastRoot.Profit3}," +
+                                $"{AccumulateFlat100.Sub3}," +
+                                //$"{lastRoot.AllSubProfit}, " +
+                                $"{AccumulateFlat100.AllSub}, {AccumulateFlat100.SumAll() }, " +
 
                                 /*
                                 $"{lastRoot.Flat095Main},{AccumulateFlat095.Main}," +
@@ -522,12 +540,18 @@ namespace CalculationLogic
                                 $"{lastRoot.Flat095AllSub}, {AccumulateFlat095.AllSub}, {AccumulateFlat095.SumAll() }," +
                                 */
 
-                                $"{lastRoot.ModMainProfit},{AccumulateMod100.Main}," +
-                                $"{lastRoot.ModProfit0},{AccumulateMod100.Sub0}," +
-                                $"{lastRoot.ModProfit1},{AccumulateMod100.Sub1}," +
-                                $"{lastRoot.ModProfit2},{AccumulateMod100.Sub2}," +
-                                $"{lastRoot.ModProfit3},{AccumulateMod100.Sub3}," +
-                                $"{lastRoot.ModAllSubProfit}, {AccumulateMod100.AllSub}, {AccumulateMod100.SumAll() }" +
+                                //$"{lastRoot.ModMainProfit}," +
+                                $"{AccumulateMod100.Main}," +
+                                //$"{lastRoot.ModProfit0}," +
+                                $"{AccumulateMod100.Sub0}," +
+                                //$"{lastRoot.ModProfit1}," +
+                                $"{AccumulateMod100.Sub1}," +
+                                //$"{lastRoot.ModProfit2}," +
+                                $"{AccumulateMod100.Sub2}," +
+                                //$"{lastRoot.ModProfit3}," +
+                                $"{AccumulateMod100.Sub3}," +
+                                //$"{lastRoot.ModAllSubProfit}, " +
+                                $"{AccumulateMod100.AllSub}, {AccumulateMod100.SumAll() }" +
 
                                 /*
                                 $"{lastRoot.Mod095Main},{AccumulateMod095.Main}," +
