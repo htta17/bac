@@ -22,7 +22,8 @@ namespace Midas
         {
             InitializeComponent();
 
-            Timer.Interval = 1000 * 60 * 5; //5 mins
+            numInterval.Value = 5;
+            Timer.Interval = 1000 * 60 * (int)numInterval.Value; //5 mins
             Timer.Tick += Timer_Tick;
 
             try
@@ -44,21 +45,28 @@ namespace Midas
         {
             TakeScreenshot(false);
         }
-        const string IMAGE_FORMAT = "Logs\\{0:yyyy-MM-dd}\\Image_{0:HHmmss}.jpeg";
-        
+        const string IMAGE_FORMAT = FOLDER_FORMAT + "\\Image_{0:HHmmss}.jpeg";
+        const string FOLDER_FORMAT = "Logs\\{0:yyyy-MM-dd}"; 
 
         private void TakeScreenshot(bool showMessage)
         {
+            var dateTimeNow = DateTime.Now;
+            if (!Directory.Exists(string.Format(FOLDER_FORMAT, dateTimeNow)))
+            {
+                Directory.CreateDirectory(string.Format(FOLDER_FORMAT, dateTimeNow));
+            }
             try
             {
-                Rectangle bounds = Screen.FromControl(this).Bounds;
-                using (Bitmap bitmap = new Bitmap(bounds.Width, bounds.Height))
+                Rectangle bounds = Screen.PrimaryScreen.Bounds;
+                var width = (int)numWidth.Value;
+                var height = (int)numHeight.Value;
+                using (Bitmap bitmap = new Bitmap(width, height))
                 {
                     using (Graphics g = Graphics.FromImage(bitmap))
                     {
-                        g.CopyFromScreen(new Point(0, 0), Point.Empty, bounds.Size);
+                        g.CopyFromScreen(new Point(0, 0), Point.Empty, new Size(width, height));
                     }
-                    bitmap.Save(string.Format(IMAGE_FORMAT, DateTime.Now), ImageFormat.Jpeg);
+                    bitmap.Save(string.Format(IMAGE_FORMAT, dateTimeNow), ImageFormat.Jpeg);
                 }
             }
             catch (Exception e)
@@ -90,17 +98,7 @@ namespace Midas
 
                 Driver.FindElement(By.CssSelector(".input-username input[name=username]")).SendKeys(txtUserName.Text);
                 Driver.FindElement(By.CssSelector(".input-password input[name=password]")).SendKeys(txtPassword.Text);
-                Driver.FindElement(By.CssSelector("button[type=submit]")).Click();
-
-                //Driver.FindElement(By.CssSelector("a[href=\"/vi-vn/live\"]")).Click();
-
-                //var baccaratUImage = Driver.FindElement(By.CssSelector("img[src=https://doc-cdn.docb18a1.com/contents/images/live/471x439-Generic_Baccarat.jpg]"));
-
-                ////Instantiating Actions class
-                //Actions actions = new Actions(Driver);
-
-                ////Hovering on main menu
-                //actions.MoveToElement(baccaratUImage);
+                Driver.FindElement(By.CssSelector("button[type=submit]")).Click();                
             }
             catch (Exception ex)
             { 
@@ -118,21 +116,23 @@ namespace Midas
             Driver.Manage().Window.Maximize();
         }
 
-        bool Enabled = false;
+        bool StatusEnabled { get; set; } = false;
 
         private void button1_Click(object sender, EventArgs e)
         {
-            Enabled = !Enabled;
-            if (Enabled)
+            StatusEnabled = !StatusEnabled;
+            if (StatusEnabled)
             {
-                Timer.Interval = (int)numericUpDown1.Value * 1000 * 60;
+                Timer.Interval = (int)numInterval.Value * 1000 * 60;
                 Timer.Start();
-                btnTakePhoto.Text = "Stop"; 
+                btnTakePhoto.Text = "Stop";
+                btnTakePhoto.ForeColor = Color.Red;
             }
             else 
             {
                 Timer.Stop();
                 btnTakePhoto.Text = "Start";
+                btnTakePhoto.ForeColor = Color.Green;
             }
             
         }
