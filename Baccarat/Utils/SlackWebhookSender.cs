@@ -21,6 +21,8 @@ namespace Midas.Utils
             if (File.Exists("D:\\no_slack_sending.txt"))
             {
                 channel = "test-report";
+                userName = "Testing Report";
+                icon = ":test_tube:";
             }                
 
             var body = new

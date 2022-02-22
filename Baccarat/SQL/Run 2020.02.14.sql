@@ -27,6 +27,8 @@ ALTER TABLE Roots ADD [Mod095Profit2] DECIMAL(10,2) NOT NULL DEFAULT (0)
 ALTER TABLE Roots ADD [Mod095Profit3] DECIMAL(10,2) NOT NULL DEFAULT (0)
 ALTER TABLE Roots ADD [Mod095AllSub] DECIMAL(10,2) NOT NULL DEFAULT (0)
 
+GO
+
 ------------------------------------------------------------------------------------------------------------------
 
 UPDATE Roots SET Flat095Main = MainProfit * 0.95 WHERE Card = 1 AND MainProfit > 0
@@ -50,3 +52,32 @@ UPDATE Roots SET
 	[ModCoeff2] = 11,
 	[ModCoeff3] = 11,
 	[ModAllSubCoeff] = 11
+
+	GO
+
+----------------------------------------------------------------------------------------------
+CREATE TABLE [dbo].[RootSession](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[StartDateTime] [datetime] NOT NULL,
+	[NoOfSteps] [int] NOT NULL,
+	[MaxMainProfit] [int] NOT NULL,
+	[MinMainProfit] [int] NOT NULL,
+	[MaxProfit0] [int] NOT NULL,
+	[MinProfit0] [int] NOT NULL,
+	[MaxProfit1] [int] NOT NULL,
+	[MinProfit1] [int] NOT NULL,
+	[MaxProfit2] [int] NOT NULL,
+	[MinProfit2] [int] NOT NULL,
+	[MaxProfit3] [int] NOT NULL,
+	[MinProfit3] [int] NOT NULL,
+	[MaxAllSub] [int] NOT NULL,
+	[MinAllSub] [int] NOT NULL,
+	[LastUpdateTime] [datetime] NOT NULL,
+ CONSTRAINT [PK_RootSession] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+-------------------------------------------------------------------

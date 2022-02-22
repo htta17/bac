@@ -7,7 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace CalculationLogic
+namespace CoreLogic
 {
     [System.Runtime.CompilerServices.SpecialName]
     public class AccumulateProfit<T>
@@ -133,7 +133,7 @@ namespace CalculationLogic
     /// <summary>
     /// Main algorithm.
     /// </summary>
-    public class BaccaratRootCalculator
+    public class BaccaratRootCalculator : IBaccaratCalculator
     {
         public BaccaratRootCalculator(string connectionString)
         {
@@ -569,7 +569,7 @@ namespace CalculationLogic
             {
                 logger = $"{GlobalOrder},{DateTime.Now},{card} \r\n";
 
-                for (var i = 1; i <= 26; i++) //Có 24 cột cả thảy
+                for (var i = 1; i <= 14; i++)
                     logger += ",0";
             }
 

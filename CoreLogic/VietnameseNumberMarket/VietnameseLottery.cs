@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace CalculationLogic.VietnameseLottery
+namespace CoreLogic.VietnameseLottery
 {
     public class VL_Digit
     {

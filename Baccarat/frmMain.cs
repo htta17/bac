@@ -1,5 +1,5 @@
 ﻿using Baccarat.BaccaratSimulatorUI;
-using CalculationLogic.BaccaratSimulator;
+using CoreLogic.BaccaratSimulator;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;

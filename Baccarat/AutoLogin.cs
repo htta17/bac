@@ -44,7 +44,7 @@ namespace Midas
         {
             TakeScreenshot(false);
         }
-        const string IMAGE_FORMAT = "Logs\\zz_NewPhoto_{0:yyyyMMdd_HHmmss}.jpeg";
+        const string IMAGE_FORMAT = "Logs\\{0:yyyy-MM-dd}\\Image_{0:HHmmss}.jpeg";
         
 
         private void TakeScreenshot(bool showMessage)
@@ -88,8 +88,8 @@ namespace Midas
             {
                 Driver.Navigate().GoToUrl("https://www.jbbodds.com/vi-vn");
 
-                Driver.FindElement(By.CssSelector(".input-username input[name=username]")).SendKeys("winter9");
-                Driver.FindElement(By.CssSelector(".input-password input[name=password]")).SendKeys("satthu123");
+                Driver.FindElement(By.CssSelector(".input-username input[name=username]")).SendKeys(txtUserName.Text);
+                Driver.FindElement(By.CssSelector(".input-password input[name=password]")).SendKeys(txtPassword.Text);
                 Driver.FindElement(By.CssSelector("button[type=submit]")).Click();
 
                 //Driver.FindElement(By.CssSelector("a[href=\"/vi-vn/live\"]")).Click();
@@ -125,6 +125,7 @@ namespace Midas
             Enabled = !Enabled;
             if (Enabled)
             {
+                Timer.Interval = (int)numericUpDown1.Value * 1000 * 60;
                 Timer.Start();
                 btnTakePhoto.Text = "Stop"; 
             }

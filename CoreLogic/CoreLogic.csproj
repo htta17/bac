@@ -58,6 +58,7 @@
     <Compile Include="BaccaratSimulator\BaccaratSimulatorGame.cs" />
     <Compile Include="BaccaratSimulator\Card.cs" />
     <Compile Include="BaccaratSimulator\Deck.cs" />
+    <Compile Include="IBaccaratCalculator.cs" />
     <Compile Include="Models\BaccaratResult.cs" />
     <Compile Include="Models\BaccratCard.cs" />
     <Compile Include="Models\CalculatorItem.cs" />

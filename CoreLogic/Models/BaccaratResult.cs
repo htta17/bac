@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace CalculationLogic
+namespace CoreLogic
 {
     public class BaccaratResult
     {

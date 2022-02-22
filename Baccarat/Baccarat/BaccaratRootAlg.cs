@@ -1,4 +1,4 @@
-﻿using CalculationLogic;
+﻿using CoreLogic;
 using Microsoft.Win32;
 using Midas.Configuration;
 using Midas.Utils;
@@ -165,7 +165,6 @@ namespace Midas.Baccarat
             }
             catch
             {
-
             }
         }
 

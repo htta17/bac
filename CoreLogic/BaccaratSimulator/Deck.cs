@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace CalculationLogic.BaccaratSimulator
+namespace CoreLogic.BaccaratSimulator
 {
     public class Deck
     {

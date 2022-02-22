@@ -3,11 +3,11 @@ using System.Collections.Generic;
 
 
 
-namespace CalculationLogic
+namespace CoreLogic
 {
     
     
-    public class BaccaratQuadruple
+    public class BaccaratQuadruple : IBaccaratCalculator
     {
         public BaccaratQuadruple()
         {            

@@ -56,6 +56,9 @@ namespace DatabaseContext
         /// <summary>
         /// Số thứ tự tổng quan
         /// </summary>
-        public int GlobalOrder { get; set; }        
+        public int GlobalOrder { get; set; }
+
+        //public int RootSessionID { get; set; }
+        //public virtual Session RootSession { get; set; }
     }
 }

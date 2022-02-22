@@ -1,4 +1,4 @@
-﻿using CalculationLogic.VietnameseLottery;
+﻿using CoreLogic.VietnameseLottery;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
