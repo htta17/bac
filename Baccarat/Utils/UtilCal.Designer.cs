@@ -28,33 +28,33 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.button1 = new System.Windows.Forms.Button();
+            this.btnGetResult = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
-            // button1
+            // btnGetResult
             // 
-            this.button1.Location = new System.Drawing.Point(152, 100);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 38);
-            this.button1.TabIndex = 0;
-            this.button1.Text = "button1";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.btnGetResult.Location = new System.Drawing.Point(12, 30);
+            this.btnGetResult.Name = "btnGetResult";
+            this.btnGetResult.Size = new System.Drawing.Size(141, 61);
+            this.btnGetResult.TabIndex = 0;
+            this.btnGetResult.Text = "Get Baccarat results";
+            this.btnGetResult.UseVisualStyleBackColor = true;
+            this.btnGetResult.Click += new System.EventHandler(this.btnGetResult_Click);
             // 
             // UtilCal
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(878, 327);
-            this.Controls.Add(this.button1);
+            this.ClientSize = new System.Drawing.Size(568, 246);
+            this.Controls.Add(this.btnGetResult);
             this.Name = "UtilCal";
-            this.Text = "Test";
+            this.Text = "Utilities functions";
             this.ResumeLayout(false);
 
         }
 
         #endregion
 
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button btnGetResult;
     }
 }

@@ -46,11 +46,13 @@ namespace Midas
             this.label5 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.numHeight = new System.Windows.Forms.NumericUpDown();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numWidth)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numInterval)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numHeight)).BeginInit();
+            this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabControl1
@@ -61,29 +63,19 @@ namespace Midas
             this.tabControl1.Location = new System.Drawing.Point(0, 0);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(550, 353);
+            this.tabControl1.Size = new System.Drawing.Size(550, 417);
             this.tabControl1.TabIndex = 0;
             // 
             // tabPage1
             // 
-            this.tabPage1.Controls.Add(this.label6);
-            this.tabPage1.Controls.Add(this.numHeight);
-            this.tabPage1.Controls.Add(this.label5);
-            this.tabPage1.Controls.Add(this.label4);
-            this.tabPage1.Controls.Add(this.numWidth);
-            this.tabPage1.Controls.Add(this.label3);
-            this.tabPage1.Controls.Add(this.label2);
-            this.tabPage1.Controls.Add(this.label1);
-            this.tabPage1.Controls.Add(this.numInterval);
-            this.tabPage1.Controls.Add(this.txtPassword);
-            this.tabPage1.Controls.Add(this.txtUserName);
+            this.tabPage1.Controls.Add(this.groupBox1);
             this.tabPage1.Controls.Add(this.btnCamera);
             this.tabPage1.Controls.Add(this.btnTakePhoto);
             this.tabPage1.Controls.Add(this.btnTest);
             this.tabPage1.Location = new System.Drawing.Point(4, 25);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(542, 324);
+            this.tabPage1.Size = new System.Drawing.Size(542, 388);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "MANUAL";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -91,7 +83,7 @@ namespace Midas
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(305, 186);
+            this.label4.Location = new System.Drawing.Point(55, 118);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(75, 17);
             this.label4.TabIndex = 123;
@@ -99,7 +91,7 @@ namespace Midas
             // 
             // numWidth
             // 
-            this.numWidth.Location = new System.Drawing.Point(364, 218);
+            this.numWidth.Location = new System.Drawing.Point(131, 143);
             this.numWidth.Maximum = new decimal(new int[] {
             1920,
             0,
@@ -117,7 +109,7 @@ namespace Midas
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(236, 134);
+            this.label3.Location = new System.Drawing.Point(35, 87);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(90, 17);
             this.label3.TabIndex = 121;
@@ -126,7 +118,7 @@ namespace Midas
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(259, 99);
+            this.label2.Location = new System.Drawing.Point(61, 57);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(69, 17);
             this.label2.TabIndex = 120;
@@ -135,7 +127,7 @@ namespace Midas
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(259, 66);
+            this.label1.Location = new System.Drawing.Point(53, 24);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(77, 17);
             this.label1.TabIndex = 119;
@@ -143,7 +135,7 @@ namespace Midas
             // 
             // numInterval
             // 
-            this.numInterval.Location = new System.Drawing.Point(364, 129);
+            this.numInterval.Location = new System.Drawing.Point(131, 82);
             this.numInterval.Name = "numInterval";
             this.numInterval.Size = new System.Drawing.Size(120, 22);
             this.numInterval.TabIndex = 118;
@@ -155,7 +147,7 @@ namespace Midas
             // 
             // txtPassword
             // 
-            this.txtPassword.Location = new System.Drawing.Point(364, 94);
+            this.txtPassword.Location = new System.Drawing.Point(131, 52);
             this.txtPassword.Name = "txtPassword";
             this.txtPassword.PasswordChar = '*';
             this.txtPassword.Size = new System.Drawing.Size(141, 22);
@@ -164,7 +156,7 @@ namespace Midas
             // 
             // txtUserName
             // 
-            this.txtUserName.Location = new System.Drawing.Point(364, 63);
+            this.txtUserName.Location = new System.Drawing.Point(131, 21);
             this.txtUserName.Name = "txtUserName";
             this.txtUserName.Size = new System.Drawing.Size(141, 22);
             this.txtUserName.TabIndex = 116;
@@ -175,7 +167,7 @@ namespace Midas
             this.btnCamera.BackgroundImage = global::Midas.Properties.Resources.camera_icon_png;
             this.btnCamera.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.btnCamera.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnCamera.Location = new System.Drawing.Point(31, 196);
+            this.btnCamera.Location = new System.Drawing.Point(8, 263);
             this.btnCamera.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.btnCamera.Name = "btnCamera";
             this.btnCamera.Size = new System.Drawing.Size(45, 44);
@@ -185,9 +177,9 @@ namespace Midas
             // 
             // btnTakePhoto
             // 
-            this.btnTakePhoto.Location = new System.Drawing.Point(31, 94);
+            this.btnTakePhoto.Location = new System.Drawing.Point(64, 263);
             this.btnTakePhoto.Name = "btnTakePhoto";
-            this.btnTakePhoto.Size = new System.Drawing.Size(166, 53);
+            this.btnTakePhoto.Size = new System.Drawing.Size(86, 44);
             this.btnTakePhoto.TabIndex = 1;
             this.btnTakePhoto.Text = "Start ";
             this.btnTakePhoto.UseVisualStyleBackColor = true;
@@ -195,9 +187,9 @@ namespace Midas
             // 
             // btnTest
             // 
-            this.btnTest.Location = new System.Drawing.Point(31, 30);
+            this.btnTest.Location = new System.Drawing.Point(8, 313);
             this.btnTest.Name = "btnTest";
-            this.btnTest.Size = new System.Drawing.Size(166, 53);
+            this.btnTest.Size = new System.Drawing.Size(142, 53);
             this.btnTest.TabIndex = 0;
             this.btnTest.Text = "Login";
             this.btnTest.UseVisualStyleBackColor = true;
@@ -216,7 +208,7 @@ namespace Midas
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(314, 220);
+            this.label5.Location = new System.Drawing.Point(86, 145);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(44, 17);
             this.label5.TabIndex = 124;
@@ -225,7 +217,7 @@ namespace Midas
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(314, 248);
+            this.label6.Location = new System.Drawing.Point(81, 173);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(49, 17);
             this.label6.TabIndex = 126;
@@ -233,7 +225,7 @@ namespace Midas
             // 
             // numHeight
             // 
-            this.numHeight.Location = new System.Drawing.Point(364, 246);
+            this.numHeight.Location = new System.Drawing.Point(131, 171);
             this.numHeight.Maximum = new decimal(new int[] {
             1080,
             0,
@@ -248,11 +240,31 @@ namespace Midas
             0,
             0});
             // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.txtUserName);
+            this.groupBox1.Controls.Add(this.label6);
+            this.groupBox1.Controls.Add(this.txtPassword);
+            this.groupBox1.Controls.Add(this.numHeight);
+            this.groupBox1.Controls.Add(this.numInterval);
+            this.groupBox1.Controls.Add(this.label5);
+            this.groupBox1.Controls.Add(this.label1);
+            this.groupBox1.Controls.Add(this.numWidth);
+            this.groupBox1.Controls.Add(this.label4);
+            this.groupBox1.Controls.Add(this.label2);
+            this.groupBox1.Controls.Add(this.label3);
+            this.groupBox1.Location = new System.Drawing.Point(8, 15);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(526, 202);
+            this.groupBox1.TabIndex = 127;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Setting";
+            // 
             // AutoLogin
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(550, 353);
+            this.ClientSize = new System.Drawing.Size(550, 417);
             this.Controls.Add(this.tabControl1);
             this.Name = "AutoLogin";
             this.Text = "AutoLogin";
@@ -260,10 +272,11 @@ namespace Midas
             this.Load += new System.EventHandler(this.AutoLogin_Load);
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
-            this.tabPage1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numWidth)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numInterval)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numHeight)).EndInit();
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -287,5 +300,6 @@ namespace Midas
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.NumericUpDown numHeight;
+        private System.Windows.Forms.GroupBox groupBox1;
     }
 }
