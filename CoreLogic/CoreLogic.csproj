@@ -51,19 +51,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BaccaratCombinationCalculator.cs" />
-    <Compile Include="BaccaratQuadruple.cs" />
-    <Compile Include="BaccaratQuadrupleCalculator.cs" />
-    <Compile Include="BaccaratRootCalculator.cs" />
+    <Compile Include="BacSeparatedAlgorithms\BaccaratCombinationCalculator.cs" />
+    <Compile Include="BacSeparatedAlgorithms\BaccaratQuadruple.cs" />
+    <Compile Include="BacSeparatedAlgorithms\BaccaratQuadrupleCalculator.cs" />
+    <Compile Include="BacSeparatedAlgorithms\BaccaratRootCalculator.cs" />
     <Compile Include="BaccaratSimulator\BaccaratSimulatorGame.cs" />
     <Compile Include="BaccaratSimulator\Card.cs" />
     <Compile Include="BaccaratSimulator\Deck.cs" />
-    <Compile Include="IBaccaratCalculator.cs" />
+    <Compile Include="BacSeparatedAlgorithms\IBaccaratCalculator.cs" />
     <Compile Include="Models\BaccaratResult.cs" />
     <Compile Include="Models\BaccratCard.cs" />
     <Compile Include="Models\CalculatorItem.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="QuadrupleResult.cs" />
+    <Compile Include="BacSeparatedAlgorithms\QuadrupleResult.cs" />
     <Compile Include="VietnameseLottery.cs" />
     <Compile Include="VietnameseNumberMarket\VietnameseLottery.cs" />
   </ItemGroup>
@@ -76,6 +76,9 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="StandardlizedAlgorithms\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
