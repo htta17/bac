@@ -16,13 +16,15 @@ namespace CoreLogic
         Seven_Two = 64, 
         Eight_Three = 128
     }
-    public class BaccaratQuadrupleMaster
+
+    //Giải thuật Quadrup, cho 8 threads đi đồng thời 
+    public class BaccaratQuadrupleCalculator : IBaccaratCalculator
     {
         /// <summary>
         /// Initial BaccaratQuadrupleMaster
         /// </summary>
         /// <param name="threadMode">2 or 4. Default is 4</param>
-        public BaccaratQuadrupleMaster(ThreadMode threadMode)
+        public BaccaratQuadrupleCalculator(ThreadMode threadMode)
         {
             TradeOneToFourCards = new List<BaccratCard>();
             TradeTwoToFiveCards = new List<BaccratCard>();
@@ -33,14 +35,14 @@ namespace CoreLogic
             TradeSevenToTwoCards = new List<BaccratCard>();
             TradeEightToThreeCards = new List<BaccratCard>();
 
-            TradeOneToFourCalculator = new BaccaratQuadruple();
-            TradeTwoToFiveCalculator = new BaccaratQuadruple();
-            TradeThreeToSixCalculator = new BaccaratQuadruple();
-            TradeFourToSevenCalculator = new BaccaratQuadruple();
-            TradeFiveToEightCalculator = new BaccaratQuadruple();
-            TradeSixToOneCalculator = new BaccaratQuadruple();
-            TradeSevenToTwoCalculator = new BaccaratQuadruple();
-            TradeEightToThreeCalculator = new BaccaratQuadruple();
+            TradeOneToFourCalculator = new BaccaratQuadSingleThread();
+            TradeTwoToFiveCalculator = new BaccaratQuadSingleThread();
+            TradeThreeToSixCalculator = new BaccaratQuadSingleThread();
+            TradeFourToSevenCalculator = new BaccaratQuadSingleThread();
+            TradeFiveToEightCalculator = new BaccaratQuadSingleThread();
+            TradeSixToOneCalculator = new BaccaratQuadSingleThread();
+            TradeSevenToTwoCalculator = new BaccaratQuadSingleThread();
+            TradeEightToThreeCalculator = new BaccaratQuadSingleThread();
 
             MasterList = new List<BaccratCard>();
             
@@ -65,29 +67,29 @@ namespace CoreLogic
         List<BaccratCard> MasterList { get; set; }        
         List<HistoryInfo> HistoryCoeffs { get; set; }
 
-        BaccaratQuadruple TradeFiveToEightCalculator { get; set; }
+        BaccaratQuadSingleThread TradeFiveToEightCalculator { get; set; }
         List<BaccratCard> TradeFiveToEightCards { get; set; }
 
-        BaccaratQuadruple TradeSixToOneCalculator { get; set; }
+        BaccaratQuadSingleThread TradeSixToOneCalculator { get; set; }
         List<BaccratCard> TradeSixToOneCards { get; set; }
 
 
-        BaccaratQuadruple TradeOneToFourCalculator { get; set; }
+        BaccaratQuadSingleThread TradeOneToFourCalculator { get; set; }
         List<BaccratCard> TradeOneToFourCards { get; set; }
 
-        BaccaratQuadruple TradeTwoToFiveCalculator { get; set; }
+        BaccaratQuadSingleThread TradeTwoToFiveCalculator { get; set; }
         List<BaccratCard> TradeTwoToFiveCards { get; set; }
 
-        BaccaratQuadruple TradeThreeToSixCalculator { get; set; }
+        BaccaratQuadSingleThread TradeThreeToSixCalculator { get; set; }
         List<BaccratCard> TradeThreeToSixCards { get; set; }
 
-        BaccaratQuadruple TradeFourToSevenCalculator { get; set; }
+        BaccaratQuadSingleThread TradeFourToSevenCalculator { get; set; }
         List<BaccratCard> TradeFourToSevenCards { get; set; }
 
-        BaccaratQuadruple TradeSevenToTwoCalculator { get; set; }
+        BaccaratQuadSingleThread TradeSevenToTwoCalculator { get; set; }
         List<BaccratCard> TradeSevenToTwoCards { get; set; }
 
-        BaccaratQuadruple TradeEightToThreeCalculator { get; set; }
+        BaccaratQuadSingleThread TradeEightToThreeCalculator { get; set; }
         List<BaccratCard> TradeEightToThreeCards { get; set; }
 
         public int MasterID 

@@ -16,11 +16,8 @@ namespace CoreLogic
         public int Diff_Coff { get; set; }
     }
 
-    public class QuadrupleResult
+    public class QuadrupleResult : BaccaratPredict
     {
-        public BaccratCard Value { get; set; }
-        public int Volume { get; set; }
-
         public int Same_Coff { get; set; }
         public int Diff_Coff { get; set; }
     }

@@ -6,10 +6,12 @@ using System.Collections.Generic;
 namespace CoreLogic
 {
     
-    
-    public class BaccaratQuadruple : IBaccaratCalculator
+    /// <summary>
+    /// Giải thuật Quadrup cho 1 thread
+    /// </summary>
+    public class BaccaratQuadSingleThread 
     {
-        public BaccaratQuadruple()
+        public BaccaratQuadSingleThread()
         {            
         }
 

@@ -141,20 +141,20 @@ namespace Baccarat
                 }
             }
 
-            var calculator = new BaccaratCalculator();
+            var calculator = new BaccaratCombinationCalculator();
             
-            var baccaratResult = calculator.Calculate(inputs.ToArray());
+            var baccaratResult = calculator.Predict(inputs.ToArray());
             txtValue.Text = baccaratResult.Value.ToString();
             txtVolume.Text = baccaratResult.Volume.ToString();
             txtFinalVolume.Text = (baccaratResult.Volume * (int)numCoeff.Value).ToString();
 
-            if (baccaratResult.Value == 1)
+            if (baccaratResult.Value == BaccratCard.Banker)
             {
                 txtValue.ForeColor = Color.Red;
                 txtVolume.ForeColor = Color.Red;
                 txtFinalVolume.ForeColor = Color.Red;
             }
-            else if (baccaratResult.Value == 0)
+            else if (baccaratResult.Value == BaccratCard.Player)
             {
                 txtValue.ForeColor = Color.Blue;
                 txtVolume.ForeColor = Color.Blue;
@@ -165,7 +165,6 @@ namespace Baccarat
                 txtValue.ForeColor = Color.Black;
                 txtVolume.ForeColor = Color.Black;
                 txtFinalVolume.ForeColor = Color.Black;
-
             }
 
             Counter++;

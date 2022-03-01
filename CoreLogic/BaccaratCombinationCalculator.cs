@@ -20,10 +20,12 @@ namespace CoreLogic
         public int Value { get; set; }
     }  
 
-    
-    public class BaccaratCalculator
+    /// <summary>
+    /// Thuật toán tổ hợp
+    /// </summary>
+    public class BaccaratCombinationCalculator
     {
-        public BaccaratCalculator()
+        public BaccaratCombinationCalculator()
         {
             FastResult = new List<FastResult>();
             FastResult.Add(new FastResult { Total = 10, NumberOfOne = 0, NumberOfZero = 10, Value = 0, Volume = 1023 });
@@ -85,7 +87,7 @@ namespace CoreLogic
         public List<CalculatorItem> FinalList = new List<CalculatorItem>();
 
         public List<FastResult> FastResult { get; set; }
-        public BaccaratResult Calculate(int[] inputs)
+        public BaccaratPredict Predict(int[] inputs)
         {
             var count0 = inputs.Where(c => c == 0).Count();
             var count1 = inputs.Length - count0;
@@ -103,10 +105,12 @@ namespace CoreLogic
             var volume = Math.Abs(countValue0 - countValue1);
 
 
-            return new BaccaratResult 
+            return new BaccaratPredict
             { 
-                Value = volume == 0 ? -1 : 
-                            countValue0 > countValue1 ? 1 : 0,
+                //Value = volume == 0 ? -1 : 
+                //            countValue0 > countValue1 ? 1 : 0,
+                Value = volume == 0 ? BaccratCard.NoTrade : 
+                            countValue0 > countValue1 ? BaccratCard.Banker : BaccratCard.Player,
                 Volume = volume 
             };
         }

@@ -18,31 +18,31 @@ namespace Midas.Utils
             var processedFilePath = $"{filePath.Replace(".csv", "")}_processed_9_threads_{DateTime.Now.ToString("yyMMddHHmmss_")}{num}.csv";
             var allLines = File.ReadAllLines(filePath).ToList();
 
-            BaccaratQuadruple _tradeOneToFourCalculator = new BaccaratQuadruple { SaveBaccratCards = new List<BaccratCard>() };
+            BaccaratQuadSingleThread _tradeOneToFourCalculator = new BaccaratQuadSingleThread { SaveBaccratCards = new List<BaccratCard>() };
             List<BaccratCard> _tradeOneToFourCards = new List<BaccratCard>();
 
-            BaccaratQuadruple _tradeTwoToFiveCalculator = new BaccaratQuadruple { SaveBaccratCards = new List<BaccratCard>() };
+            BaccaratQuadSingleThread _tradeTwoToFiveCalculator = new BaccaratQuadSingleThread { SaveBaccratCards = new List<BaccratCard>() };
             List<BaccratCard> _tradeTwoToFiveCards = new List<BaccratCard>();
 
-            BaccaratQuadruple _tradeThreeToSixCalculator = new BaccaratQuadruple { SaveBaccratCards = new List<BaccratCard>() };
+            BaccaratQuadSingleThread _tradeThreeToSixCalculator = new BaccaratQuadSingleThread { SaveBaccratCards = new List<BaccratCard>() };
             List<BaccratCard> _tradeThreeToSixCards = new List<BaccratCard>();
 
-            BaccaratQuadruple _tradeFourToSevenCalculator = new BaccaratQuadruple { SaveBaccratCards = new List<BaccratCard>() };
+            BaccaratQuadSingleThread _tradeFourToSevenCalculator = new BaccaratQuadSingleThread { SaveBaccratCards = new List<BaccratCard>() };
             List<BaccratCard> _tradeFourToSevenCards = new List<BaccratCard>();
 
-            BaccaratQuadruple _tradeFiveToEightCalculator = new BaccaratQuadruple { SaveBaccratCards = new List<BaccratCard>() };
+            BaccaratQuadSingleThread _tradeFiveToEightCalculator = new BaccaratQuadSingleThread { SaveBaccratCards = new List<BaccratCard>() };
             List<BaccratCard> _tradeFiveToEightCards = new List<BaccratCard>();
 
-            BaccaratQuadruple _tradeSixToOneCalculator = new BaccaratQuadruple { SaveBaccratCards = new List<BaccratCard>() };
+            BaccaratQuadSingleThread _tradeSixToOneCalculator = new BaccaratQuadSingleThread { SaveBaccratCards = new List<BaccratCard>() };
             List<BaccratCard> _tradeSixToOneCards = new List<BaccratCard>();
 
-            BaccaratQuadruple _tradeSevenToTwoCalculator = new BaccaratQuadruple {  SaveBaccratCards = new List<BaccratCard>() };
+            BaccaratQuadSingleThread _tradeSevenToTwoCalculator = new BaccaratQuadSingleThread {  SaveBaccratCards = new List<BaccratCard>() };
             List<BaccratCard> _tradeSevenToTwoCards = new List<BaccratCard>();
 
-            BaccaratQuadruple _tradeEightToThreeCalculator = new BaccaratQuadruple { SaveBaccratCards = new List<BaccratCard>() };
+            BaccaratQuadSingleThread _tradeEightToThreeCalculator = new BaccaratQuadSingleThread { SaveBaccratCards = new List<BaccratCard>() };
             List<BaccratCard> _tradeEightToThreeCards = new List<BaccratCard>();
 
-            BaccaratQuadruple _tradeFiveToEight_2_Calculator = new BaccaratQuadruple { SaveBaccratCards = new List<BaccratCard>() };
+            BaccaratQuadSingleThread _tradeFiveToEight_2_Calculator = new BaccaratQuadSingleThread { SaveBaccratCards = new List<BaccratCard>() };
             List<BaccratCard> _tradeFiveToEight_2_Cards = new List<BaccratCard>();
 
             var loss_Profit_Total58 = 0;

@@ -16,13 +16,11 @@ namespace DatabaseContext
         public GlobalDBContext(string connectionString)
             : base(connectionString)
         {
-
         }
     
-        public virtual DbSet<Result> Results { get; set; }
+        public DbSet<Result> Results { get; set; }
         public virtual DbSet<Session> Sessions { get; set; }
         public virtual DbSet<Root> Roots { get; set; }
-
 
         /// <summary>
         /// Return new session ID
@@ -52,7 +50,6 @@ namespace DatabaseContext
             SaveChanges();
         }
 
-
         public int AddResult(Result result)
         {
             Results.Add(result);
@@ -77,19 +74,19 @@ namespace DatabaseContext
         }
 
 
-        public int AddRoot(Root result)
+        public int AddRoot(Root root)
         {
-            Roots.Add(result);
+            Roots.Add(root);
             SaveChanges();
-            return result.ID;
+            return root.ID;
         }
 
-        public void UpdateRoot(Root result)
+        public void UpdateRoot(Root root)
         {
-            var current = Roots.Find(result.ID);
+            var current = Roots.Find(root.ID);
             if (current == null)
                 return;
-            this.Entry(result).CurrentValues.SetValues(result);
+            this.Entry(root).CurrentValues.SetValues(root);
             SaveChanges();
         }
 

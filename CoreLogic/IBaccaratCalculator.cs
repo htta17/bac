@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CoreLogic
 {
-    public class IBaccaratCalculator
+    public interface IBaccaratCalculator
     {
     }
 }

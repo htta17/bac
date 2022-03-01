@@ -24,7 +24,7 @@ namespace Baccarat
         {
             this.KeyPreview = true;
             InitializeComponent();
-            QuadrupleMaster = new BaccaratQuadrupleMaster(ThreadMode.Five_Eight | ThreadMode.One_Four);
+            QuadrupleMaster = new BaccaratQuadrupleCalculator(ThreadMode.Five_Eight | ThreadMode.One_Four);
 
             if (!Directory.Exists("Logs"))
             {
@@ -47,7 +47,7 @@ namespace Baccarat
             BaccaratDBContext = new BaccaratDBContext();
         }
 
-        BaccaratQuadrupleMaster QuadrupleMaster { get; set; }       
+        BaccaratQuadrupleCalculator QuadrupleMaster { get; set; }       
 
         BaccaratDBContext BaccaratDBContext { get; set; }
 

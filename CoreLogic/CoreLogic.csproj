@@ -51,9 +51,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BaccaratCalculator.cs" />
+    <Compile Include="BaccaratCombinationCalculator.cs" />
     <Compile Include="BaccaratQuadruple.cs" />
-    <Compile Include="BaccaratQuadrupleMaster.cs" />
+    <Compile Include="BaccaratQuadrupleCalculator.cs" />
     <Compile Include="BaccaratRootCalculator.cs" />
     <Compile Include="BaccaratSimulator\BaccaratSimulatorGame.cs" />
     <Compile Include="BaccaratSimulator\Card.cs" />

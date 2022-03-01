@@ -131,7 +131,7 @@ namespace CoreLogic
     }
 
     /// <summary>
-    /// Main algorithm.
+    /// Giải thuật Root
     /// </summary>
     public class BaccaratRootCalculator : IBaccaratCalculator
     {
