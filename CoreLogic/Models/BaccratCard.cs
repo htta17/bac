@@ -10,4 +10,11 @@ namespace CoreLogic
         NoTrade = 0,
         Banker = 1
     }
+
+    public enum OriginalBaccaratCard
+    { 
+        Player = -1, 
+        Tie = 0, 
+        Banker = 1
+    }
 }

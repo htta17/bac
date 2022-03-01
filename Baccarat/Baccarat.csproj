@@ -64,12 +64,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AutoLogin.cs">
+    <Compile Include="Automation\AutoLogin.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="AutoLogin.Designer.cs">
+    <Compile Include="Automation\AutoLogin.Designer.cs">
       <DependentUpon>AutoLogin.cs</DependentUpon>
     </Compile>
+    <Compile Include="Automation\TableResult.cs" />
     <Compile Include="BaccaratSimulatorUI\BacSimulator.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -149,7 +150,7 @@
     <Compile Include="Utils\UtilCal.Designer.cs">
       <DependentUpon>UtilCal.cs</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="AutoLogin.resx">
+    <EmbeddedResource Include="Automation\AutoLogin.resx">
       <DependentUpon>AutoLogin.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="BaccaratSimulatorUI\BacSimulator.resx">

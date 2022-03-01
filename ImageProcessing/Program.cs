@@ -3,11 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Midas;
-using Midas.Baccarat;
-using Midas.Utils;
 
-namespace Baccarat
+namespace ImageProcessing
 {
     static class Program
     {
@@ -19,8 +16,7 @@ namespace Baccarat
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            StartApp.LoadRegistryConnectionString();
-            Application.Run(new AutoLogin());
+            Application.Run(new Form2());
         }
     }
 }
