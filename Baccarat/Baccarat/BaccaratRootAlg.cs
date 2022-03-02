@@ -38,10 +38,10 @@ namespace Midas.Baccarat
             }
             
 
-            if (BaccaratRootCalculator.GlobalOrder > 0)
+            if (BaccaratRootCalculator.GlobalIndex > 0)
             {
                 var lastcard = BaccaratRootCalculator.ShowLastCard();
-                lbl_ClickedReport.Text = "Đã ghi nhận " + BaccaratRootCalculator.GlobalOrder + ": " + lastcard.ToString();
+                lbl_ClickedReport.Text = "Đã ghi nhận " + BaccaratRootCalculator.GlobalIndex + ": " + lastcard.ToString();
             }
             else
             {
@@ -180,7 +180,7 @@ namespace Midas.Baccarat
             txtVolume.Text = (predict.Volume * MoneyCoeff).ToString();
 
             //ToDo: Change
-            lbl_ClickedReport.Text = "Đã ghi nhận " + BaccaratRootCalculator.GlobalOrder + ": " + BaccaratRootCalculator.ShowLastCard();
+            lbl_ClickedReport.Text = "Đã ghi nhận " + BaccaratRootCalculator.GlobalIndex + ": " + BaccaratRootCalculator.ShowLastCard();
             txt_1.Text = "";
 
             if (predict.Volume > 0)
@@ -227,10 +227,10 @@ namespace Midas.Baccarat
 
             BaccaratRootCalculator.Reset();
 
-            if (BaccaratRootCalculator.GlobalOrder > 0)
+            if (BaccaratRootCalculator.GlobalIndex > 0)
             {
                 var lastcard = BaccaratRootCalculator.ShowLastCard();
-                lbl_ClickedReport.Text = "Đã ghi nhận " + BaccaratRootCalculator.GlobalOrder + ": " + lastcard.ToString();
+                lbl_ClickedReport.Text = "Đã ghi nhận " + BaccaratRootCalculator.GlobalIndex + ": " + lastcard.ToString();
             }
             else
             {

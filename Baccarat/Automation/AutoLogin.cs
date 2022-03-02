@@ -12,8 +12,12 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using CoreLogic;
 
 using System.Windows.Forms;
+using CoreLogic.StandardlizedAlgorithms;
+using Midas.Utils;
+using Newtonsoft.Json;
 
 namespace Midas
 {
@@ -23,20 +27,6 @@ namespace Midas
         public AutoLogin()
         {
             InitializeComponent();
-
-            numInterval.Value = 5;
-            Timer.Interval = 1000 * 60 * (int)numInterval.Value; //5 mins
-            Timer.Tick += Timer_Tick;
-
-            AllTableResultTimer.Interval = 5_000;
-            AllTableResultTimer.Tick += CheckResultTimer_Tick;
-
-
-            SwitchTableTimer.Interval = 1000 * 60 * 5; //10 phút
-            SwitchTableTimer.Tick += SwitchTableTimer_Tick;
-
-            OneTableResultTimer.Interval = 1000;
-            OneTableResultTimer.Tick += OneTableResultTimer_Tick;
 
             try
             {
@@ -51,11 +41,25 @@ namespace Midas
             { 
                 //
             }
-            btnTakePhoto.ForeColor = Color.Green;
-            lbCurrentStatus.BackColor = Color.Red;
-            lbCurrentStatus.ForeColor = Color.White;
-            lbCurrentStatus.Text = "STOPPED";
+
+            Timers_Setup();            
+
+            UIColor_Setup();
+
+            //Khởi tạo 10 bàn cho thuật toán ROOT
+            if (string.IsNullOrEmpty(StartApp.GlobalConnectionString))
+            {
+                StartApp.LoadRegistryConnectionString();
+            }
+            
+            AutoBacRoots = new List<AutoBacRootAlgorithm>();
+            for (int tableNumber = 1; tableNumber <= 10; tableNumber++)
+            {
+                AutoBacRoots.Add(new AutoBacRootAlgorithm(StartApp.GlobalConnectionString, tableNumber));
+            }
         }
+
+       
         #endregion
 
         #region Properties
@@ -80,6 +84,8 @@ namespace Midas
         /// </summary>
         Timer SwitchTableTimer = new Timer();
 
+        List<AutoBacRootAlgorithm> AutoBacRoots { get; set; }
+
         /// <summary>
         /// Đánh dấu cho biết đang ở trạng thái tất cả các bàn hay đang ở tại 1 bàn cụ thể nào
         /// Nếu =TRUE: Đang ở màn hình tất cả các bàn
@@ -97,6 +103,35 @@ namespace Midas
         /// </summary>
         private List<AutomationTableResult> SavedAllTableResults = new List<AutomationTableResult>();
         #endregion
+
+        #region Các hàm cho việc khởi tạo
+        private void Timers_Setup()
+        {
+            numInterval.Value = 5;
+            Timer.Interval = 1000 * 60 * (int)numInterval.Value; //5 mins
+            Timer.Tick += Timer_Tick;
+
+            AllTableResultTimer.Interval = 5_000;
+            AllTableResultTimer.Tick += CheckResultTimer_Tick;
+
+            SwitchTableTimer.Interval = 1000 * 60 * 5; //10 phút
+            SwitchTableTimer.Tick += SwitchTableTimer_Tick;
+
+            OneTableResultTimer.Interval = 1000;
+            OneTableResultTimer.Tick += OneTableResultTimer_Tick;
+        }
+
+        private void UIColor_Setup()
+        {
+            //Màu cho status 
+            btnTakePhoto.ForeColor = Color.Green;
+            lbCurrentStatus.BackColor = Color.Red;
+            lbCurrentStatus.ForeColor = Color.White;
+            lbCurrentStatus.Text = "STOPPED";
+        }
+        #endregion
+
+
 
         #region Timer ticks events
         private void OneTableResultTimer_Tick(object sender, EventArgs e)
@@ -340,5 +375,44 @@ namespace Midas
             }
         }
 
+        private void btnAddAutoRoot_Click(object sender, EventArgs e)
+        {
+            var tableNo = 7;
+            var rootAlg = AutoBacRoots[tableNo - 1];
+            var x = rootAlg.Process(BaccratCard.Banker);
+            lbCurrentStatus.Text = JsonConvert.SerializeObject(x);
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            var tableNo = 7;
+            var rootAlg = AutoBacRoots[tableNo - 1];
+            var x = rootAlg.Process(BaccratCard.Player);
+            lbCurrentStatus.Text = JsonConvert.SerializeObject(x);
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            var tableNo = 7;
+            var rootAlg = AutoBacRoots[tableNo - 1];
+            var actionsList = new List<BaccratCard>
+            {
+                BaccratCard.Player, BaccratCard.Player,
+                BaccratCard.Banker, BaccratCard.Banker,
+                BaccratCard.Player, BaccratCard.Player,
+                BaccratCard.Banker, BaccratCard.Banker,
+                BaccratCard.Player,
+                BaccratCard.Banker, BaccratCard.Banker,
+                BaccratCard.Player, BaccratCard.Player,BaccratCard.Player,
+                BaccratCard.Banker, BaccratCard.Banker,
+                BaccratCard.Player, BaccratCard.Player,BaccratCard.Player,
+                BaccratCard.Banker, BaccratCard.Banker,BaccratCard.Banker, BaccratCard.Banker,
+                BaccratCard.Player, BaccratCard.Player
+            };
+            foreach (var action in actionsList)
+            {
+                rootAlg.Process(action);
+            }
+        }
     }
 }

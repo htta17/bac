@@ -10,7 +10,8 @@ namespace DatabaseContext
     using System;
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
-    
+    using System.Linq;
+
     public class GlobalDBContext : DbContext
     {
         public GlobalDBContext(string connectionString)
@@ -18,15 +19,19 @@ namespace DatabaseContext
         {
         }
     
-        public DbSet<Result> Results { get; set; }
+        public virtual DbSet<Result> Results { get; set; }
         public virtual DbSet<Session> Sessions { get; set; }
         public virtual DbSet<Root> Roots { get; set; }
 
-        /// <summary>
-        /// Return new session ID
-        /// </summary>
-        /// <param name="session"></param>
-        /// <returns></returns>
+        public virtual DbSet<AutoResult> AutoResults { get; set; }
+        public virtual DbSet<AutoSession> AutoSessions { get; set; }
+        public virtual DbSet<AutoRoot> AutoRoots { get; set; }
+
+        #region Session
+        public IQueryable<Session> FindAllSessions()
+        {
+            return Sessions;
+        }
         public int AddSession(Session session)
         {
             Sessions.Add(session);
@@ -56,7 +61,9 @@ namespace DatabaseContext
             SaveChanges();
             return result.ID;
         }
+        #endregion
 
+        #region Result
         public void UpdateResult(Result result)
         {
             var current = Results.Find(result.ID);
@@ -72,8 +79,9 @@ namespace DatabaseContext
             Results.Remove(result);
             SaveChanges();
         }
+        #endregion
 
-
+        #region Root
         public int AddRoot(Root root)
         {
             Roots.Add(root);
@@ -96,7 +104,111 @@ namespace DatabaseContext
             Roots.Remove(result);
             SaveChanges();
         }
+        #endregion
 
+        #region AutoSession
+        public IQueryable<AutoSession> FindAllAutoSessions(int tableNumber)
+        {
+            return AutoSessions.AsQueryable().Where(c => c.TableNumber == tableNumber);
+        }
+        public int AddAutoSession(AutoSession autoSession)
+        {
+            autoSession.StartDateTime = DateTime.Now;
+            autoSession.IsClosed = false;
+            AutoSessions.Add(autoSession);
+            SaveChanges();
+            return autoSession.ID;
+        }
 
+        public void UpdateAutoSession(AutoSession autoSession)
+        {
+            var current = AutoSessions.Find(autoSession.ID);
+            if (current == null)
+                return;
+            this.Entry(autoSession).CurrentValues.SetValues(autoSession);
+            SaveChanges();
+        }
+
+        public void DeleteAutoSession(int id)
+        {
+            var session = AutoSessions.Find(id);
+            AutoSessions.Remove(session);
+            SaveChanges();
+        }
+        #endregion
+
+        #region AutoRoot
+        public IQueryable<AutoRoot> FindAllAutoRoots()
+        {
+            return AutoRoots;
+        }
+
+        public IQueryable<AutoRoot> FindAutoRootsBySession(int autoSessionID)
+        {
+            return AutoRoots.AsQueryable().Where(c => c.AutoSessionID == autoSessionID);
+        }
+
+        public IQueryable<AutoRoot> FindLastNAutoRoots(int N)
+        {
+            var skip = N > 100 ? N - 100 : 0;
+            var take = N > 100 ? 100 : N;
+            return AutoRoots.AsQueryable()
+                        .OrderBy(c => c.ID)
+                        .Skip(skip)
+                        .Take(take);
+        }
+        public int AddAutoRoot(AutoRoot autoRoot)
+        {            
+            AutoRoots.Add(autoRoot);
+            SaveChanges();
+            return autoRoot.ID;
+        }
+
+        public void UpdateAutoRoot(AutoRoot autoRoot)
+        {
+            var current = AutoRoots.Find(autoRoot.ID);
+            if (current == null)
+                return;
+            this.Entry(autoRoot).CurrentValues.SetValues(autoRoot);
+            SaveChanges();
+        }
+
+        public void DeleteAutoRoot(int id)
+        {
+            var root = AutoRoots.Find(id);
+            AutoRoots.Remove(root);
+            SaveChanges();
+        }
+        #endregion
+
+        #region AutoResult
+        public IQueryable<AutoResult> FindAllAutoResults()
+        {
+            return AutoResults.AsQueryable();
+        }
+
+        public int AddAutoResult(AutoResult autoResult)
+        {
+            AutoResults.Add(autoResult);
+            SaveChanges();
+            return autoResult.ID;
+        }
+
+        public void UpdatelAutoResult(AutoResult autoResult)
+        {
+            var current = AutoResults.Find(autoResult.ID);
+            if (current == null)
+                return;
+            this.Entry(autoResult).CurrentValues.SetValues(autoResult);
+            SaveChanges();
+        }
+
+        public void DeleteAutoResult(int id)
+        {
+            var autoResult = AutoResults.Find(id);
+            AutoResults.Remove(autoResult);
+            SaveChanges();
+        }
+        #endregion
     }
 }

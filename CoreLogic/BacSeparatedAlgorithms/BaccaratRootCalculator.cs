@@ -9,126 +9,9 @@ using System.Text;
 
 namespace CoreLogic
 {
-    [System.Runtime.CompilerServices.SpecialName]
-    public class AccumulateProfit<T>
-        where T : struct, IConvertible
-    {
-        /// <summary>
-        /// Main Thread
-        /// </summary>
-        public T Main { get; set; }
-        public T Sub0 { get; set; }
-        public T Sub1 { get; set; }
-        public T Sub2 { get; set; }
-        public T Sub3 { get; set; }
-        public T AllSub { get; set; }
+    
 
-        //Cài đặt giá trị default(T). (Ví dụ: 0 cho integer hoặc float)
-        public void Reset()
-        {
-            Main = Sub0 = Sub1 = Sub2 = Sub3 = AllSub = default;
-        }
-        /// <summary>
-        /// Đặt giá trị cho 6 properties, thường cho tích lũy hoặc giá trị ban đầu của hệ số
-        /// </summary>
-        /// <param name="val">Các giá trị của biến, số lượng giá trị của mảng val là 1 hoặc 6</param>
-        public void SetValue(params object[] val)
-        {
-            if (val.Length == 1)
-                Main = Sub0 = Sub1 = Sub2 = Sub3 = AllSub = (T)val[0];
-            else if (val.Length == 6)
-            {
-                Main = (T)val[0];
-                Sub0 = (T)val[1];
-                Sub1 = (T)val[2];
-                Sub2 = (T)val[3];
-                Sub3 = (T)val[4];
-                AllSub = (T)val[5];
-            }
-            else
-                throw new Exception($"Kiếm tra số lượng giá trị nhập vào, chỉ hấp nhận 1 hoặc 6 giá trị, không chấp nhận {val.Length}.");
-        }
-
-        public T SumAllSub()
-        {
-            CultureInfo cultures = new CultureInfo("en-US");
-            if (typeof(T) == typeof(int))
-            {
-                var sum = Sub0.ToInt32(cultures) +
-                    Sub1.ToInt32(cultures) +
-                    Sub2.ToInt32(cultures) +
-                    Sub3.ToInt32(cultures);
-                return (T)(sum as object);
-            }
-            else if (typeof(T) == typeof(decimal))
-            {
-                var sum = Sub0.ToDecimal(cultures) +
-                    Sub1.ToDecimal(cultures) +
-                    Sub2.ToDecimal(cultures) +
-                    Sub3.ToDecimal(cultures);
-                return (T)(sum as object);
-            }
-            return default;
-        }
-
-        public T SumAll()
-        {
-            CultureInfo cultures = new CultureInfo("en-US");
-            if (typeof(T) == typeof(int))
-            {
-                var sum = Main.ToInt32(cultures) + 
-                    Sub0.ToInt32(cultures) +
-                    Sub1.ToInt32(cultures) +
-                    Sub2.ToInt32(cultures) +
-                    Sub3.ToInt32(cultures) + 
-                    AllSub.ToInt32(cultures);
-                return (T)(sum as object);
-            }
-            else if (typeof(T) == typeof(decimal))
-            {
-                var sum = 
-                    Main.ToDecimal(cultures) +
-                    Sub0.ToDecimal(cultures) +
-                    Sub1.ToDecimal(cultures) +
-                    Sub2.ToDecimal(cultures) +
-                    Sub3.ToDecimal(cultures) +
-                    AllSub.ToDecimal(cultures);
-                return (T)(sum as object);
-            }
-            return default;
-        }
-    }
-
-    public class UpdateModel
-    {
-        public int Coeff { get; set; }
-        public int Profit { get; set; }
-        public decimal ComissionedProfit { get; set; }
-        public UpdateModel(int _coeff, int _profit, decimal _profitWithComission)  
-        {
-            Coeff = _coeff;
-            Profit = _profit;
-            ComissionedProfit = _profitWithComission;
-        }
-    }
-
-    public class InputUpdateModel
-    {     
-        public int Increment { get; set; }
-        public int StartNumber { get; set; }
-
-        /// <summary>
-        /// Tỉ lệ nhận được khi thắng với BANKER (Thường là 95% ~0.95) 
-        /// </summary>
-        public decimal Commission { get; set; }
-
-        public InputUpdateModel(int _Increment, int _StartNumber, decimal _Commission)
-        {
-            Increment = _Increment;
-            StartNumber = _StartNumber;
-            Commission = _Commission;
-        }
-    }
+    
 
     /// <summary>
     /// Giải thuật Root
@@ -147,9 +30,19 @@ namespace CoreLogic
             }            
         }
 
-        
+
+        #region Properties
+
         GlobalDBContext BaccaratDBContext { get; set; }
-        public int GlobalOrder { get; private set; } = 0;
+        public int GlobalIndex { get; private set; } = 0;
+
+        private List<Root> MainRoots { get; set; }
+
+        private List<Root> Roots0 { get; set; }
+        private List<Root> Roots1 { get; set; }
+        private List<Root> Roots2 { get; set; }
+        private List<Root> Roots3 { get; set; }
+        #endregion
 
         public BaccratCard ShowLastCard()
         {
@@ -173,7 +66,7 @@ namespace CoreLogic
         {
             MainRoots = new List<Root>();
             
-            GlobalOrder = 0;
+            GlobalIndex = 0;
             CurrentPredicts = new List<BaccaratPredict>();
 
             FlatCoeff.SetValue(1);
@@ -202,10 +95,10 @@ namespace CoreLogic
                                         .Take(rootCount > 100 ? 100 : rootCount)
                                         .ToList();
 
-            if (MainRoots.Count() > 0)
+            if (MainRoots.Count > 0)
             {
                 var lastItem = MainRoots.Last();
-                GlobalOrder = lastItem.GlobalOrder;
+                GlobalIndex = lastItem.GlobalOrder;
 
                 if (ressetFileName)
                 {
@@ -273,7 +166,7 @@ namespace CoreLogic
             }
             else
             {
-                GlobalOrder = 0;
+                GlobalIndex = 0;
 
                 FlatCoeff.SetValue(1);
                 ModCoeff.SetValue(Eleven);
@@ -298,44 +191,38 @@ namespace CoreLogic
             }
         }
 
-        private List<Root> MainRoots { get; set; }
-
-        private List<Root> Roots0 { get; set; }
-        private List<Root> Roots1 { get; set; }
-        private List<Root> Roots2 { get; set; }
-        private List<Root> Roots3 { get; set; }
+        
 
         /// <summary>
         /// Lợi nhuận tích lũy cơ bản KHÔNG comission
         /// </summary>
-        private AccumulateProfit<int> AccumulateFlat100 { get; set; } = new AccumulateProfit<int>();
-        
+        private RootAccumulateProfit<int> AccumulateFlat100 { get; set; } = new RootAccumulateProfit<int>();        
 
         /// <summary>
         /// Lợi nhuận tích lũy cơ bản CÓ comission
         /// </summary>
-        private AccumulateProfit<decimal> AccumulateFlat095 { get; set; } = new AccumulateProfit<decimal>();
+        private RootAccumulateProfit<decimal> AccumulateFlat095 { get; set; } = new RootAccumulateProfit<decimal>();
 
-        private AccumulateProfit<int> AccumulateMod100 { get; set; } = new AccumulateProfit<int>();
+        private RootAccumulateProfit<int> AccumulateMod100 { get; set; } = new RootAccumulateProfit<int>();
 
-        private AccumulateProfit<decimal> AccumulateMod095 { get; set; } = new AccumulateProfit<decimal>();
+        private RootAccumulateProfit<decimal> AccumulateMod095 { get; set; } = new RootAccumulateProfit<decimal>();
 
-        private AccumulateProfit<int> FlatCoeff { get; set; } = new AccumulateProfit<int>();
+        private RootAccumulateProfit<int> FlatCoeff { get; set; } = new RootAccumulateProfit<int>();
 
-        private AccumulateProfit<int> ModCoeff { get; set; } = new AccumulateProfit<int>();
+        private RootAccumulateProfit<int> ModCoeff { get; set; } = new RootAccumulateProfit<int>();
 
         public List<BaccaratPredict> CurrentPredicts { get; set; }
 
         /// <summary>
         /// Hệ số luôn là 1 (flat, no increment), giá trị bắt đầu của hệ số là 1, commission cho sàn khi Banker thắng là 5%
         /// </summary>
-        InputUpdateModel FlatNoIncrement = new InputUpdateModel(0, 1, 0.95m);
+        RootInputUpdateModel FlatNoIncrement = new RootInputUpdateModel(0, 1, 0.95m);
 
         const int Eleven = 11;
         /// <summary>
         /// Giá trị ban đầu của hệ số là 11, bước nhảy 2 (increment = 2), commission cho sàn khi Banker thắng là 5%
         /// </summary>
-        InputUpdateModel LowRiskIcrement = new InputUpdateModel(2, Eleven, 0.95m);
+        RootInputUpdateModel LowRiskIcrement = new RootInputUpdateModel(2, Eleven, 0.95m);
 
         private bool WriteFirstTime { get; set; }
 
@@ -403,7 +290,7 @@ namespace CoreLogic
                 throw new Exception("Input card must be Banker or Player");
 
             //Start  to add new card
-            GlobalOrder++;
+            GlobalIndex++;
             var logger = "";
 
             //Update coeff (get the current predict and compare to card)
@@ -429,7 +316,7 @@ namespace CoreLogic
                 }
                 #endregion
 
-                if (GlobalOrder % 4 == 0)
+                if (GlobalIndex % 4 == 0)
                 {
                     var profit0 = UpdateCurrentCoeff(card, 1, FlatCoeff.Sub0, FlatNoIncrement);
                     FlatCoeff.Sub0 = profit0.Coeff;
@@ -445,7 +332,7 @@ namespace CoreLogic
                     AccumulateMod100.Sub0 += modProfit0.Profit;
                     AccumulateMod095.Sub0 += modProfit0.ComissionedProfit;
                 }
-                else if (GlobalOrder % 4 == 1)
+                else if (GlobalIndex % 4 == 1)
                 {
                     var profit1 = UpdateCurrentCoeff(card, 2, FlatCoeff.Sub1, FlatNoIncrement);
                     FlatCoeff.Sub1 = profit1.Coeff;
@@ -461,7 +348,7 @@ namespace CoreLogic
                     AccumulateMod100.Sub1 += modProfit1.Profit;
                     AccumulateMod095.Sub1 += modProfit1.ComissionedProfit;
                 }
-                else if (GlobalOrder % 4 == 2)
+                else if (GlobalIndex % 4 == 2)
                 {
                     var profit2 = UpdateCurrentCoeff(card, 3, FlatCoeff.Sub2, FlatNoIncrement);
                     FlatCoeff.Sub2 = profit2.Coeff;
@@ -477,7 +364,7 @@ namespace CoreLogic
                     AccumulateMod100.Sub2 += modProfit2.Profit;
                     AccumulateMod095.Sub2 += modProfit2.ComissionedProfit;
                 }
-                else if (GlobalOrder % 4 == 3)
+                else if (GlobalIndex % 4 == 3)
                 {
                     var profit3 = UpdateCurrentCoeff(card, 4, FlatCoeff.Sub3, FlatNoIncrement);
                     FlatCoeff.Sub3 = profit3.Coeff;
@@ -517,7 +404,7 @@ namespace CoreLogic
                 BaccaratDBContext.UpdateRoot(lastRoot);
 
                 //Ghi vào log
-                logger = $"{GlobalOrder},{DateTime.Now},{card}," +
+                logger = $"{GlobalIndex},{DateTime.Now},{card}," +
                                 //$"{lastRoot.MainProfit}," +
                                 $"{AccumulateFlat100.Main}," +
                                 //$"{lastRoot.Profit0}," +
@@ -567,7 +454,7 @@ namespace CoreLogic
             }
             else
             {
-                logger = $"{GlobalOrder},{DateTime.Now},{card} \r\n";
+                logger = $"{GlobalIndex},{DateTime.Now},{card} \r\n";
 
                 for (var i = 1; i <= 14; i++)
                     logger += ",0";
@@ -639,7 +526,7 @@ namespace CoreLogic
                 Mod095Profit3 = 0,
                 Mod095AllSub = 0,
 
-                GlobalOrder = GlobalOrder, 
+                GlobalOrder = GlobalIndex, 
                 ListCurrentPredicts = ""
             };            
 
@@ -647,13 +534,13 @@ namespace CoreLogic
             MainRoots.Add(newRoot);
 
             //Add for sub roots
-            if (GlobalOrder % 4 == 0)
+            if (GlobalIndex % 4 == 0)
                 Roots0.Add(newRoot);
-            else if (GlobalOrder % 4 == 1)
+            else if (GlobalIndex % 4 == 1)
                 Roots1.Add(newRoot);
-            else if (GlobalOrder % 4 == 2)
+            else if (GlobalIndex % 4 == 2)
                 Roots2.Add(newRoot); 
-            else if (GlobalOrder % 4 == 3)
+            else if (GlobalIndex % 4 == 3)
                 Roots3.Add(newRoot);
 
             BaccaratDBContext.AddRoot(newRoot);
@@ -669,7 +556,7 @@ namespace CoreLogic
         ///     Item1: Profit (Âm hoặc Dương)
         ///     Item2: Hệ số sau khi cập nhật
         /// </returns>
-        private UpdateModel UpdateCurrentCoeff(BaccratCard card, int index, int coeff, InputUpdateModel input)
+        private RootUpdateModel UpdateCurrentCoeff(BaccratCard card, int index, int coeff, RootInputUpdateModel input)
         {
 
             var threadPredict0 = index + 1 <= CurrentPredicts.Count
@@ -696,7 +583,7 @@ namespace CoreLogic
                     }                    
                 }
             }
-            return new UpdateModel(coeff, rawProfit, profitWithCommission); 
+            return new RootUpdateModel(coeff, rawProfit, profitWithCommission); 
         }        
 
         private BaccaratPredict PredictNextCard(List<BaccratCard> cards, int volume)
@@ -730,7 +617,7 @@ namespace CoreLogic
             var modThread3 = PredicThread(Roots3, ModCoeff.Sub3);
             
 
-            var _predictGlobalOrder = GlobalOrder + 1;
+            var _predictGlobalOrder = GlobalIndex + 1;
             var subThread = default(BaccaratPredict);
             var modsubThread = default(BaccaratPredict);
             var modAllSubThread = default(BaccaratPredict);

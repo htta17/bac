@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace DatabaseContext
 {
+    /*
     public class RootSession
     {
         public RootSession()
@@ -33,4 +34,5 @@ namespace DatabaseContext
 
         public virtual ICollection<Root> Roots { get; set; }
     }
+    */
 }
