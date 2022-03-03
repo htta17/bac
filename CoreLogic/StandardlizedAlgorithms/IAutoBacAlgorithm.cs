@@ -1,4 +1,5 @@
 ﻿using DatabaseContext;
+using System.Collections.Generic;
 
 namespace CoreLogic.StandardlizedAlgorithms
 {
@@ -32,8 +33,15 @@ namespace CoreLogic.StandardlizedAlgorithms
         /// <summary>
         /// Cập nhật hệ số
         /// </summary>
-        /// <param name="standardCoeff"></param>
-        TOut UpdateCoeff(TIn standardCoeff);
+        /// <param name="coeff"></param>
+        TOut UpdateCoeff(TIn coeff);
+
+        /// <summary>
+        /// Tính toán hệ số hiện tại dựa trên lịch sử lãi(lỗ) 
+        /// </summary>
+        /// <param name="historyProfits"></param>
+        /// <returns></returns>
+        int CalculateModCoeff(List<int> historyProfits, RootInputUpdateModel rootInputUpdate);
 
         /// <summary>
         /// Khi có shoe mới 
@@ -41,7 +49,8 @@ namespace CoreLogic.StandardlizedAlgorithms
         void Reset();
 
         /// <summary>
-        /// Thêm card vào database và các thread, không làm gì thêm
+        /// Thêm card vào database và threads, 
+        /// đồng thời cập nhật cho session các cột liên quan
         /// </summary>
         /// <param name="baccrat"></param>
         void AddNewCard(BaccratCard baccrat, AutoResult autoResult = null);

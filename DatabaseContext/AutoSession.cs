@@ -14,7 +14,10 @@ namespace DatabaseContext
     
         public int ID { get; set; }
         public DateTime StartDateTime { get; set; }        
-        public int NoOfSteps { get; set; }
+        
+        /// <summary>
+        /// QUAD: Thread từ 1-4
+        /// </summary>
         public int Profit14 { get; set; }
         public int Profit25 { get; set; }
         public int Profit36 { get; set; }
@@ -25,6 +28,26 @@ namespace DatabaseContext
         public int Profit83 { get; set; }        
 
         public int TableNumber { get; set; }
+
+        /// <summary>
+        /// Số lượng các bước trong SHOE (Bao gồm BANKER, PLAYER và TIE) 
+        /// </summary>
+        public int NoOfSteps { get; set; }
+
+        /// <summary>
+        /// Số lượng các bước giải thuật ROOT dùng để trade (BANKER và PLAYER)
+        /// </summary>
+        public int NoOfStepsRoot { get; set; }
+        /// <summary>
+        /// Số lượng các bước giải thuật QUAD dùng để trade (BANKER và PLAYER)
+        /// </summary>
+        public int NoOfStepsQuad { get; set; }
+
+        public int MaxRoot { get; set; }
+        public int MinRoot { get; set; }
+        public int MaxQuad { get; set; }
+        public int MinQuad { get; set; }
+
 
         /// <summary>
         /// = 1: Bàn đã đóng, = 0: Bàn đang mở

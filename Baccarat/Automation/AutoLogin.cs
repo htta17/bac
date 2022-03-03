@@ -403,11 +403,13 @@ namespace Midas
                 BaccratCard.Banker, BaccratCard.Banker,
                 BaccratCard.Player,
                 BaccratCard.Banker, BaccratCard.Banker,
-                BaccratCard.Player, BaccratCard.Player,BaccratCard.Player,
+                BaccratCard.Player, BaccratCard.Player, BaccratCard.Player,
                 BaccratCard.Banker, BaccratCard.Banker,
-                BaccratCard.Player, BaccratCard.Player,BaccratCard.Player,
-                BaccratCard.Banker, BaccratCard.Banker,BaccratCard.Banker, BaccratCard.Banker,
-                BaccratCard.Player, BaccratCard.Player
+                BaccratCard.Player, BaccratCard.Player, BaccratCard.Player,
+                BaccratCard.Banker, BaccratCard.Banker, BaccratCard.Banker, BaccratCard.Banker,
+                BaccratCard.Player, BaccratCard.Player,
+                BaccratCard.Banker, BaccratCard.Banker, BaccratCard.Banker, BaccratCard.Banker,
+                BaccratCard.Player, BaccratCard.Player, BaccratCard.Player
             };
             foreach (var action in actionsList)
             {

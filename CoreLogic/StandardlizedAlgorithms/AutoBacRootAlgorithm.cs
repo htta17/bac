@@ -42,10 +42,8 @@ namespace CoreLogic.StandardlizedAlgorithms
     {
         #region Properties
         GlobalDBContext BaccaratDBContext { get; set; }
-
        
-        private List<AutoRoot> MainAutoRoots { get; set; }
-       
+        private List<AutoRoot> MainAutoRoots { get; set; }       
 
         /// <summary>
         /// Shoe đang chơi
@@ -56,8 +54,12 @@ namespace CoreLogic.StandardlizedAlgorithms
         /// Số bàn
         /// </summary>
         private int TableNumber { get; set; }
-        const int FlatCoeff = 1;
-       
+        const int FlatCoeffBase = 1;
+        const int ModCoeffBase = 11;
+
+        RootInputUpdateModel FlatRootUpdateModel = new RootInputUpdateModel(0, FlatCoeffBase, 0.95m);
+
+        RootInputUpdateModel LowRiskUpdateModel = new RootInputUpdateModel(2, ModCoeffBase, 0.95m);
         #endregion
 
         public AutoBacRootAlgorithm(string connectionString, int tableNumber)
@@ -96,11 +98,23 @@ namespace CoreLogic.StandardlizedAlgorithms
                 ListCurrentPredicts = string.Empty,
                 ID = autoResult.ID,
                 AutoSessionID = CurrentAutoSession.ID,
-                GlobalIndex = globalIndex
+                GlobalIndex = globalIndex,
+                ListCurrentModCoeffs = string.Empty
             };
             BaccaratDBContext.AddAutoRoot(newAutoRoot);
             
-            MainAutoRoots.Add(newAutoRoot);            
+            MainAutoRoots.Add(newAutoRoot);
+
+            //Cập nhật số lượng bước cho AutoSession (Dễ dàng cho việc tổng hợp)
+            //và Max, Min (cho tiền) 
+            var allAutoRootsThisSession = BaccaratDBContext.FindAutoRootsBySession(CurrentAutoSession.ID).ToList();
+            var sumProfit = allAutoRootsThisSession.Select(c => c.GlobalProfit).Sum();
+            CurrentAutoSession.NoOfStepsRoot = allAutoRootsThisSession.Count;
+            if (CurrentAutoSession.MaxRoot < sumProfit)
+                CurrentAutoSession.MaxRoot = sumProfit;
+            if (CurrentAutoSession.MinRoot > sumProfit)
+                CurrentAutoSession.MinRoot = sumProfit;
+            BaccaratDBContext.UpdateAutoSession(CurrentAutoSession);
         }
 
         /// <summary>
@@ -133,9 +147,25 @@ namespace CoreLogic.StandardlizedAlgorithms
             return new BaccaratPredict { Value = BaccratCard.NoTrade, Volume = 0 };
         }
 
+        public int CalculateModCoeff(List<int> historyProfits, RootInputUpdateModel rootInputUpdate)
+        {
+            var initialValue = rootInputUpdate.StartNumber;
+            foreach (var profit in historyProfits)
+            {
+                if (profit < 0) //Lỗ, tăng hệ số
+                    initialValue += rootInputUpdate.Increment;
+                else if (profit > 0)
+                { 
+                    if (initialValue > rootInputUpdate.StartNumber)
+                        initialValue -= rootInputUpdate.Increment;
+                }
+            }
+            return initialValue;
+        }
+
         public BaccaratPredict Predict()
         {
-            var predictMainThread = PredictSingleThread(MainAutoRoots, FlatCoeff);            
+            var predictMainThread = PredictSingleThread(MainAutoRoots, FlatCoeffBase);            
 
             #region Dự đoán phiên tổng hợp của các phiên con
             var lastAutoRoot = MainAutoRoots.LastOrDefault();
@@ -154,24 +184,71 @@ namespace CoreLogic.StandardlizedAlgorithms
             var SubAutoRoots = MainAutoRoots.Where(c => subThreadIndexes.Contains(c.GlobalIndex))
                                             .OrderBy(c => c.GlobalIndex)
                                             .ToList();
-            var predictSubThread = PredictSingleThread(SubAutoRoots, FlatCoeff);             
+
+            var predictSubThread = PredictSingleThread(SubAutoRoots, FlatCoeffBase);
+            #endregion
+
+
+            #region Dự đoán cho modification
+            var allRootsInThisSession = BaccaratDBContext.FindAutoRootsBySession(CurrentAutoSession.ID);
+            
+            var _mainCoeff = 0;
+            {
+                var historyModMainProfits = allRootsInThisSession.Select(c => c.ModMainProfit).ToList();
+                _mainCoeff = CalculateModCoeff(historyModMainProfits, LowRiskUpdateModel);
+            }
+            var modPredictMainThread = PredictSingleThread(MainAutoRoots, _mainCoeff);
+
+            var _subCoeff = 0;
+            {
+                var historyModSubProfits = (predictGlobalIndex % 4 == 0 ? allRootsInThisSession.Select(c => c.ModProfit0)
+                                                : predictGlobalIndex % 4 == 1 ? allRootsInThisSession.Select(c => c.ModProfit1)
+                                                : predictGlobalIndex % 4 == 2 ? allRootsInThisSession.Select(c => c.ModProfit2)
+                                                : allRootsInThisSession.Select(c => c.ModProfit3))
+                                                .ToList();
+                _subCoeff = CalculateModCoeff(historyModSubProfits, LowRiskUpdateModel);
+            }            
+            var modPredictSubThread = PredictSingleThread(SubAutoRoots, _subCoeff);
+
+            var _allSubCoeff = 0;
+            {
+                var historyModAllSubProfits = allRootsInThisSession.Select(c => c.ModAllSubProfit).ToList();
+                _allSubCoeff = CalculateModCoeff(historyModAllSubProfits, LowRiskUpdateModel);
+            }            
+            var modPredictAllSubThread = PredictSingleThread(SubAutoRoots, _allSubCoeff);
+
             #endregion
 
             //Cập nhật database cho dự đoán
             var listCurrentPredicts = new List<BaccaratPredict>
             {
                 predictMainThread,
-                predictSubThread
+                predictSubThread,
+                modPredictMainThread, 
+                modPredictSubThread,
+                modPredictAllSubThread
+            };
+
+            var currentModCoeffs = new List<int>
+            {
+                _mainCoeff,
+                _subCoeff, 
+                _allSubCoeff                
             };
 
             if (lastAutoRoot != null)
             {
                 lastAutoRoot.ListCurrentPredicts = JsonConvert.SerializeObject(listCurrentPredicts);
+                lastAutoRoot.ListCurrentModCoeffs = JsonConvert.SerializeObject(currentModCoeffs);
                 BaccaratDBContext.UpdateAutoRoot(lastAutoRoot);
             }
 
             var flatVolume = (int)predictMainThread.Value * predictMainThread.Volume  //Main thread                            
-                           + (int)predictSubThread.Value * (predictSubThread.Volume + FlatCoeff);
+                           + (int)predictSubThread.Value * (predictSubThread.Volume + FlatCoeffBase);
+
+            var modVolume = (int)modPredictMainThread.Value * modPredictMainThread.Volume
+                                + (int)modPredictSubThread.Value * modPredictSubThread.Volume
+                                + (int)modPredictAllSubThread.Value * modPredictAllSubThread.Volume;
 
             var flatResult = new BaccaratPredict
             {
@@ -199,9 +276,9 @@ namespace CoreLogic.StandardlizedAlgorithms
             {
                 CurrentAutoSession = CreateNewSession();
             }
-            //Lấy 100 bước gần nhất và gán cho các thread (Bao gồm thread chính, 4 thread con)
-            MainAutoRoots = BaccaratDBContext.FindLastNAutoRoots(100).ToList();
             
+            //Lấy 100 bước gần nhất
+            MainAutoRoots = BaccaratDBContext.FindLastNAutoRoots(100).ToList();
         }        
 
         public bool InProcessingSession()
@@ -225,33 +302,33 @@ namespace CoreLogic.StandardlizedAlgorithms
             return Predict();
         }
 
-        public AutoBacRootOutputCoeff UpdateCoeff(AutoBacRootInputCoeff standardCoeff)
+        public AutoBacRootOutputCoeff UpdateCoeff(AutoBacRootInputCoeff autoRootCoeff)
         {
             var rawProfit = 0;   //Profit 
             decimal commissionedProfit = 0m; //Profit đã bị trừ comission
-            var currentPredictValue = standardCoeff.CurrentPredict.Value;
-            var card = standardCoeff.NewCard;
-            var coeff = standardCoeff.CurrentCoeff;
+            var currentPredictValue = autoRootCoeff.CurrentPredict.Value;
+            var card = autoRootCoeff.NewCard;
+            var coeff = autoRootCoeff.CurrentCoeff;
             var isBankerWin = false;
 
-            if (standardCoeff.CurrentPredict.Value != BaccratCard.NoTrade)
+            if (autoRootCoeff.CurrentPredict.Value != BaccratCard.NoTrade)
             {
                 //Dự đoán sai (THUA)
                 if (currentPredictValue != card)
                 {
-                    rawProfit = -standardCoeff.CurrentCoeff;
-                    commissionedProfit = -standardCoeff.CurrentCoeff;
-                    coeff += standardCoeff.RootUpdateModel.Increment; //Tăng hệ số
+                    rawProfit = -autoRootCoeff.CurrentCoeff;
+                    commissionedProfit = -autoRootCoeff.CurrentCoeff;
+                    coeff += autoRootCoeff.RootUpdateModel.Increment; //Tăng hệ số
                 }
                 else //Dự đoán đúng (THẮNG)
                 {
                     rawProfit = coeff;
-                    commissionedProfit = card == BaccratCard.Banker ? coeff * standardCoeff.RootUpdateModel.Commission : coeff;
+                    commissionedProfit = card == BaccratCard.Banker ? coeff * autoRootCoeff.RootUpdateModel.Commission : coeff;
                     isBankerWin = card == BaccratCard.Banker;
                     //Nếu hệ số vẫn lớn hơn StartNumber
-                    if (coeff > standardCoeff.RootUpdateModel.StartNumber)
+                    if (coeff > autoRootCoeff.RootUpdateModel.StartNumber)
                     {
-                        coeff -= standardCoeff.RootUpdateModel.Increment;
+                        coeff -= autoRootCoeff.RootUpdateModel.Increment;
                     }
                 }
             }
@@ -274,38 +351,44 @@ namespace CoreLogic.StandardlizedAlgorithms
             if (lastAutoRoot == null)
                 return;
 
-            //Dự đoán hiện tại, xử lý nếu không đủ 6 items
+            //Dự đoán hiện tại, xử lý nếu không đủ 8 items
+            //index = 0: Main thread cho flat
+            //index = 1: Dự đoán của 1 thread
             var currentPredicts = JsonConvert.DeserializeObject<List<BaccaratPredict>>(lastAutoRoot.ListCurrentPredicts);
-            if (currentPredicts == null)                
-                currentPredicts = new List<BaccaratPredict> (); 
-            if (currentPredicts.Count < 2)
+            if (currentPredicts == null)
             {
-                var needToAdd = 2 - currentPredicts.Count;
-                for (int i = 1; i <= needToAdd; i++)
-                    currentPredicts.Add(new BaccaratPredict { Volume = 0, Value = BaccratCard.NoTrade });
+                currentPredicts = new List<BaccaratPredict>();
+                while (currentPredicts.Count < 5) currentPredicts.Add(new BaccaratPredict { Value = BaccratCard.NoTrade, Volume = 0 });
             }
 
-            var flatRootUpdateModel = new RootInputUpdateModel(0, FlatCoeff, 0.95m);
+            var currentModCoeff = JsonConvert.DeserializeObject<List<int>>(lastAutoRoot.ListCurrentModCoeffs);
+            if (currentModCoeff == null)
+            {
+                currentModCoeff = new List<int>();
+                while (currentModCoeff.Count < 3) currentModCoeff.Add(LowRiskUpdateModel.StartNumber);
+            }
 
-            var autoBacRootInputCoeff = new AutoBacRootInputCoeff
+            var flatBacRootInputCoeff = new AutoBacRootInputCoeff
             {
                 NewCard = newCard,
                 CurrentPredict = currentPredicts[0],
-                CurrentCoeff = FlatCoeff,  //Hệ số flat
-                RootUpdateModel = flatRootUpdateModel
-            };            
-
-            //Lấy dự đoán và so sánh với [newCard] để tính toán lỗ lãi, sau đó nhập cập nhật database
-            var mainThreadPredict = UpdateCoeff(autoBacRootInputCoeff);            
+                CurrentCoeff = FlatCoeffBase,  //Hệ số flat
+                RootUpdateModel = FlatRootUpdateModel
+            };
 
             //Cập nhật dự đoán cho 1 trong các thread con
-            var globalIndex = lastAutoRoot.GlobalIndex;            
-            autoBacRootInputCoeff.CurrentPredict = currentPredicts[1];
-            var subThreadPredict = UpdateCoeff(autoBacRootInputCoeff);
+            var globalIndex = lastAutoRoot.GlobalIndex;
+            globalIndex++;
+
+            //Lấy dự đoán và so sánh với [newCard] để tính toán lỗ lãi, sau đó nhập cập nhật database
+            var mainThreadPredict = UpdateCoeff(flatBacRootInputCoeff);             
+
+            flatBacRootInputCoeff.CurrentPredict = currentPredicts[1];
+            var subThreadPredict = UpdateCoeff(flatBacRootInputCoeff);
 
             //Cập nhật dự đoán cho all sub threads
-            autoBacRootInputCoeff.CurrentPredict = currentPredicts[1];
-            var allSubsThreadPredict = UpdateCoeff(autoBacRootInputCoeff);
+            flatBacRootInputCoeff.CurrentPredict = currentPredicts[1];
+            var allSubsThreadPredict = UpdateCoeff(flatBacRootInputCoeff);
 
             //Cập nhật lỗ/lãi trong database
             lastAutoRoot.MainProfit = mainThreadPredict.TheoricalProfit;
@@ -318,6 +401,37 @@ namespace CoreLogic.StandardlizedAlgorithms
                 lastAutoRoot.Profit2 = subThreadPredict.TheoricalProfit;
             else if (globalIndex % 4 == 3)
                 lastAutoRoot.Profit3 = subThreadPredict.TheoricalProfit;
+
+            //Làm việc với các hệ số thay đổi    
+            //Main thead
+           var _lowRiskBacRootInputCoeff = new AutoBacRootInputCoeff
+            {
+                NewCard = newCard,
+                CurrentPredict = currentPredicts[2],
+                CurrentCoeff = currentModCoeff[0],  
+                RootUpdateModel = LowRiskUpdateModel
+           };
+           var modMainThreadPredict = UpdateCoeff(_lowRiskBacRootInputCoeff);
+           lastAutoRoot.ModMainProfit = modMainThreadPredict.TheoricalProfit;
+
+            //Sub thread
+            _lowRiskBacRootInputCoeff.CurrentPredict = currentPredicts[3];
+            _lowRiskBacRootInputCoeff.CurrentCoeff = currentModCoeff[1];
+            var modSubThreadPredict = UpdateCoeff(_lowRiskBacRootInputCoeff);
+            if (globalIndex % 4 == 0)
+                lastAutoRoot.ModProfit0 = modSubThreadPredict.TheoricalProfit;
+            else if (globalIndex % 4 == 1)
+                lastAutoRoot.ModProfit1 = modSubThreadPredict.TheoricalProfit;
+            else if (globalIndex % 4 == 2)
+                lastAutoRoot.ModProfit2 = modSubThreadPredict.TheoricalProfit;
+            else if (globalIndex % 4 == 3)
+                lastAutoRoot.ModProfit3 = modSubThreadPredict.TheoricalProfit;
+
+            //all sub thread
+            _lowRiskBacRootInputCoeff.CurrentPredict = currentPredicts[4];
+            _lowRiskBacRootInputCoeff.CurrentCoeff = currentModCoeff[2];
+            var modAllSubThreadPredict = UpdateCoeff(_lowRiskBacRootInputCoeff);
+            lastAutoRoot.ModAllSubProfit = modAllSubThreadPredict.TheoricalProfit;
 
             BaccaratDBContext.UpdateAutoRoot(lastAutoRoot);
         }

@@ -9,10 +9,6 @@ using System.Text;
 
 namespace CoreLogic
 {
-    
-
-    
-
     /// <summary>
     /// Giải thuật Root
     /// </summary>
