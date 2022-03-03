@@ -51,12 +51,8 @@ namespace Midas
             {
                 StartApp.LoadRegistryConnectionString();
             }
-            
-            AutoBacRoots = new List<AutoBacRootAlgorithm>();
-            for (int tableNumber = 1; tableNumber <= 10; tableNumber++)
-            {
-                AutoBacRoots.Add(new AutoBacRootAlgorithm(StartApp.GlobalConnectionString, tableNumber));
-            }
+
+            LogicAllTables = new List<AutoBacRootAlgorithm>();
         }
 
        
@@ -65,7 +61,7 @@ namespace Midas
         #region Properties
         bool StatusEnabled { get; set; } = false;
 
-        Timer Timer = new Timer();
+        Timer PhotoTakenTimer = new Timer();
         private readonly ChromeDriver Driver = null;
         private IWebDriver AllTableDriver;
 
@@ -84,7 +80,7 @@ namespace Midas
         /// </summary>
         Timer SwitchTableTimer = new Timer();
 
-        List<AutoBacRootAlgorithm> AutoBacRoots { get; set; }
+        List<AutoBacRootAlgorithm> LogicAllTables { get; set; }
 
         /// <summary>
         /// Đánh dấu cho biết đang ở trạng thái tất cả các bàn hay đang ở tại 1 bàn cụ thể nào
@@ -108,13 +104,13 @@ namespace Midas
         private void Timers_Setup()
         {
             numInterval.Value = 5;
-            Timer.Interval = 1000 * 60 * (int)numInterval.Value; //5 mins
-            Timer.Tick += Timer_Tick;
+            PhotoTakenTimer.Interval = 1000 * 60 * (int)numInterval.Value; //5 mins
+            PhotoTakenTimer.Tick += Timer_Tick;
 
-            AllTableResultTimer.Interval = 5_000;
+            AllTableResultTimer.Interval = 5_000; //Chế độ tất cả màn hình 
             AllTableResultTimer.Tick += CheckResultTimer_Tick;
 
-            SwitchTableTimer.Interval = 1000 * 60 * 5; //10 phút
+            SwitchTableTimer.Interval = 1000 * 60 * 5; //5 phút
             SwitchTableTimer.Tick += SwitchTableTimer_Tick;
 
             OneTableResultTimer.Interval = 1000;
@@ -131,8 +127,6 @@ namespace Midas
         }
         #endregion
 
-
-
         #region Timer ticks events
         private void OneTableResultTimer_Tick(object sender, EventArgs e)
         {
@@ -148,11 +142,11 @@ namespace Midas
             table1.Click(); //Nhấn vô bàn số 1
             IsInAllTableView = false;
 
-            System.Threading.Thread.Sleep(5000); //Đợi khoảng 5 giây
+            System.Threading.Thread.Sleep(2000); //Đợi khoảng 5 giây
 
             var allTableButton = AllTableDriver.FindElement(By.CssSelector("#IconBaccarat"));
             allTableButton.Click();
-            IsInAllTableView = false;
+            IsInAllTableView = true;
         }
 
         int ParseInt(string s)
@@ -162,72 +156,135 @@ namespace Midas
             return int.Parse(s);
         }
 
+        private AutoBacRootAlgorithm GetTable(int _tableNo)
+        {
+            if (!LogicAllTables.Any(c => c.TableNumber == _tableNo))
+            {
+                LogicAllTables.Add(new AutoBacRootAlgorithm(StartApp.GlobalConnectionString, _tableNo));
+            }
+            return LogicAllTables.FirstOrDefault(c => c.TableNumber == _tableNo);
+        }
+
         /// <summary>
         /// Lấy và xử lý kết quả cho tất cả các bàn
         /// </summary>
         private void GetResult_AllTableView()
         {
             //Lấy kết quả BANKER, PLAYER và TIE ở tất cả các bàn 
-            var allTables = AllTableDriver.FindElements(By.CssSelector("table-list table-item"));
-            var allBankers = AllTableDriver.FindElements(By.Id("StatisticsB")).Select(c => c.Text).ToList();
-            var allPlayers = AllTableDriver.FindElements(By.Id("StatisticsP")).Select(c => c.Text).ToList();
-            var allTies = AllTableDriver.FindElements(By.Id("StatisticsT")).Select(c => c.Text).ToList();            
+            var uiAllTables = AllTableDriver.FindElements(By.CssSelector("table-list table-item")).ToList();
 
-            if (!SavedAllTableResults.Any()) //Lần đầu, chưa có bàn nào 
+            foreach(var table in uiAllTables)
             {
-                for (var i = 0; i < allTables.Count; i++)
+                var _currentBanker = table.FindElement(By.Id("StatisticsB")).Text;
+                var _currentPlayer = table.FindElement(By.Id("StatisticsP")).Text;
+                var _currentTie = table.FindElement(By.Id("StatisticsT")).Text;
+                var _tableNumber = table.FindElement(By.Id("TableNo")).Text.Replace("T", "");
+                var _tableNumberInt = ParseInt(_tableNumber);                
+                var newCard = AutomationCardResult.NO_CARD; 
+                var scannedResult = new AutomationTableResult
                 {
-                    SavedAllTableResults.Add(new AutomationTableResult
-                    {
-                        TotalBanker = ParseInt(allBankers[i]),
-                        TotalPlayer = ParseInt(allPlayers[i]),
-                        TotalTie = ParseInt(allTies[i])
-                    });
+                    TotalBanker = ParseInt(_currentBanker),
+                    TotalPlayer = ParseInt(_currentPlayer),
+                    TotalTie = ParseInt(_currentTie),
+                    TableNumber = _tableNumber
+                };
+
+                //Nếu chưa có bàn này trong kết quả
+                if (!SavedAllTableResults.Any(c => c.TableNumber == _tableNumber))
+                {
+                    SavedAllTableResults.Add(scannedResult);
                 }
-            }
-            else //Kiểm tra xem có bàn nào thay đổi kết quả thì ghi biết bàn đó đã có thêm card 
-            {
-                for (var i = 0; i < allTables.Count; i++)
+                else
                 {
-                    var savedTableResult = SavedAllTableResults[i];
-                    var newResult = new AutomationTableResult
+                    var lastTableResult = SavedAllTableResults.FirstOrDefault(c => c.TableNumber == _tableNumber);
+
+                    if (lastTableResult.Total != scannedResult.Total) //Có thay đổi trạng thái (Thêm card hoặc reset) 
                     {
-                        TotalBanker = ParseInt(allBankers[i]),
-                        TotalPlayer = ParseInt(allPlayers[i]),
-                        TotalTie = ParseInt(allTies[i])
-                    };
-                    if (savedTableResult.Total != newResult.Total) //Có thêm card mới
-                    {
-                        var cardResult = "";
-                        if (savedTableResult.TotalBanker + 1 == newResult.TotalBanker)
+                        if (lastTableResult.TotalBanker + 1 == scannedResult.TotalBanker)
                         {
-                            cardResult = "BANKER"; 
+                            newCard = AutomationCardResult.BANKER; 
                         }
-                        else if (savedTableResult.TotalPlayer + 1 == newResult.TotalPlayer)
+                        else if (lastTableResult.TotalPlayer + 1 == scannedResult.TotalPlayer)
                         {
-                            cardResult = "PLAYER";
+                            newCard = AutomationCardResult.PLAYER;
                         }
-                        else if (savedTableResult.TotalTie + 1 == newResult.TotalTie)
+                        else if (lastTableResult.TotalTie + 1 == scannedResult.TotalTie)
                         {
-                            cardResult = "TIE";
+                            newCard = AutomationCardResult.TIE;
+                        }
+                        else
+                        {
+                            newCard = AutomationCardResult.SHOE_CHANGE_OR_CLOSE;
+                        }
+                        #region Log for now, can delete later
+                        if (newCard != AutomationCardResult.SHOE_CHANGE_OR_CLOSE)
+                        {
+                            txtLog.Text = $"{DateTime.Now: yyyy-MM-dd HH:mm:ss}, Bàn số {_tableNumber}, card { newCard}"
+                                + Environment.NewLine
+                                + txtLog.Text;
+                        }
+                        else
+                        {
+                            txtLog.Text = $"{DateTime.Now: yyyy-MM-dd HH:mm:ss}, Bàn số {_tableNumber}, --------------RESET--------"
+                                + Environment.NewLine
+                                + txtLog.Text;
                         }                        
-                        txtLog.Text = $"{DateTime.Now : yyyy-MM-dd HH:mm:ss}, Bàn số {i + 1}, card { cardResult}" 
-                            + Environment.NewLine 
-                            + txtLog.Text ;
+
+                        #endregion
                     }
-
-                    //Cập nhật lại thông tin cho card 
-                    //SavedAllTableResults[i] = newResult;
-                    SavedAllTableResults.RemoveAt(i);
-                    SavedAllTableResults.Insert(i, newResult);
+                    SavedAllTableResults.Remove(lastTableResult);
+                    SavedAllTableResults.Add(scannedResult);
                 }
+
+                var logicTable = GetTable(_tableNumberInt);
+
+                //Trường hợp mới join vào và có đúng 1 kết quả, bàn vẫn đang chơi 
+                //nhưng vẫn biết kết quả
+                // - Kiểm tra xem bàn hiện tại có bao nhiêu steps
+                // - Nếu có 1 step (đang ở đúng bàn) thì không làm gì
+                // - Nếu có hơn 1 step thì reset bàn đó
+                if (scannedResult.Total == 1)
+                {
+                    
+
+                    //Nếu Session có nhiều hơn 1 kết quả thì đây là bàn cũ (không phải bàn hiện tại của UI) 
+                    if (logicTable.CurrentAutoSession.NoOfSteps == 0)
+                    {
+                        if (scannedResult.TotalBanker == 1)
+                            logicTable.Process(BaccratCard.Banker);
+                        else if (scannedResult.TotalPlayer == 1)
+                            logicTable.Process(BaccratCard.Player);
+                    }
+                    else if (logicTable.CurrentAutoSession.NoOfSteps == 1)
+                    {
+                        //Bàn hiện tại, đã nhập kết quả khi NoOfSteps == 0
+                        //Không làm gì. 
+                        //Chỉ comment để dễ maintain
+                    }
+                    else
+                    {
+                        logicTable.Reset();
+                    }
+                }
+                else if (newCard != AutomationCardResult.NO_CARD)
+                {
+                    if (newCard == AutomationCardResult.SHOE_CHANGE_OR_CLOSE)
+                    {
+                        logicTable.Reset();
+                    }
+                    else 
+                    //Đánh với nhiều thuật toán khác nhau 
+                    //Làm việc với những thuật toán chỉ dùng BANKER và PLAYER                    
+                    if (newCard == AutomationCardResult.BANKER || newCard == AutomationCardResult.PLAYER)
+                    {                        
+                        logicTable.Process((BaccratCard)newCard);
+                    }
+                }
+                
+
+                //Ghi vào dữ liệu
             }
-            
 
-            //Đánh với nhiều thuật toán khác nhau 
-
-
-            //Ghi vào dữ liệu
         }
         private void CheckResultTimer_Tick(object sender, EventArgs e)
         {
@@ -308,8 +365,8 @@ namespace Midas
             StatusEnabled = !StatusEnabled;
             if (StatusEnabled)
             {
-                Timer.Interval = (int)numInterval.Value * 1000 * 60;
-                Timer.Start();
+                PhotoTakenTimer.Interval = (int)numInterval.Value * 1000 * 60;
+                PhotoTakenTimer.Start();
                 btnTakePhoto.Text = "STOP Taking Photo";
                 btnTakePhoto.ForeColor = Color.Red;
 
@@ -319,7 +376,7 @@ namespace Midas
             }
             else
             {
-                Timer.Stop();
+                PhotoTakenTimer.Stop();
                 btnTakePhoto.Text = "START Taking Photo";
                 btnTakePhoto.ForeColor = Color.Green;
 
@@ -358,7 +415,6 @@ namespace Midas
                 playNowGrandSuite.Click();
                 System.Threading.Thread.Sleep(500);//Đợi 2 giây cho xuất hiện nút OK
 
-
                 var okButton = Driver.FindElement(By.CssSelector(".modal-dialog .text-center button.bet-btn"));
                 okButton.Click(); //Nhấn nút OK
                 System.Threading.Thread.Sleep(5000);//Đợi 5 giây để màn hình mới load
@@ -368,6 +424,9 @@ namespace Midas
 
                 IsInAllTableView = true;
                 AllTableResultTimer.Start();
+                SwitchTableTimer.Start();
+
+                CheckResultTimer_Tick(null, null);
             }
             catch (Exception ex)
             {
@@ -377,44 +436,103 @@ namespace Midas
 
         private void btnAddAutoRoot_Click(object sender, EventArgs e)
         {
-            var tableNo = 7;
-            var rootAlg = AutoBacRoots[tableNo - 1];
-            var x = rootAlg.Process(BaccratCard.Banker);
-            lbCurrentStatus.Text = JsonConvert.SerializeObject(x);
-        }
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-            var tableNo = 7;
-            var rootAlg = AutoBacRoots[tableNo - 1];
-            var x = rootAlg.Process(BaccratCard.Player);
-            lbCurrentStatus.Text = JsonConvert.SerializeObject(x);
-        }
-
-        private void button2_Click(object sender, EventArgs e)
-        {
-            var tableNo = 7;
-            var rootAlg = AutoBacRoots[tableNo - 1];
+            var rootAlg = new AutoBacRootAlgorithm(StartApp.GlobalConnectionString, 7);
             var actionsList = new List<BaccratCard>
             {
-                BaccratCard.Player, BaccratCard.Player,
-                BaccratCard.Banker, BaccratCard.Banker,
-                BaccratCard.Player, BaccratCard.Player,
-                BaccratCard.Banker, BaccratCard.Banker,
                 BaccratCard.Player,
-                BaccratCard.Banker, BaccratCard.Banker,
-                BaccratCard.Player, BaccratCard.Player, BaccratCard.Player,
-                BaccratCard.Banker, BaccratCard.Banker,
-                BaccratCard.Player, BaccratCard.Player, BaccratCard.Player,
-                BaccratCard.Banker, BaccratCard.Banker, BaccratCard.Banker, BaccratCard.Banker,
-                BaccratCard.Player, BaccratCard.Player,
-                BaccratCard.Banker, BaccratCard.Banker, BaccratCard.Banker, BaccratCard.Banker,
-                BaccratCard.Player, BaccratCard.Player, BaccratCard.Player
+                BaccratCard.Banker,
+                BaccratCard.Banker,
+                BaccratCard.Player,
+                BaccratCard.Banker,
+                BaccratCard.Player,
+                BaccratCard.Banker,
+                BaccratCard.Banker,
+                BaccratCard.Banker,
+                BaccratCard.Player,
+                BaccratCard.Player,
+                BaccratCard.Banker,
+                BaccratCard.Player,
+                BaccratCard.Player,
+                BaccratCard.Banker,
+                BaccratCard.Banker,
+                BaccratCard.Player,
+                BaccratCard.Player,
+                BaccratCard.Banker,
+                BaccratCard.Banker,
+                BaccratCard.Banker,
+                BaccratCard.Player,
+                BaccratCard.Banker,
+                BaccratCard.Player,
+                BaccratCard.Banker,
+                BaccratCard.Banker,
+                BaccratCard.Banker,
+                BaccratCard.Banker,
+                BaccratCard.Banker,
+                BaccratCard.Player,
+                BaccratCard.Player,
+                BaccratCard.Player,
+                BaccratCard.Banker,
+                BaccratCard.Player,
+                BaccratCard.Player,
+                BaccratCard.Player,
+                BaccratCard.Player,
+                BaccratCard.Player,
+                BaccratCard.Banker,
+                BaccratCard.Player,
+                BaccratCard.Banker,
+                BaccratCard.Player,
+                BaccratCard.Player,
+                BaccratCard.Player,
+                BaccratCard.Player,
+                BaccratCard.Player,
+                BaccratCard.Player,
+                BaccratCard.Player,
+                BaccratCard.Banker,
+                BaccratCard.Player,
+                BaccratCard.Player,
+                BaccratCard.Player,
+                BaccratCard.Banker,
+                BaccratCard.Banker,
+                BaccratCard.Player,
+                BaccratCard.Player,
+                BaccratCard.Player,
+                BaccratCard.Player,
+                BaccratCard.Player,
+                BaccratCard.Player,
+                BaccratCard.Player,
+                BaccratCard.Banker,
+                BaccratCard.Player,
+                BaccratCard.Banker,
+                BaccratCard.Banker,
+                BaccratCard.Player,
+                BaccratCard.Player,
+                BaccratCard.Banker,
+                BaccratCard.Banker,
+                BaccratCard.Player,
+                BaccratCard.Player,
+                BaccratCard.Player,
+                BaccratCard.Banker,
+                BaccratCard.Banker,
+                BaccratCard.Player,
+                BaccratCard.Player,
+                BaccratCard.Player,
+                BaccratCard.Banker,
+                BaccratCard.Banker,
+                BaccratCard.Banker,
+                BaccratCard.Player,
+                BaccratCard.Banker,
+                BaccratCard.Player,
+                BaccratCard.Banker,
+                BaccratCard.Banker,
+                BaccratCard.Banker,
+                BaccratCard.Player,
+                BaccratCard.Player
             };
             foreach (var action in actionsList)
             {
                 rootAlg.Process(action);
             }
         }
+        
     }
 }

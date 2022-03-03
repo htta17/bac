@@ -1,4 +1,5 @@
 ﻿using DatabaseContext;
+using System;
 using System.Collections.Generic;
 
 namespace CoreLogic.StandardlizedAlgorithms
@@ -85,9 +86,15 @@ namespace CoreLogic.StandardlizedAlgorithms
         AutoSession CreateNewSession();
 
         /// <summary>
-        /// Cập nhật lại hệ số và lãi cho bước trước đó, không thêm card mới
+        /// Cập nhật lại hệ số và lãi cho bước trước đó, không thêm card mới, không cập nhật database
         /// </summary>
         /// <param name="baccratCard"></param>
-        void TakeProfit(BaccratCard newCard);
+        System.Tuple<RootProfit<int>, RootProfit<int>> TakeProfit(BaccratCard newCard);
+
+        /// <summary>
+        /// Cập nhật lại thông tin cho autoRoot và autoSession sau khi thêm card mới
+        /// </summary>
+        /// <param name="profits"></param>
+        void UpdateDatabase(Tuple<RootProfit<int>, RootProfit<int>> profits);
     }
 }

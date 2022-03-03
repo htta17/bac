@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace CoreLogic
 {
     [System.Runtime.CompilerServices.SpecialName]
-    public class RootAccumulateProfit<T>
+    public class RootProfit<T>
         where T : struct, IConvertible
     {
         /// <summary>

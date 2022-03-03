@@ -54,7 +54,6 @@ namespace DatabaseContext
 
         public int AutoSessionID { get; set; }
         public virtual AutoSession AutoSession { get; set; }
-
         public virtual AutoResult AutoResult{ get; set; }
     }
 }

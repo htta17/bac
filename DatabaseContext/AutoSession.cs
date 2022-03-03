@@ -13,11 +13,13 @@ namespace DatabaseContext
         }
     
         public int ID { get; set; }
-        public DateTime StartDateTime { get; set; }        
-        
+        public DateTime StartDateTime { get; set; }
+
         /// <summary>
-        /// QUAD: Thread từ 1-4
+        /// QUAD: Thread từ 1-8 threads
         /// </summary>
+        public int MaxQuad { get; set; }
+        public int MinQuad { get; set; }
         public int Profit14 { get; set; }
         public int Profit25 { get; set; }
         public int Profit36 { get; set; }
@@ -45,9 +47,14 @@ namespace DatabaseContext
 
         public int MaxRoot { get; set; }
         public int MinRoot { get; set; }
-        public int MaxQuad { get; set; }
-        public int MinQuad { get; set; }
+       
+        public int RootMainProfit { get; set; }
+        public int RootProfit0 { get; set; }
+        public int RootProfit1 { get; set; }
+        public int RootProfit2 { get; set; }
+        public int RootProfit3 { get; set; }
 
+        public int RootAllSub { get; set; }
 
         /// <summary>
         /// = 1: Bàn đã đóng, = 0: Bàn đang mở

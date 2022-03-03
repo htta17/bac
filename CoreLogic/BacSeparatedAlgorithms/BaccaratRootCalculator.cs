@@ -192,20 +192,20 @@ namespace CoreLogic
         /// <summary>
         /// Lợi nhuận tích lũy cơ bản KHÔNG comission
         /// </summary>
-        private RootAccumulateProfit<int> AccumulateFlat100 { get; set; } = new RootAccumulateProfit<int>();        
+        private RootProfit<int> AccumulateFlat100 { get; set; } = new RootProfit<int>();        
 
         /// <summary>
         /// Lợi nhuận tích lũy cơ bản CÓ comission
         /// </summary>
-        private RootAccumulateProfit<decimal> AccumulateFlat095 { get; set; } = new RootAccumulateProfit<decimal>();
+        private RootProfit<decimal> AccumulateFlat095 { get; set; } = new RootProfit<decimal>();
 
-        private RootAccumulateProfit<int> AccumulateMod100 { get; set; } = new RootAccumulateProfit<int>();
+        private RootProfit<int> AccumulateMod100 { get; set; } = new RootProfit<int>();
 
-        private RootAccumulateProfit<decimal> AccumulateMod095 { get; set; } = new RootAccumulateProfit<decimal>();
+        private RootProfit<decimal> AccumulateMod095 { get; set; } = new RootProfit<decimal>();
 
-        private RootAccumulateProfit<int> FlatCoeff { get; set; } = new RootAccumulateProfit<int>();
+        private RootProfit<int> FlatCoeff { get; set; } = new RootProfit<int>();
 
-        private RootAccumulateProfit<int> ModCoeff { get; set; } = new RootAccumulateProfit<int>();
+        private RootProfit<int> ModCoeff { get; set; } = new RootProfit<int>();
 
         public List<BaccaratPredict> CurrentPredicts { get; set; }
 

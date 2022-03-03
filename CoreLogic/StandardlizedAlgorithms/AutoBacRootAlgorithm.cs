@@ -48,18 +48,18 @@ namespace CoreLogic.StandardlizedAlgorithms
         /// <summary>
         /// Shoe đang chơi
         /// </summary>
-        private AutoSession CurrentAutoSession { get; set; }
+        public AutoSession CurrentAutoSession { get; private set; }
 
         /// <summary>
         /// Số bàn
         /// </summary>
-        private int TableNumber { get; set; }
+        public int TableNumber { get; private set; }
         const int FlatCoeffBase = 1;
         const int ModCoeffBase = 11;
 
         RootInputUpdateModel FlatRootUpdateModel = new RootInputUpdateModel(0, FlatCoeffBase, 0.95m);
 
-        RootInputUpdateModel LowRiskUpdateModel = new RootInputUpdateModel(2, ModCoeffBase, 0.95m);
+        RootInputUpdateModel LowRiskUpdateModel = new RootInputUpdateModel(2, ModCoeffBase, 0.95m);       
         #endregion
 
         public AutoBacRootAlgorithm(string connectionString, int tableNumber)
@@ -101,20 +101,10 @@ namespace CoreLogic.StandardlizedAlgorithms
                 GlobalIndex = globalIndex,
                 ListCurrentModCoeffs = string.Empty
             };
-            BaccaratDBContext.AddAutoRoot(newAutoRoot);
-            
-            MainAutoRoots.Add(newAutoRoot);
 
-            //Cập nhật số lượng bước cho AutoSession (Dễ dàng cho việc tổng hợp)
-            //và Max, Min (cho tiền) 
-            var allAutoRootsThisSession = BaccaratDBContext.FindAutoRootsBySession(CurrentAutoSession.ID).ToList();
-            var sumProfit = allAutoRootsThisSession.Select(c => c.GlobalProfit).Sum();
-            CurrentAutoSession.NoOfStepsRoot = allAutoRootsThisSession.Count;
-            if (CurrentAutoSession.MaxRoot < sumProfit)
-                CurrentAutoSession.MaxRoot = sumProfit;
-            if (CurrentAutoSession.MinRoot > sumProfit)
-                CurrentAutoSession.MinRoot = sumProfit;
-            BaccaratDBContext.UpdateAutoSession(CurrentAutoSession);
+            BaccaratDBContext.AddAutoRoot(newAutoRoot);
+
+            MainAutoRoots.Add(newAutoRoot);
         }
 
         /// <summary>
@@ -261,7 +251,11 @@ namespace CoreLogic.StandardlizedAlgorithms
 
         public void Reset()
         {
-            throw new NotImplementedException();
+            CurrentAutoSession.IsClosed = true;
+
+            BaccaratDBContext.UpdateAutoSession(CurrentAutoSession);
+
+            CurrentAutoSession = CreateNewSession();
         }
         
 
@@ -278,12 +272,12 @@ namespace CoreLogic.StandardlizedAlgorithms
             }
             
             //Lấy 100 bước gần nhất
-            MainAutoRoots = BaccaratDBContext.FindLastNAutoRoots(100).ToList();
+            MainAutoRoots = BaccaratDBContext.FindLastNAutoRoots(CurrentAutoSession.ID, 100).ToList();
         }        
 
         public bool InProcessingSession()
         {
-            throw new NotImplementedException();
+            return BaccaratDBContext.FindAutoRootsBySession(CurrentAutoSession.ID).Count() > 1; 
         }        
 
         public AutoSession CreateNewSession()
@@ -295,9 +289,15 @@ namespace CoreLogic.StandardlizedAlgorithms
 
         public BaccaratPredict Process(BaccratCard baccratCard)
         {
-            TakeProfit(baccratCard);
+            var profits = TakeProfit(baccratCard);
 
             AddNewCard(baccratCard);
+
+            if (profits != null)
+            {
+                UpdateDatabase(profits);
+            }
+            
 
             return Predict();
         }
@@ -341,15 +341,16 @@ namespace CoreLogic.StandardlizedAlgorithms
             };
         }
 
-        public void TakeProfit(BaccratCard newCard)
+        public Tuple<RootProfit<int>, RootProfit<int>> TakeProfit(BaccratCard newCard)
         {
             //Giải thuật này chỉ dùng BANKER hoặc PLAYER
             if (newCard == BaccratCard.NoTrade)
-                return;
+                return default;
 
             var lastAutoRoot = MainAutoRoots.LastOrDefault();
             if (lastAutoRoot == null)
-                return;
+                return default;
+            Tuple<RootProfit<int>, RootProfit<int>> retVal = Tuple.Create(new RootProfit<int>(), new RootProfit<int>());
 
             //Dự đoán hiện tại, xử lý nếu không đủ 8 items
             //index = 0: Main thread cho flat
@@ -378,7 +379,7 @@ namespace CoreLogic.StandardlizedAlgorithms
 
             //Cập nhật dự đoán cho 1 trong các thread con
             var globalIndex = lastAutoRoot.GlobalIndex;
-            globalIndex++;
+            globalIndex++;            
 
             //Lấy dự đoán và so sánh với [newCard] để tính toán lỗ lãi, sau đó nhập cập nhật database
             var mainThreadPredict = UpdateCoeff(flatBacRootInputCoeff);             
@@ -389,22 +390,21 @@ namespace CoreLogic.StandardlizedAlgorithms
             //Cập nhật dự đoán cho all sub threads
             flatBacRootInputCoeff.CurrentPredict = currentPredicts[1];
             var allSubsThreadPredict = UpdateCoeff(flatBacRootInputCoeff);
-
-            //Cập nhật lỗ/lãi trong database
-            lastAutoRoot.MainProfit = mainThreadPredict.TheoricalProfit;
-            lastAutoRoot.AllSubProfit = allSubsThreadPredict.TheoricalProfit;
+                        
+            retVal.Item1.Main = mainThreadPredict.TheoricalProfit;            
             if (globalIndex % 4 == 0)
-                lastAutoRoot.Profit0 = subThreadPredict.TheoricalProfit;
+                retVal.Item1.Sub0 = subThreadPredict.TheoricalProfit;
             else if(globalIndex % 4 == 1)
-                lastAutoRoot.Profit1 = subThreadPredict.TheoricalProfit;
+                retVal.Item1.Sub1 = subThreadPredict.TheoricalProfit;
             else if (globalIndex % 4 == 2)
-                lastAutoRoot.Profit2 = subThreadPredict.TheoricalProfit;
+                retVal.Item1.Sub2 = subThreadPredict.TheoricalProfit;
             else if (globalIndex % 4 == 3)
-                lastAutoRoot.Profit3 = subThreadPredict.TheoricalProfit;
+                retVal.Item1.Sub3 = subThreadPredict.TheoricalProfit;
+            retVal.Item1.AllSub = allSubsThreadPredict.TheoricalProfit;
 
             //Làm việc với các hệ số thay đổi    
             //Main thead
-           var _lowRiskBacRootInputCoeff = new AutoBacRootInputCoeff
+            var _lowRiskBacRootInputCoeff = new AutoBacRootInputCoeff
             {
                 NewCard = newCard,
                 CurrentPredict = currentPredicts[2],
@@ -412,28 +412,70 @@ namespace CoreLogic.StandardlizedAlgorithms
                 RootUpdateModel = LowRiskUpdateModel
            };
            var modMainThreadPredict = UpdateCoeff(_lowRiskBacRootInputCoeff);
-           lastAutoRoot.ModMainProfit = modMainThreadPredict.TheoricalProfit;
-
+            retVal.Item2.Main = modMainThreadPredict.TheoricalProfit;
+            
             //Sub thread
             _lowRiskBacRootInputCoeff.CurrentPredict = currentPredicts[3];
             _lowRiskBacRootInputCoeff.CurrentCoeff = currentModCoeff[1];
             var modSubThreadPredict = UpdateCoeff(_lowRiskBacRootInputCoeff);
             if (globalIndex % 4 == 0)
-                lastAutoRoot.ModProfit0 = modSubThreadPredict.TheoricalProfit;
+                retVal.Item2.Sub0 = modSubThreadPredict.TheoricalProfit;
             else if (globalIndex % 4 == 1)
-                lastAutoRoot.ModProfit1 = modSubThreadPredict.TheoricalProfit;
+                retVal.Item2.Sub1 = modSubThreadPredict.TheoricalProfit;
             else if (globalIndex % 4 == 2)
-                lastAutoRoot.ModProfit2 = modSubThreadPredict.TheoricalProfit;
+                retVal.Item2.Sub2 = modSubThreadPredict.TheoricalProfit;
             else if (globalIndex % 4 == 3)
-                lastAutoRoot.ModProfit3 = modSubThreadPredict.TheoricalProfit;
+                retVal.Item2.Sub3 = modSubThreadPredict.TheoricalProfit;
 
             //all sub thread
             _lowRiskBacRootInputCoeff.CurrentPredict = currentPredicts[4];
             _lowRiskBacRootInputCoeff.CurrentCoeff = currentModCoeff[2];
             var modAllSubThreadPredict = UpdateCoeff(_lowRiskBacRootInputCoeff);
-            lastAutoRoot.ModAllSubProfit = modAllSubThreadPredict.TheoricalProfit;
+            retVal.Item2.AllSub = modAllSubThreadPredict.TheoricalProfit;            
+
+            return retVal;
+        }
+
+        public void UpdateDatabase(Tuple<RootProfit<int>, RootProfit<int>> profits)
+        {
+            var lastAutoRoot = MainAutoRoots.LastOrDefault();
+            if (lastAutoRoot == null)
+                return;
+            
+            lastAutoRoot.MainProfit = profits.Item1.Main;
+            lastAutoRoot.Profit0 = profits.Item1.Sub0;
+            lastAutoRoot.Profit1 = profits.Item1.Sub1;
+            lastAutoRoot.Profit2 = profits.Item1.Sub2;
+            lastAutoRoot.Profit3 = profits.Item1.Sub3;
+            lastAutoRoot.AllSubProfit = profits.Item1.AllSub;
+
+            lastAutoRoot.ModMainProfit = profits.Item2.Main;
+            lastAutoRoot.ModProfit0 = profits.Item2.Sub0;
+            lastAutoRoot.ModProfit1 = profits.Item1.Sub1;
+            lastAutoRoot.ModProfit2 = profits.Item2.Sub2;
+            lastAutoRoot.ModProfit3 = profits.Item2.Sub3;
+            lastAutoRoot.ModAllSubProfit = profits.Item2.AllSub;
 
             BaccaratDBContext.UpdateAutoRoot(lastAutoRoot);
+
+            //Cập nhật số lượng bước cho AutoSession (Dễ dàng cho việc tổng hợp)
+            //và Max, Min (cho tiền) 
+            var allAutoRootsThisSession = BaccaratDBContext.FindAutoRootsBySession(CurrentAutoSession.ID).ToList();
+            var sumProfit = allAutoRootsThisSession.Select(c => c.GlobalProfit).Sum();
+            CurrentAutoSession.NoOfStepsRoot = allAutoRootsThisSession.Count;
+            if (CurrentAutoSession.MaxRoot < sumProfit)
+                CurrentAutoSession.MaxRoot = sumProfit;
+            if (CurrentAutoSession.MinRoot > sumProfit)
+                CurrentAutoSession.MinRoot = sumProfit;
+            //Cập nhật PROFITS 
+            CurrentAutoSession.RootMainProfit = allAutoRootsThisSession.Select(c => c.MainProfit).Sum();
+            CurrentAutoSession.RootProfit0 = allAutoRootsThisSession.Select(c => c.Profit0).Sum();
+            CurrentAutoSession.RootProfit1 = allAutoRootsThisSession.Select(c => c.Profit1).Sum();
+            CurrentAutoSession.RootProfit2 = allAutoRootsThisSession.Select(c => c.Profit2).Sum();
+            CurrentAutoSession.RootProfit3 = allAutoRootsThisSession.Select(c => c.Profit3).Sum();
+            CurrentAutoSession.RootAllSub = allAutoRootsThisSession.Select(c => c.AllSubProfit).Sum();
+
+            BaccaratDBContext.UpdateAutoSession(CurrentAutoSession);
         }
     }
 }

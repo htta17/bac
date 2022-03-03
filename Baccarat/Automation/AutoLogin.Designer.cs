@@ -49,9 +49,7 @@ namespace Midas
             this.btnTest = new System.Windows.Forms.Button();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.txtLog = new System.Windows.Forms.RichTextBox();
-            this.btnAddAutoRoot = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -74,9 +72,7 @@ namespace Midas
             // 
             // tabPage1
             // 
-            this.tabPage1.Controls.Add(this.button2);
             this.tabPage1.Controls.Add(this.button1);
-            this.tabPage1.Controls.Add(this.btnAddAutoRoot);
             this.tabPage1.Controls.Add(this.lbCurrentStatus);
             this.tabPage1.Controls.Add(this.groupBox1);
             this.tabPage1.Controls.Add(this.btnCamera);
@@ -282,41 +278,24 @@ namespace Midas
             // 
             // txtLog
             // 
+            this.txtLog.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.txtLog.Location = new System.Drawing.Point(8, 6);
             this.txtLog.Name = "txtLog";
             this.txtLog.Size = new System.Drawing.Size(526, 424);
             this.txtLog.TabIndex = 0;
             this.txtLog.Text = "";
             // 
-            // btnAddAutoRoot
-            // 
-            this.btnAddAutoRoot.Location = new System.Drawing.Point(386, 322);
-            this.btnAddAutoRoot.Name = "btnAddAutoRoot";
-            this.btnAddAutoRoot.Size = new System.Drawing.Size(86, 67);
-            this.btnAddAutoRoot.TabIndex = 128;
-            this.btnAddAutoRoot.Text = "BANKER";
-            this.btnAddAutoRoot.UseVisualStyleBackColor = true;
-            this.btnAddAutoRoot.Click += new System.EventHandler(this.btnAddAutoRoot_Click);
-            // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(294, 322);
+            this.button1.Location = new System.Drawing.Point(228, 186);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(86, 67);
-            this.button1.TabIndex = 129;
-            this.button1.Text = "PLAYER";
+            this.button1.TabIndex = 128;
+            this.button1.Text = "START Taking Photo";
             this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
-            // 
-            // button2
-            // 
-            this.button2.Location = new System.Drawing.Point(335, 252);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(86, 67);
-            this.button2.TabIndex = 130;
-            this.button2.Text = "TEST";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
+            this.button1.Click += new System.EventHandler(this.btnAddAutoRoot_Click);
             // 
             // AutoLogin
             // 
@@ -363,8 +342,6 @@ namespace Midas
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.Label lbCurrentStatus;
         private System.Windows.Forms.RichTextBox txtLog;
-        private System.Windows.Forms.Button btnAddAutoRoot;
         private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.Button button2;
     }
 }

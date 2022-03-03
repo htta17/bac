@@ -14,11 +14,21 @@ namespace Midas.Automation
         public int TotalBanker { get; set; }
         public int TotalPlayer { get; set; }
         public int TotalTie { get; set; }
+        public string TableNumber { get; set; }
         public int Total
         {
             get { return TotalBanker + TotalPlayer + TotalTie; }
         }
     }
 
+
+    public enum AutomationCardResult
+    { 
+        BANKER = 1, 
+        PLAYER = -1, 
+        TIE = 0, 
+        SHOE_CHANGE_OR_CLOSE = 7,
+        NO_CARD = 9
+    }
     
 }
