@@ -229,15 +229,14 @@ namespace Midas
 
                 var logicTable = GetTable(_tableNumberInt);                
                 if (scannedResult.Total == 0)
-                {
-                    //Tạo bàn mới
+                {                    
                     if (logicTable == null)
                     {
                         logicTable = new AutoBacRootAlgorithm(StartApp.GlobalConnectionString, _tableNumberInt);
                         LogicAllTables.Add(_tableNumberInt, logicTable);
-                        Log($"Tạo mới bàn số {_tableNumberInt}. SessionID: {logicTable.CurrentAutoSession.ID}");
+                        Log($"Tạo mới bàn số {_tableNumberInt} khi chưa có card nào. SessionID: {logicTable.CurrentAutoSession.ID}");
                     }
-                    else if (newCard != AutomationCardResult.NO_CARD)
+                    else if (newCard == AutomationCardResult.SHOE_CHANGE_OR_CLOSE)
                     {
                         logicTable.Reset();
                         Log($"Reset bàn số {_tableNumberInt}. SessionID: {logicTable.CurrentAutoSession.ID}");
@@ -248,23 +247,15 @@ namespace Midas
                 // - Kiểm tra xem bàn hiện tại có bao nhiêu steps
                 // - Nếu có 1 step (đang ở đúng bàn) thì không làm gì
                 // - Nếu có hơn 1 step thì reset bàn đó
-                else if (scannedResult.Total == 1)
+                else if (scannedResult.Total == 1 && logicTable == null)
                 {
-                    //Tạo bàn mới
-                    if (logicTable == null)
+                    logicTable = new AutoBacRootAlgorithm(StartApp.GlobalConnectionString, _tableNumberInt);
+                    LogicAllTables.Add(_tableNumberInt, logicTable);
+                    Log($"Tạo mới bàn số {_tableNumberInt} khi có 1 card. SessionID: {logicTable.CurrentAutoSession.ID}");
+                    if (newCard == AutomationCardResult.BANKER || newCard == AutomationCardResult.PLAYER)
                     {
-                        logicTable = new AutoBacRootAlgorithm(StartApp.GlobalConnectionString, _tableNumberInt);
-                        LogicAllTables.Add(_tableNumberInt, logicTable);
-                        Log($"Tạo mới bàn số {_tableNumberInt}. SessionID: {logicTable.CurrentAutoSession.ID}");
+                        logicTable.Process((BaccratCard)newCard);
                     }
-                    //Nếu Session có nhiều hơn 1 kết quả thì đây là bàn cũ (không phải bàn hiện tại của UI) 
-                    if (logicTable.CurrentAutoSession.NoOfStepsRoot == 0)
-                    {
-                        if (scannedResult.TotalBanker == 1)
-                            logicTable.Process(BaccratCard.Banker);
-                        else if (scannedResult.TotalPlayer == 1)
-                            logicTable.Process(BaccratCard.Player);
-                    }                                    
                 }
                 else if (logicTable != null && newCard != AutomationCardResult.NO_CARD)
                 {                   
@@ -433,7 +424,14 @@ namespace Midas
 
         private void btnLoginManually_Click(object sender, EventArgs e)
         {
+            //Switch qua màn hình mới 
+            AllTableDriver = Driver.SwitchTo().Window(Driver.WindowHandles[1]);
 
+            IsInAllTableView = true;
+            AllTableResultTimer.Start();
+            SwitchTableTimer.Start();
+
+            CheckResultTimer_Tick(null, null);
         }
     }
 }

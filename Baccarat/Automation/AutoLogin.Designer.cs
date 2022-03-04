@@ -306,7 +306,7 @@ namespace Midas
             this.btnLoginManually.Name = "btnLoginManually";
             this.btnLoginManually.Size = new System.Drawing.Size(142, 53);
             this.btnLoginManually.TabIndex = 128;
-            this.btnLoginManually.Text = "Login manually, start auto";
+            this.btnLoginManually.Text = "Loged in manually, start auto";
             this.btnLoginManually.UseVisualStyleBackColor = true;
             this.btnLoginManually.Click += new System.EventHandler(this.btnLoginManually_Click);
             // 
