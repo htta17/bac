@@ -49,7 +49,8 @@ namespace Midas
             this.btnTest = new System.Windows.Forms.Button();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.txtLog = new System.Windows.Forms.RichTextBox();
-            this.button1 = new System.Windows.Forms.Button();
+            this.btnClearLog = new System.Windows.Forms.Button();
+            this.btnLoginManually = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -72,7 +73,7 @@ namespace Midas
             // 
             // tabPage1
             // 
-            this.tabPage1.Controls.Add(this.button1);
+            this.tabPage1.Controls.Add(this.btnLoginManually);
             this.tabPage1.Controls.Add(this.lbCurrentStatus);
             this.tabPage1.Controls.Add(this.groupBox1);
             this.tabPage1.Controls.Add(this.btnCamera);
@@ -267,6 +268,7 @@ namespace Midas
             // 
             // tabPage2
             // 
+            this.tabPage2.Controls.Add(this.btnClearLog);
             this.tabPage2.Controls.Add(this.txtLog);
             this.tabPage2.Location = new System.Drawing.Point(4, 25);
             this.tabPage2.Name = "tabPage2";
@@ -283,19 +285,30 @@ namespace Midas
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtLog.Location = new System.Drawing.Point(8, 6);
             this.txtLog.Name = "txtLog";
-            this.txtLog.Size = new System.Drawing.Size(526, 424);
+            this.txtLog.Size = new System.Drawing.Size(526, 388);
             this.txtLog.TabIndex = 0;
             this.txtLog.Text = "";
             // 
-            // button1
+            // btnClearLog
             // 
-            this.button1.Location = new System.Drawing.Point(228, 186);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(86, 67);
-            this.button1.TabIndex = 128;
-            this.button1.Text = "START Taking Photo";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.btnAddAutoRoot_Click);
+            this.btnClearLog.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnClearLog.Location = new System.Drawing.Point(448, 400);
+            this.btnClearLog.Name = "btnClearLog";
+            this.btnClearLog.Size = new System.Drawing.Size(86, 30);
+            this.btnClearLog.TabIndex = 1;
+            this.btnClearLog.Text = "Clear";
+            this.btnClearLog.UseVisualStyleBackColor = true;
+            this.btnClearLog.Click += new System.EventHandler(this.btnClearLog_Click);
+            // 
+            // btnLoginManually
+            // 
+            this.btnLoginManually.Location = new System.Drawing.Point(168, 336);
+            this.btnLoginManually.Name = "btnLoginManually";
+            this.btnLoginManually.Size = new System.Drawing.Size(142, 53);
+            this.btnLoginManually.TabIndex = 128;
+            this.btnLoginManually.Text = "Login manually, start auto";
+            this.btnLoginManually.UseVisualStyleBackColor = true;
+            this.btnLoginManually.Click += new System.EventHandler(this.btnLoginManually_Click);
             // 
             // AutoLogin
             // 
@@ -342,6 +355,7 @@ namespace Midas
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.Label lbCurrentStatus;
         private System.Windows.Forms.RichTextBox txtLog;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button btnClearLog;
+        private System.Windows.Forms.Button btnLoginManually;
     }
 }

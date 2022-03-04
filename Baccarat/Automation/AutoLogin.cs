@@ -52,7 +52,7 @@ namespace Midas
                 StartApp.LoadRegistryConnectionString();
             }
 
-            LogicAllTables = new List<AutoBacRootAlgorithm>();
+            LogicAllTables = new Dictionary<int, AutoBacRootAlgorithm>();
         }
 
        
@@ -80,7 +80,7 @@ namespace Midas
         /// </summary>
         Timer SwitchTableTimer = new Timer();
 
-        List<AutoBacRootAlgorithm> LogicAllTables { get; set; }
+        Dictionary<int, AutoBacRootAlgorithm> LogicAllTables { get; set; }
 
         /// <summary>
         /// Đánh dấu cho biết đang ở trạng thái tất cả các bàn hay đang ở tại 1 bàn cụ thể nào
@@ -142,7 +142,7 @@ namespace Midas
             table1.Click(); //Nhấn vô bàn số 1
             IsInAllTableView = false;
 
-            System.Threading.Thread.Sleep(2000); //Đợi khoảng 5 giây
+            System.Threading.Thread.Sleep(2000); //Đợi khoảng 2 giây
 
             var allTableButton = AllTableDriver.FindElement(By.CssSelector("#IconBaccarat"));
             allTableButton.Click();
@@ -158,12 +158,15 @@ namespace Midas
 
         private AutoBacRootAlgorithm GetTable(int _tableNo)
         {
-            if (!LogicAllTables.Any(c => c.TableNumber == _tableNo))
-            {
-                LogicAllTables.Add(new AutoBacRootAlgorithm(StartApp.GlobalConnectionString, _tableNo));
-            }
-            return LogicAllTables.FirstOrDefault(c => c.TableNumber == _tableNo);
+            return LogicAllTables.ContainsKey(_tableNo) 
+                ? LogicAllTables[_tableNo]
+                : default;
         }
+        private void Log(string text)
+        {
+            txtLog.Text = $"{DateTime.Now : yyyy-MM-dd HH:mm:ss}: {text}" + Environment.NewLine + txtLog.Text;
+        }
+       
 
         /// <summary>
         /// Lấy và xử lý kết quả cho tất cả các bàn
@@ -179,7 +182,10 @@ namespace Midas
                 var _currentPlayer = table.FindElement(By.Id("StatisticsP")).Text;
                 var _currentTie = table.FindElement(By.Id("StatisticsT")).Text;
                 var _tableNumber = table.FindElement(By.Id("TableNo")).Text.Replace("T", "");
-                var _tableNumberInt = ParseInt(_tableNumber);                
+                var _tableNumberInt = ParseInt(_tableNumber);
+                if (_tableNumberInt == 0)
+                    continue;
+
                 var newCard = AutomationCardResult.NO_CARD; 
                 var scannedResult = new AutomationTableResult
                 {
@@ -198,7 +204,7 @@ namespace Midas
                 {
                     var lastTableResult = SavedAllTableResults.FirstOrDefault(c => c.TableNumber == _tableNumber);
 
-                    if (lastTableResult.Total != scannedResult.Total) //Có thay đổi trạng thái (Thêm card hoặc reset) 
+                    if (lastTableResult.Total != scannedResult.Total) 
                     {
                         if (lastTableResult.TotalBanker + 1 == scannedResult.TotalBanker)
                         {
@@ -215,64 +221,53 @@ namespace Midas
                         else
                         {
                             newCard = AutomationCardResult.SHOE_CHANGE_OR_CLOSE;
-                        }
-                        #region Log for now, can delete later
-                        if (newCard != AutomationCardResult.SHOE_CHANGE_OR_CLOSE)
-                        {
-                            txtLog.Text = $"{DateTime.Now: yyyy-MM-dd HH:mm:ss}, Bàn số {_tableNumber}, card { newCard}"
-                                + Environment.NewLine
-                                + txtLog.Text;
-                        }
-                        else
-                        {
-                            txtLog.Text = $"{DateTime.Now: yyyy-MM-dd HH:mm:ss}, Bàn số {_tableNumber}, --------------RESET--------"
-                                + Environment.NewLine
-                                + txtLog.Text;
                         }                        
-
-                        #endregion
                     }
                     SavedAllTableResults.Remove(lastTableResult);
                     SavedAllTableResults.Add(scannedResult);
                 }
 
-                var logicTable = GetTable(_tableNumberInt);
-
+                var logicTable = GetTable(_tableNumberInt);                
+                if (scannedResult.Total == 0)
+                {
+                    //Tạo bàn mới
+                    if (logicTable == null)
+                    {
+                        logicTable = new AutoBacRootAlgorithm(StartApp.GlobalConnectionString, _tableNumberInt);
+                        LogicAllTables.Add(_tableNumberInt, logicTable);
+                        Log($"Tạo mới bàn số {_tableNumberInt}. SessionID: {logicTable.CurrentAutoSession.ID}");
+                    }
+                    else if (newCard != AutomationCardResult.NO_CARD)
+                    {
+                        logicTable.Reset();
+                        Log($"Reset bàn số {_tableNumberInt}. SessionID: {logicTable.CurrentAutoSession.ID}");
+                    }
+                }
                 //Trường hợp mới join vào và có đúng 1 kết quả, bàn vẫn đang chơi 
                 //nhưng vẫn biết kết quả
                 // - Kiểm tra xem bàn hiện tại có bao nhiêu steps
                 // - Nếu có 1 step (đang ở đúng bàn) thì không làm gì
                 // - Nếu có hơn 1 step thì reset bàn đó
-                if (scannedResult.Total == 1)
+                else if (scannedResult.Total == 1)
                 {
-                    
-
+                    //Tạo bàn mới
+                    if (logicTable == null)
+                    {
+                        logicTable = new AutoBacRootAlgorithm(StartApp.GlobalConnectionString, _tableNumberInt);
+                        LogicAllTables.Add(_tableNumberInt, logicTable);
+                        Log($"Tạo mới bàn số {_tableNumberInt}. SessionID: {logicTable.CurrentAutoSession.ID}");
+                    }
                     //Nếu Session có nhiều hơn 1 kết quả thì đây là bàn cũ (không phải bàn hiện tại của UI) 
-                    if (logicTable.CurrentAutoSession.NoOfSteps == 0)
+                    if (logicTable.CurrentAutoSession.NoOfStepsRoot == 0)
                     {
                         if (scannedResult.TotalBanker == 1)
                             logicTable.Process(BaccratCard.Banker);
                         else if (scannedResult.TotalPlayer == 1)
                             logicTable.Process(BaccratCard.Player);
-                    }
-                    else if (logicTable.CurrentAutoSession.NoOfSteps == 1)
-                    {
-                        //Bàn hiện tại, đã nhập kết quả khi NoOfSteps == 0
-                        //Không làm gì. 
-                        //Chỉ comment để dễ maintain
-                    }
-                    else
-                    {
-                        logicTable.Reset();
-                    }
+                    }                                    
                 }
-                else if (newCard != AutomationCardResult.NO_CARD)
-                {
-                    if (newCard == AutomationCardResult.SHOE_CHANGE_OR_CLOSE)
-                    {
-                        logicTable.Reset();
-                    }
-                    else 
+                else if (logicTable != null && newCard != AutomationCardResult.NO_CARD)
+                {                   
                     //Đánh với nhiều thuật toán khác nhau 
                     //Làm việc với những thuật toán chỉ dùng BANKER và PLAYER                    
                     if (newCard == AutomationCardResult.BANKER || newCard == AutomationCardResult.PLAYER)
@@ -280,9 +275,6 @@ namespace Midas
                         logicTable.Process((BaccratCard)newCard);
                     }
                 }
-                
-
-                //Ghi vào dữ liệu
             }
 
         }
@@ -434,105 +426,14 @@ namespace Midas
             }
         }
 
-        private void btnAddAutoRoot_Click(object sender, EventArgs e)
+        private void btnClearLog_Click(object sender, EventArgs e)
         {
-            var rootAlg = new AutoBacRootAlgorithm(StartApp.GlobalConnectionString, 7);
-            var actionsList = new List<BaccratCard>
-            {
-                BaccratCard.Player,
-                BaccratCard.Banker,
-                BaccratCard.Banker,
-                BaccratCard.Player,
-                BaccratCard.Banker,
-                BaccratCard.Player,
-                BaccratCard.Banker,
-                BaccratCard.Banker,
-                BaccratCard.Banker,
-                BaccratCard.Player,
-                BaccratCard.Player,
-                BaccratCard.Banker,
-                BaccratCard.Player,
-                BaccratCard.Player,
-                BaccratCard.Banker,
-                BaccratCard.Banker,
-                BaccratCard.Player,
-                BaccratCard.Player,
-                BaccratCard.Banker,
-                BaccratCard.Banker,
-                BaccratCard.Banker,
-                BaccratCard.Player,
-                BaccratCard.Banker,
-                BaccratCard.Player,
-                BaccratCard.Banker,
-                BaccratCard.Banker,
-                BaccratCard.Banker,
-                BaccratCard.Banker,
-                BaccratCard.Banker,
-                BaccratCard.Player,
-                BaccratCard.Player,
-                BaccratCard.Player,
-                BaccratCard.Banker,
-                BaccratCard.Player,
-                BaccratCard.Player,
-                BaccratCard.Player,
-                BaccratCard.Player,
-                BaccratCard.Player,
-                BaccratCard.Banker,
-                BaccratCard.Player,
-                BaccratCard.Banker,
-                BaccratCard.Player,
-                BaccratCard.Player,
-                BaccratCard.Player,
-                BaccratCard.Player,
-                BaccratCard.Player,
-                BaccratCard.Player,
-                BaccratCard.Player,
-                BaccratCard.Banker,
-                BaccratCard.Player,
-                BaccratCard.Player,
-                BaccratCard.Player,
-                BaccratCard.Banker,
-                BaccratCard.Banker,
-                BaccratCard.Player,
-                BaccratCard.Player,
-                BaccratCard.Player,
-                BaccratCard.Player,
-                BaccratCard.Player,
-                BaccratCard.Player,
-                BaccratCard.Player,
-                BaccratCard.Banker,
-                BaccratCard.Player,
-                BaccratCard.Banker,
-                BaccratCard.Banker,
-                BaccratCard.Player,
-                BaccratCard.Player,
-                BaccratCard.Banker,
-                BaccratCard.Banker,
-                BaccratCard.Player,
-                BaccratCard.Player,
-                BaccratCard.Player,
-                BaccratCard.Banker,
-                BaccratCard.Banker,
-                BaccratCard.Player,
-                BaccratCard.Player,
-                BaccratCard.Player,
-                BaccratCard.Banker,
-                BaccratCard.Banker,
-                BaccratCard.Banker,
-                BaccratCard.Player,
-                BaccratCard.Banker,
-                BaccratCard.Player,
-                BaccratCard.Banker,
-                BaccratCard.Banker,
-                BaccratCard.Banker,
-                BaccratCard.Player,
-                BaccratCard.Player
-            };
-            foreach (var action in actionsList)
-            {
-                rootAlg.Process(action);
-            }
+            txtLog.Text = "";
         }
-        
+
+        private void btnLoginManually_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
