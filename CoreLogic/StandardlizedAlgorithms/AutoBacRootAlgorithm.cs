@@ -72,7 +72,7 @@ namespace CoreLogic.StandardlizedAlgorithms
         public void AddNewCard(BaccratCard baccratCard, AutoResult autoResult = null)
         {
             //Giải thuật này chỉ dùng BANKER hoặc PLAYER
-            if (baccratCard == BaccratCard.NoTrade)
+            if (baccratCard == BaccratCard.NoTrade || baccratCard == BaccratCard.Tie)
                 throw new Exception("Input card must be Banker or Player");
 
             // Tìm AutoRoot cuối

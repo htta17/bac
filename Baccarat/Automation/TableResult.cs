@@ -19,6 +19,7 @@ namespace Midas.Automation
         {
             get { return TotalBanker + TotalPlayer + TotalTie; }
         }
+        public DateTime LastUpdatedTime { get; set; }
     }
 
 

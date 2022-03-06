@@ -18,13 +18,14 @@ using System.Windows.Forms;
 using CoreLogic.StandardlizedAlgorithms;
 using Midas.Utils;
 using Newtonsoft.Json;
+using OpenQA.Selenium.Support.Events;
 
 namespace Midas
 {
-    public partial class AutoLogin : Form
+    public partial class MainForm : Form
     {
         #region Ctor
-        public AutoLogin()
+        public MainForm()
         {
             InitializeComponent();
 
@@ -42,9 +43,7 @@ namespace Midas
                 //
             }
 
-            Timers_Setup();            
-
-            UIColor_Setup();
+            Timers_Setup();
 
             //Khởi tạo 10 bàn cho thuật toán ROOT
             if (string.IsNullOrEmpty(StartApp.GlobalConnectionString))
@@ -59,7 +58,7 @@ namespace Midas
         #endregion
 
         #region Properties
-        bool StatusEnabled { get; set; } = false;
+        
 
         Timer PhotoTakenTimer = new Timer();
         private readonly ChromeDriver Driver = null;
@@ -67,13 +66,9 @@ namespace Midas
 
         /// <summary>
         /// Lấy kết quả khi đang ở chế độ tất cả các bàn
+        /// hoặc 1 bàn 
         /// </summary>
-        Timer AllTableResultTimer = new Timer();
-
-        /// <summary>
-        /// Lấy kết quả khi đang ở chế độ 1 bàn
-        /// </summary>
-        Timer OneTableResultTimer = new Timer();
+        Timer CheckResultTimer = new Timer();
 
         /// <summary>
         /// Chuyển chế độ giữa tất cả các bàn hoặc 1 bàn cụ thể, chống việc time out
@@ -88,10 +83,7 @@ namespace Midas
         /// Nếu =FALSE: Đang ở trong 1 bàn cụ thể
         /// </summary>
         bool IsInAllTableView = false;
-
-        const string IMAGE_FORMAT = FOLDER_FORMAT + "\\Image_{0:HHmmss}.png";
-        const string FOLDER_FORMAT = "Logs\\{0:yyyy-MM-dd}";
-        const string AUTO_LOG_FOLDER = "Logs\\AUTO\\{0:yyyy-MM-dd}.log";
+        
 
         /// <summary>
         /// Ghi lại kết quả hiện tại trên tất cả các bàn.
@@ -103,36 +95,22 @@ namespace Midas
         #region Các hàm cho việc khởi tạo
         private void Timers_Setup()
         {
-            numInterval.Value = 5;
-            PhotoTakenTimer.Interval = 1000 * 60 * (int)numInterval.Value; //5 mins
-            PhotoTakenTimer.Tick += Timer_Tick;
-
-            AllTableResultTimer.Interval = 5_000; //Chế độ tất cả màn hình 
-            AllTableResultTimer.Tick += CheckResultTimer_Tick;
+            CheckResultTimer.Interval = 5_000;  //5 giây 1 lần
+            CheckResultTimer.Tick += CheckResultTimer_Tick;
 
             SwitchTableTimer.Interval = 1000 * 60 * 5; //5 phút
             SwitchTableTimer.Tick += SwitchTableTimer_Tick;
-
-            OneTableResultTimer.Interval = 1000;
-            OneTableResultTimer.Tick += OneTableResultTimer_Tick;
         }
 
-        private void UIColor_Setup()
-        {
-            //Màu cho status 
-            btnTakePhoto.ForeColor = Color.Green;
-            lbCurrentStatus.BackColor = Color.Red;
-            lbCurrentStatus.ForeColor = Color.White;
-            lbCurrentStatus.Text = "STOPPED";
-        }
+       
         #endregion
 
         #region Timer ticks events
-        private void OneTableResultTimer_Tick(object sender, EventArgs e)
-        {
-            //throw new NotImplementedException("Sẽ triển khai sau");
-        }
-
+        /// <summary>
+        /// Chuyển qua chuyển lại giữa chế độ đánh auto và 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void SwitchTableTimer_Tick(object sender, EventArgs e)
         {
             if (AllTableDriver == null)
@@ -165,8 +143,7 @@ namespace Midas
         private void Log(string text)
         {
             txtLog.Text = $"{DateTime.Now : yyyy-MM-dd HH:mm:ss}: {text}" + Environment.NewLine + txtLog.Text;
-        }
-       
+        }       
 
         /// <summary>
         /// Lấy và xử lý kết quả cho tất cả các bàn
@@ -221,7 +198,8 @@ namespace Midas
                         else
                         {
                             newCard = AutomationCardResult.SHOE_CHANGE_OR_CLOSE;
-                        }                        
+                        }      
+                        Log($"Bàn số {_tableNumber}, ra card {newCard}");
                     }
                     SavedAllTableResults.Remove(lastTableResult);
                     SavedAllTableResults.Add(scannedResult);
@@ -281,12 +259,6 @@ namespace Midas
             
             }
         }
-
-        private void Timer_Tick(object sender, EventArgs e)
-        {
-            TakeScreenshot(false);
-        }
-
         #endregion
 
         #region Form Load + Close
@@ -303,72 +275,12 @@ namespace Midas
         {
             Driver?.Quit();
         }
-        #endregion             
-
-        #region Take photo (Auto + Manual)
-        private void TakeScreenshot(bool showMessage)
-        {
-            var dateTimeNow = DateTime.Now;
-            if (!Directory.Exists(string.Format(FOLDER_FORMAT, dateTimeNow)))
-            {
-                Directory.CreateDirectory(string.Format(FOLDER_FORMAT, dateTimeNow));
-            }
-            try
-            {
-                Rectangle bounds = Screen.PrimaryScreen.Bounds;
-                var width = (int)numWidth.Value;
-                var height = (int)numHeight.Value;
-                using (Bitmap bitmap = new Bitmap(width, height))
-                {
-                    using (Graphics g = Graphics.FromImage(bitmap))
-                    {
-                        g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
-
-                        g.CopyFromScreen(new Point(0, 0), Point.Empty, new Size(width, height));
-                    }
-                    bitmap.Save(string.Format(IMAGE_FORMAT, dateTimeNow), ImageFormat.Jpeg);
-                }
-            }
-            catch (Exception e)
-            {
-                if (showMessage)
-                {
-                    MessageBox.Show("Error" + e.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-            }
-        }
+        #endregion         
 
         private void btnCamera_Click(object sender, EventArgs e)
         {
-            TakeScreenshot(false);
+            PhotoService.TakeScreenshot(true);
         }
-
-        private void btnTakePhoto_Click(object sender, EventArgs e)
-        {
-            StatusEnabled = !StatusEnabled;
-            if (StatusEnabled)
-            {
-                PhotoTakenTimer.Interval = (int)numInterval.Value * 1000 * 60;
-                PhotoTakenTimer.Start();
-                btnTakePhoto.Text = "STOP Taking Photo";
-                btnTakePhoto.ForeColor = Color.Red;
-
-                lbCurrentStatus.BackColor = Color.Green;
-                lbCurrentStatus.ForeColor = Color.White;
-                lbCurrentStatus.Text = "STARTED";
-            }
-            else
-            {
-                PhotoTakenTimer.Stop();
-                btnTakePhoto.Text = "START Taking Photo";
-                btnTakePhoto.ForeColor = Color.Green;
-
-                lbCurrentStatus.BackColor = Color.Red;
-                lbCurrentStatus.ForeColor = Color.White;
-                lbCurrentStatus.Text = "STOPPED";
-            }
-        }
-        #endregion
 
         private void btnTest_Click(object sender, EventArgs e)
         {
@@ -405,8 +317,10 @@ namespace Midas
                 //Switch qua màn hình mới 
                 AllTableDriver = Driver.SwitchTo().Window(Driver.WindowHandles[1]);
 
+                
+
                 IsInAllTableView = true;
-                AllTableResultTimer.Start();
+                CheckResultTimer.Start();
                 SwitchTableTimer.Start();
 
                 CheckResultTimer_Tick(null, null);
@@ -428,7 +342,7 @@ namespace Midas
             AllTableDriver = Driver.SwitchTo().Window(Driver.WindowHandles[1]);
 
             IsInAllTableView = true;
-            AllTableResultTimer.Start();
+            CheckResultTimer.Start();
             SwitchTableTimer.Start();
 
             CheckResultTimer_Tick(null, null);

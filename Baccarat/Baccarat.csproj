@@ -79,13 +79,19 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Automation\AutoLogin.cs">
+    <Compile Include="Automation\MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Automation\AutoLogin.Designer.cs">
-      <DependentUpon>AutoLogin.cs</DependentUpon>
+    <Compile Include="Automation\MainForm.Designer.cs">
+      <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Automation\TableResult.cs" />
+    <Compile Include="Automation\TakingPhotocs.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Automation\TakingPhotocs.Designer.cs">
+      <DependentUpon>TakingPhotocs.cs</DependentUpon>
+    </Compile>
     <Compile Include="BaccaratSimulatorUI\BacSimulator.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -148,6 +154,7 @@
     <Compile Include="Configuration\SetConnection.Designer.cs">
       <DependentUpon>SetConnection.cs</DependentUpon>
     </Compile>
+    <Compile Include="Utils\PhotoService.cs" />
     <Compile Include="Utils\RichTextBoxExtensions.cs" />
     <Compile Include="Utils\DatabaseUtil.cs" />
     <Compile Include="Utils\GenerateAllThreadLogs.cs" />
@@ -165,8 +172,11 @@
     <Compile Include="Utils\UtilCal.Designer.cs">
       <DependentUpon>UtilCal.cs</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="Automation\AutoLogin.resx">
-      <DependentUpon>AutoLogin.cs</DependentUpon>
+    <EmbeddedResource Include="Automation\MainForm.resx">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Automation\TakingPhotocs.resx">
+      <DependentUpon>TakingPhotocs.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="BaccaratSimulatorUI\BacSimulator.resx">
       <DependentUpon>BacSimulator.cs</DependentUpon>
