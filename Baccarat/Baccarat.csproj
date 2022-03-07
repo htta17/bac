@@ -159,6 +159,7 @@
     <Compile Include="Utils\DatabaseUtil.cs" />
     <Compile Include="Utils\GenerateAllThreadLogs.cs" />
     <Compile Include="Utils\SlackWebhookSender.cs" />
+    <Compile Include="Utils\RegisterUtil.cs" />
     <Compile Include="Utils\StartApp.cs" />
     <Compile Include="VietnameseLottery.cs">
       <SubType>Form</SubType>

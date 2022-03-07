@@ -20,6 +20,7 @@ using Midas.Utils;
 using Newtonsoft.Json;
 using OpenQA.Selenium.Support.Events;
 
+
 namespace Midas
 {
     public partial class MainForm : Form
@@ -33,17 +34,18 @@ namespace Midas
             {
                 Driver = new ChromeDriver(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
             }
-            catch (DriverServiceNotFoundException ex)
+            catch (Exception ex)
             {
                 btnTest.Visible = false;
                 MessageBox.Show("Vui lòng download Chrome Driver tại: http://chromedriver.storage.googleapis.com/index.html. \r\n\r\n" + ex.Message);
-            }
-            catch (Exception ex)
-            { 
-                //
+
+                btnTest.Visible = btnStopAuto.Visible = btnLoginManually.Visible = false;
             }
 
             Timers_Setup();
+
+            Account_Setup();
+
 
             //Khởi tạo 10 bàn cho thuật toán ROOT
             if (string.IsNullOrEmpty(StartApp.GlobalConnectionString))
@@ -54,13 +56,9 @@ namespace Midas
             LogicAllTables = new Dictionary<int, AutoBacRootAlgorithm>();
         }
 
-       
         #endregion
 
-        #region Properties
-        
-
-        Timer PhotoTakenTimer = new Timer();
+        #region Properties                
         private readonly ChromeDriver Driver = null;
         private IWebDriver AllTableDriver;
 
@@ -68,12 +66,15 @@ namespace Midas
         /// Lấy kết quả khi đang ở chế độ tất cả các bàn
         /// hoặc 1 bàn 
         /// </summary>
-        Timer CheckResultTimer = new Timer();
+        private Timer CheckResultTimer { get; set; }
 
         /// <summary>
         /// Chuyển chế độ giữa tất cả các bàn hoặc 1 bàn cụ thể, chống việc time out
         /// </summary>
-        Timer SwitchTableTimer = new Timer();
+        private Timer SwitchTableTimer { get; set; }
+
+        string USER_KEY = "UserName";
+        string PWD_KEY = "Password";
 
         Dictionary<int, AutoBacRootAlgorithm> LogicAllTables { get; set; }
 
@@ -95,6 +96,11 @@ namespace Midas
         #region Các hàm cho việc khởi tạo
         private void Timers_Setup()
         {
+            if (CheckResultTimer == default)
+                CheckResultTimer = new Timer();
+            if (SwitchTableTimer == default)
+                SwitchTableTimer = new Timer();
+
             CheckResultTimer.Interval = 5_000;  //5 giây 1 lần
             CheckResultTimer.Tick += CheckResultTimer_Tick;
 
@@ -102,7 +108,11 @@ namespace Midas
             SwitchTableTimer.Tick += SwitchTableTimer_Tick;
         }
 
-       
+        private void Account_Setup()
+        {
+            txtUserName.Text = (string)RegisterUtil.LoadRegistry(USER_KEY);
+            txtPassword.Text = (string)RegisterUtil.LoadRegistry(PWD_KEY);
+        }
         #endregion
 
         #region Timer ticks events
@@ -142,8 +152,164 @@ namespace Midas
         }
         private void Log(string text)
         {
-            txtLog.Text = $"{DateTime.Now : yyyy-MM-dd HH:mm:ss}: {text}" + Environment.NewLine + txtLog.Text;
-        }       
+            if (InvokeRequired)
+            {
+                this.Invoke(new Action<string>(Log), new object[] { text });
+                return;
+            }
+            txtLog.Text = $"{DateTime.Now : yyyy-MM-dd HH:mm:ss}: {text}" 
+                + Environment.NewLine 
+                + txtLog.Text;
+        }
+
+        private void SetLabel(AutomationTableResult result, Label banker, Label player, Label tie)
+        {
+            if (InvokeRequired)
+            {
+                this.Invoke(new Action<AutomationTableResult, Label, Label, Label>(SetLabel), 
+                    new object[] { result, banker, player , tie });
+                return;
+            }
+            banker.Text = $"{result.TotalBanker}";
+            player.Text = $"{result.TotalPlayer}";
+            tie.Text = $"{result.TotalTie}";
+        }
+
+        private void SetLabel(AutomationTableResult result)
+        {         
+            switch (result.TableNumber)
+            {
+                case "1":
+                    SetLabel(result, lb_B_1, lb_P_1, lb_T_1);
+                    break;
+                case "2":
+                    SetLabel(result, lb_B_2, lb_P_2, lb_T_2);
+                    break;
+                case "3":
+                    SetLabel(result, lb_B_3, lb_P_3, lb_T_3);
+                    break;
+                case "4":
+                    SetLabel(result, lb_B_4, lb_P_4, lb_T_4);
+                    break;
+                case "5":
+                    SetLabel(result, lb_B_5, lb_P_5, lb_T_5);
+                    break;
+                case "6":
+                    SetLabel(result, lb_B_6, lb_P_6, lb_T_6);
+                    break;
+                case "7":
+                    SetLabel(result, lb_B_7, lb_P_7, lb_T_7);
+                    break;
+                case "8":
+                    SetLabel(result, lb_B_8, lb_P_8, lb_T_8);
+                    break;
+
+                case "9":
+                    SetLabel(result, lb_B_9, lb_P_9, lb_T_9);
+                    break;
+                case "10":
+                default:
+                    SetLabel(result, lb_B_10, lb_P_10, lb_T_10);
+                    break;
+            }
+
+        }
+        
+
+        public void GetResult_AllTableView_Table(IWebElement table)
+        {            
+            var _currentBanker = table.FindElement(By.Id("StatisticsB")).Text;
+            var _currentPlayer = table.FindElement(By.Id("StatisticsP")).Text;
+            var _currentTie = table.FindElement(By.Id("StatisticsT")).Text;
+            var _tableNumber = table.FindElement(By.Id("TableNo")).Text.Replace("T", "");
+            var _tableNumberInt = ParseInt(_tableNumber);
+            if (_tableNumberInt == 0)
+                return;
+            
+            var scannedResult = new AutomationTableResult
+            {
+                TotalBanker = ParseInt(_currentBanker),
+                TotalPlayer = ParseInt(_currentPlayer),
+                TotalTie = ParseInt(_currentTie),
+                TableNumber = _tableNumber
+            };
+            SetLabel(scannedResult);
+
+            BaccratCard newCard = BaccratCard.NoTrade;
+
+            //Nếu chưa có bàn này trong kết quả
+            if (!SavedAllTableResults.Any(c => c.TableNumber == _tableNumber))
+            {
+                SavedAllTableResults.Add(scannedResult);
+            }
+            else
+            {
+                var lastTableResult = SavedAllTableResults.FirstOrDefault(c => c.TableNumber == _tableNumber);
+
+                if (lastTableResult.Total != scannedResult.Total)
+                {
+                    if (chBoxShowPredict.Checked)
+                    {
+                        Log($"Last Result: { lastTableResult.TextResult }, New Result: { scannedResult.TextResult }");
+                    }
+                    
+                    var logicTable = GetTable(_tableNumberInt);
+
+                    var predict = new BaccaratPredict { Value = BaccratCard.NoTrade, Volume = 0 };
+
+                    if (scannedResult.Total == 0 )
+                    {
+                        if (logicTable == null)
+                        {
+                            logicTable = new AutoBacRootAlgorithm(StartApp.GlobalConnectionString, _tableNumberInt);
+                            LogicAllTables.Add(_tableNumberInt, logicTable);
+                            Log($"Tạo mới bàn số {_tableNumberInt} khi chưa có card nào. SessionID: {logicTable.CurrentAutoSession.ID}");
+                        }
+                        
+                        logicTable.Reset();
+                                               
+                    }
+                    else if (scannedResult.Total == 1)
+                    {
+                        
+                        //Vừa mới join vào, đáng lẽ đợi hết phiên
+                        //nhưng vì mới có 1 card, nên có thể chơi chơi luôn vì có thể vẫn kịp
+                        newCard = scannedResult.TotalBanker == 1 ? BaccratCard.Banker :
+                                        scannedResult.TotalPlayer == 1 ? BaccratCard.Player : BaccratCard.Tie;
+                        if (logicTable == null)
+                        {
+                            logicTable = new AutoBacRootAlgorithm(StartApp.GlobalConnectionString, _tableNumberInt);
+                            LogicAllTables.Add(_tableNumberInt, logicTable);
+                            Log($"Tạo mới bàn số {_tableNumberInt} khi có card {newCard}. SessionID: {logicTable.CurrentAutoSession.ID}");
+                        }
+
+                        predict = logicTable.Process(newCard);
+                    }
+                    else if (lastTableResult.Total + 1 == scannedResult.Total)
+                    {
+                        
+                        if (logicTable != null)
+                        {
+                            newCard = lastTableResult.TotalBanker + 1 == scannedResult.TotalBanker ? BaccratCard.Banker
+                                        : lastTableResult.TotalPlayer + 1 == scannedResult.TotalPlayer ? BaccratCard.Banker
+                                        : BaccratCard.Tie;
+                            predict = logicTable.Process(newCard);
+                        }                
+                    }
+                        
+                    if (chBoxShowPredict.Checked && predict.Value != BaccratCard.NoTrade)
+                    {
+                        Log($"Bàn số {_tableNumber}, ra card {newCard}, dự đoán card tiếp {predict.Value} {predict.Volume} units");
+                    }
+
+                    SavedAllTableResults.Remove(lastTableResult);
+                    SavedAllTableResults.Add(scannedResult);
+                }                
+            }
+
+            //End of GetResult_AllTableView_Table
+        }
+
 
         /// <summary>
         /// Lấy và xử lý kết quả cho tất cả các bàn
@@ -155,98 +321,11 @@ namespace Midas
 
             foreach(var table in uiAllTables)
             {
-                var _currentBanker = table.FindElement(By.Id("StatisticsB")).Text;
-                var _currentPlayer = table.FindElement(By.Id("StatisticsP")).Text;
-                var _currentTie = table.FindElement(By.Id("StatisticsT")).Text;
-                var _tableNumber = table.FindElement(By.Id("TableNo")).Text.Replace("T", "");
-                var _tableNumberInt = ParseInt(_tableNumber);
-                if (_tableNumberInt == 0)
-                    continue;
-
-                var newCard = AutomationCardResult.NO_CARD; 
-                var scannedResult = new AutomationTableResult
-                {
-                    TotalBanker = ParseInt(_currentBanker),
-                    TotalPlayer = ParseInt(_currentPlayer),
-                    TotalTie = ParseInt(_currentTie),
-                    TableNumber = _tableNumber
-                };
-
-                //Nếu chưa có bàn này trong kết quả
-                if (!SavedAllTableResults.Any(c => c.TableNumber == _tableNumber))
-                {
-                    SavedAllTableResults.Add(scannedResult);
-                }
-                else
-                {
-                    var lastTableResult = SavedAllTableResults.FirstOrDefault(c => c.TableNumber == _tableNumber);
-
-                    if (lastTableResult.Total != scannedResult.Total) 
-                    {
-                        if (lastTableResult.TotalBanker + 1 == scannedResult.TotalBanker)
-                        {
-                            newCard = AutomationCardResult.BANKER; 
-                        }
-                        else if (lastTableResult.TotalPlayer + 1 == scannedResult.TotalPlayer)
-                        {
-                            newCard = AutomationCardResult.PLAYER;
-                        }
-                        else if (lastTableResult.TotalTie + 1 == scannedResult.TotalTie)
-                        {
-                            newCard = AutomationCardResult.TIE;
-                        }
-                        else
-                        {
-                            newCard = AutomationCardResult.SHOE_CHANGE_OR_CLOSE;
-                        }      
-                        Log($"Bàn số {_tableNumber}, ra card {newCard}");
-                    }
-                    SavedAllTableResults.Remove(lastTableResult);
-                    SavedAllTableResults.Add(scannedResult);
-                }
-
-                var logicTable = GetTable(_tableNumberInt);                
-                if (scannedResult.Total == 0)
-                {                    
-                    if (logicTable == null)
-                    {
-                        logicTable = new AutoBacRootAlgorithm(StartApp.GlobalConnectionString, _tableNumberInt);
-                        LogicAllTables.Add(_tableNumberInt, logicTable);
-                        Log($"Tạo mới bàn số {_tableNumberInt} khi chưa có card nào. SessionID: {logicTable.CurrentAutoSession.ID}");
-                    }
-                    else if (newCard == AutomationCardResult.SHOE_CHANGE_OR_CLOSE)
-                    {
-                        logicTable.Reset();
-                        Log($"Reset bàn số {_tableNumberInt}. SessionID: {logicTable.CurrentAutoSession.ID}");
-                    }
-                }
-                //Trường hợp mới join vào và có đúng 1 kết quả, bàn vẫn đang chơi 
-                //nhưng vẫn biết kết quả
-                // - Kiểm tra xem bàn hiện tại có bao nhiêu steps
-                // - Nếu có 1 step (đang ở đúng bàn) thì không làm gì
-                // - Nếu có hơn 1 step thì reset bàn đó
-                else if (scannedResult.Total == 1 && logicTable == null)
-                {
-                    logicTable = new AutoBacRootAlgorithm(StartApp.GlobalConnectionString, _tableNumberInt);
-                    LogicAllTables.Add(_tableNumberInt, logicTable);
-                    Log($"Tạo mới bàn số {_tableNumberInt} khi có 1 card. SessionID: {logicTable.CurrentAutoSession.ID}");
-                    if (newCard == AutomationCardResult.BANKER || newCard == AutomationCardResult.PLAYER)
-                    {
-                        logicTable.Process((BaccratCard)newCard);
-                    }
-                }
-                else if (logicTable != null && newCard != AutomationCardResult.NO_CARD)
-                {                   
-                    //Đánh với nhiều thuật toán khác nhau 
-                    //Làm việc với những thuật toán chỉ dùng BANKER và PLAYER                    
-                    if (newCard == AutomationCardResult.BANKER || newCard == AutomationCardResult.PLAYER)
-                    {                        
-                        logicTable.Process((BaccratCard)newCard);
-                    }
-                }
+                var thread = new System.Threading.Thread(() => GetResult_AllTableView_Table(table));
+                thread.Start();
             }
-
         }
+
         private void CheckResultTimer_Tick(object sender, EventArgs e)
         {
             if (IsInAllTableView) //Chế độ tất cả các bàn
@@ -255,8 +334,6 @@ namespace Midas
             }
             else //Chế độ ở 1 bàn cụ thể
             { 
-            
-            
             }
         }
         #endregion
@@ -287,6 +364,9 @@ namespace Midas
             if (Driver == null)
                 return;
 
+            RegisterUtil.SaveRegistry(USER_KEY, txtUserName.Text);
+            RegisterUtil.SaveRegistry(PWD_KEY, txtPassword.Text);
+
             try
             {
                 Driver.Navigate().GoToUrl("https://www.jbbodds.com/vi-vn");
@@ -314,16 +394,7 @@ namespace Midas
                 okButton.Click(); //Nhấn nút OK
                 System.Threading.Thread.Sleep(5000);//Đợi 5 giây để màn hình mới load
 
-                //Switch qua màn hình mới 
-                AllTableDriver = Driver.SwitchTo().Window(Driver.WindowHandles[1]);
-
-                
-
-                IsInAllTableView = true;
-                CheckResultTimer.Start();
-                SwitchTableTimer.Start();
-
-                CheckResultTimer_Tick(null, null);
+                EnableAuto(true);
             }
             catch (Exception ex)
             {
@@ -331,21 +402,61 @@ namespace Midas
             }
         }
 
+        
         private void btnClearLog_Click(object sender, EventArgs e)
         {
             txtLog.Text = "";
         }
 
-        private void btnLoginManually_Click(object sender, EventArgs e)
+        private void EnableAuto(bool isEnable)
         {
-            //Switch qua màn hình mới 
-            AllTableDriver = Driver.SwitchTo().Window(Driver.WindowHandles[1]);
+            if (isEnable)
+            {
+                //Switch qua màn hình mới 
+                if (Driver.WindowHandles.Count > 1)
+                {
+                    AllTableDriver = Driver.SwitchTo().Window(Driver.WindowHandles[1]);
+                }
+                IsInAllTableView = true;
 
-            IsInAllTableView = true;
-            CheckResultTimer.Start();
-            SwitchTableTimer.Start();
+                CheckResultTimer.Start();
+                SwitchTableTimer.Start();
+                Log("Start auto successfully.");
+                CheckResultTimer_Tick(null, null);
+            }
+            else
+            {
+                CheckResultTimer.Stop();
+                SwitchTableTimer.Stop();
+                Log("Stop auto successfully.");
+            }
 
-            CheckResultTimer_Tick(null, null);
+            //Cập nhật status trên UI
+            if (CheckResultTimer == default)
+            {
+                lb_TimerStatus.Text = "Sleeping";
+                lb_TimerStatus.BackColor = Color.Gray;
+            }
+            else if (CheckResultTimer.Enabled)
+            {
+                lb_TimerStatus.Text = "Running";
+                lb_TimerStatus.BackColor = Color.Green;
+            }
+            else if (!CheckResultTimer.Enabled)
+            {
+                lb_TimerStatus.Text = "Stopped";
+                lb_TimerStatus.BackColor = Color.Red;
+            }
+        }
+
+        private void btnLoginManually_Click(object sender, EventArgs e)
+        {            
+            EnableAuto(true);
+        }
+
+        private void btnStopAuto_Click(object sender, EventArgs e)
+        {
+            EnableAuto(false);
         }
     }
 }

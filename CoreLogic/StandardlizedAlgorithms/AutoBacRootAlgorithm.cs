@@ -289,6 +289,9 @@ namespace CoreLogic.StandardlizedAlgorithms
 
         public BaccaratPredict Process(BaccratCard baccratCard)
         {
+            if (baccratCard != BaccratCard.Banker && baccratCard != BaccratCard.Player)
+                return new BaccaratPredict { Value = BaccratCard.NoTrade, Volume =0 }; 
+
             var profits = TakeProfit(baccratCard);
 
             AddNewCard(baccratCard);
@@ -296,8 +299,7 @@ namespace CoreLogic.StandardlizedAlgorithms
             if (profits != null)
             {
                 UpdateDatabase(profits);
-            }
-            
+            }            
 
             return Predict();
         }

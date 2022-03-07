@@ -9,23 +9,22 @@ namespace Midas.Utils
 {
     public class StartApp
     {
-        public static string GlobalConnectionString = "";
-        const string REG_PATH = "HKEY_CURRENT_USER\\MidasSoft";
+        public static string GlobalConnectionString = "";      
         const string REG_KEY = "ConnString";
         public static void LoadRegistryConnectionString()
         {
-            GlobalConnectionString = (string)Registry.GetValue(REG_PATH, REG_KEY, string.Empty);
+            GlobalConnectionString = (string)RegisterUtil.LoadRegistry(REG_KEY);
             while (string.IsNullOrEmpty(GlobalConnectionString))
             {
                 SetConnection frm = new SetConnection();
                 frm.ShowDialog();
-                GlobalConnectionString = (string)Registry.GetValue(REG_PATH, REG_KEY, string.Empty);
+                GlobalConnectionString = (string)RegisterUtil.LoadRegistry(REG_KEY);
             }
         }
 
         public static void SaveConnection(string connection)
         {
-            Registry.SetValue(REG_PATH, REG_KEY, connection);
+            RegisterUtil.SaveRegistry(REG_KEY, connection);
         }
     }
 }

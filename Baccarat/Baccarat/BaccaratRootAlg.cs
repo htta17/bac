@@ -23,8 +23,8 @@ namespace Midas.Baccarat
 
             BaccaratRootCalculator = new BaccaratRootCalculator(StartApp.GlobalConnectionString);
 
-            var _moneyCoeff = Registry.GetValue(REG_PATH, REG_MONEY_COEFF_KEY, string.Empty).ToString();
-            var _displayType = Registry.GetValue(REG_PATH, REG_MONEY_DISPLAYTYPE_KEY, string.Empty).ToString();
+            var _moneyCoeff = RegisterUtil.LoadRegistry(REG_MONEY_COEFF_KEY).ToString();
+            var _displayType = RegisterUtil.LoadRegistry(REG_MONEY_DISPLAYTYPE_KEY).ToString();
 
             
             if (string.IsNullOrEmpty(_moneyCoeff))
