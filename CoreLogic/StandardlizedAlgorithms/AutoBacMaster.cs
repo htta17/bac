@@ -34,12 +34,11 @@ namespace CoreLogic.StandardlizedAlgorithms
     {
         public AutoBacMaster(string connectionString)
         {
-            GlobalDBContext = new GlobalDBContext(connectionString);
+            ConnectionString = connectionString;
             LogicAllTables = new Dictionary<int, AutoBacRootAlgorithm>();
         }
 
-
-        private GlobalDBContext GlobalDBContext { get;set;}
+        string ConnectionString { get; set; }        
 
         private AutoBacRootAlgorithm GetTable(int _tableNo)
         {
@@ -58,7 +57,7 @@ namespace CoreLogic.StandardlizedAlgorithms
             var logicTable = GetTable(_tableNo);
             if (logicTable == null)
             {
-                logicTable = new AutoBacRootAlgorithm(_tableNo, GlobalDBContext);
+                logicTable = new AutoBacRootAlgorithm(_tableNo, ConnectionString);
                 logicTable.Reset();
                 LogicAllTables.Add(_tableNo, logicTable);
             }
@@ -67,7 +66,7 @@ namespace CoreLogic.StandardlizedAlgorithms
                 logicTable.Reset();
                 LogicAllTables[_tableNo] = logicTable;
             }
-            return logicTable.CurrentAutoSession.ID;
+            return logicTable.CurrentAutoSessionID;
         }
 
         public BaccaratPredict Process(int _tableNo, BaccratCard baccratCard, AutomationTableResult uiResult)
@@ -76,14 +75,18 @@ namespace CoreLogic.StandardlizedAlgorithms
             var table = GetTable(_tableNo);
             if (table != null)
             {
-                var newResult = new AutoResult
+                var newResult = default(AutoResult);
+                using (GlobalDBContext context = new GlobalDBContext(ConnectionString))
                 {
-                    Card = (short)baccratCard,
-                    AutoSessionID = table.CurrentAutoSession.ID, 
-                    UIResult = uiResult.TextResult
-                };
+                    newResult = new AutoResult
+                    {
+                        Card = (short)baccratCard,
+                        AutoSessionID = table.CurrentAutoSessionID,
+                        UIResult = uiResult.TextResult
+                    };
 
-                GlobalDBContext.AddAutoResult(newResult);
+                    context.AddAutoResult(newResult);
+                }
 
                 if (baccratCard == BaccratCard.Banker || baccratCard == BaccratCard.Player)
                 {

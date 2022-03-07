@@ -63,11 +63,7 @@ namespace CoreLogic.StandardlizedAlgorithms
         BaccaratPredict Predict();
 
         
-        /// <summary>
-        /// Nếu đang shoe (Lấy từ màn hình) đang chạy
-        /// </summary>
-        /// <returns></returns>
-        bool InProcessingSession();
+        
 
 
         /// <summary>

@@ -41,14 +41,14 @@ namespace CoreLogic.StandardlizedAlgorithms
     public class AutoBacRootAlgorithm : IAutoBacAlgorithm<AutoBacRootInputCoeff, AutoBacRootOutputCoeff>
     {
         #region Properties
-        GlobalDBContext BaccaratDBContext { get; set; }
+       
        
         private List<AutoRoot> MainAutoRoots { get; set; }       
 
         /// <summary>
         /// Shoe đang chơi
         /// </summary>
-        public AutoSession CurrentAutoSession { get; private set; }
+        public int CurrentAutoSessionID { get; private set; }
 
         /// <summary>
         /// Số bàn
@@ -59,13 +59,15 @@ namespace CoreLogic.StandardlizedAlgorithms
 
         RootInputUpdateModel FlatRootUpdateModel = new RootInputUpdateModel(0, FlatCoeffBase, 0.95m);
 
-        RootInputUpdateModel LowRiskUpdateModel = new RootInputUpdateModel(2, ModCoeffBase, 0.95m);       
+        RootInputUpdateModel LowRiskUpdateModel = new RootInputUpdateModel(2, ModCoeffBase, 0.95m);  
+        
+        string ConnectionString { get; set; }
         #endregion
 
-        public AutoBacRootAlgorithm( int tableNumber, GlobalDBContext dBContext)
+        public AutoBacRootAlgorithm( int tableNumber, string _conn)
         {
-            BaccaratDBContext = dBContext; //Truyền D
             TableNumber = tableNumber;
+            ConnectionString = _conn;
 
             Initial(TableNumber);
         }
@@ -82,27 +84,31 @@ namespace CoreLogic.StandardlizedAlgorithms
             //Tăng globalIndex
             globalIndex++;
 
-            if (autoResult == null)
+            var newAutoRoot = default(AutoRoot);
+
+            using (GlobalDBContext dBContext = new GlobalDBContext(ConnectionString))
             {
-                autoResult = new AutoResult
+                if (autoResult == null)
                 {
-                    AutoSessionID = CurrentAutoSession.ID,
-                    Card = (short)baccratCard
+                    autoResult = new AutoResult
+                    {
+                        AutoSessionID = CurrentAutoSessionID,
+                        Card = (short)baccratCard
+                    };
+                    dBContext.AddAutoResult(autoResult);
+                }
+
+                newAutoRoot = new AutoRoot
+                {
+                    Card = (short)baccratCard,
+                    ListCurrentPredicts = string.Empty,
+                    ID = autoResult.ID,
+                    AutoSessionID = CurrentAutoSessionID,
+                    GlobalIndex = globalIndex,
+                    ListCurrentModCoeffs = string.Empty
                 };
-                BaccaratDBContext.AddAutoResult(autoResult);
+                dBContext.AddAutoRoot(newAutoRoot);
             }
-
-            var newAutoRoot = new AutoRoot
-            {
-                Card = (short)baccratCard,
-                ListCurrentPredicts = string.Empty,
-                ID = autoResult.ID,
-                AutoSessionID = CurrentAutoSession.ID,
-                GlobalIndex = globalIndex,
-                ListCurrentModCoeffs = string.Empty
-            };
-
-            BaccaratDBContext.AddAutoRoot(newAutoRoot);
 
             MainAutoRoots.Add(newAutoRoot);
         }
@@ -158,7 +164,7 @@ namespace CoreLogic.StandardlizedAlgorithms
             var predictMainThread = PredictSingleThread(MainAutoRoots, FlatCoeffBase);            
 
             #region Dự đoán phiên tổng hợp của các phiên con
-            var lastAutoRoot = MainAutoRoots.LastOrDefault();
+            AutoRoot lastAutoRoot = MainAutoRoots.LastOrDefault();
 
             //Đã có N kết quả, vậy dự đoán cho bước N + 1
             //Vậy sẽ dùng các điểm: (N + 1) - 4 , (N + 1)- 8 và (N + 1) - 12
@@ -180,7 +186,9 @@ namespace CoreLogic.StandardlizedAlgorithms
 
 
             #region Dự đoán cho modification
-            var allRootsInThisSession = BaccaratDBContext.FindAutoRootsBySession(CurrentAutoSession.ID);
+            var allRootsInThisSession = new GlobalDBContext(ConnectionString)
+                                            .FindAutoRootsBySession(CurrentAutoSessionID)
+                                            .ToList();
             
             var _mainCoeff = 0;
             {
@@ -228,9 +236,14 @@ namespace CoreLogic.StandardlizedAlgorithms
 
             if (lastAutoRoot != null)
             {
-                lastAutoRoot.ListCurrentPredicts = JsonConvert.SerializeObject(listCurrentPredicts);
-                lastAutoRoot.ListCurrentModCoeffs = JsonConvert.SerializeObject(currentModCoeffs);
-                BaccaratDBContext.UpdateAutoRoot(lastAutoRoot);
+                
+                using (GlobalDBContext dBContext = new GlobalDBContext(ConnectionString))
+                {
+                    var dbLastAutoRoot = dBContext.FindAllAutoRoots().AsQueryable().Where(c => c.ID == lastAutoRoot.ID).FirstOrDefault();
+                    dbLastAutoRoot.ListCurrentPredicts = JsonConvert.SerializeObject(listCurrentPredicts);
+                    dbLastAutoRoot.ListCurrentModCoeffs = JsonConvert.SerializeObject(currentModCoeffs);
+                    dBContext.UpdateAutoRoot(dbLastAutoRoot);
+                }                
             }
 
             var flatVolume = (int)predictMainThread.Value * predictMainThread.Volume  //Main thread                            
@@ -251,39 +264,52 @@ namespace CoreLogic.StandardlizedAlgorithms
 
         public void Reset()
         {
-            CurrentAutoSession.IsClosed = true;
+            using (GlobalDBContext dBContext = new GlobalDBContext(ConnectionString))
+            {
+                var currentSession = dBContext.FindAllAutoSessions(TableNumber).AsQueryable()
+                                        .Where(c => c.ID == CurrentAutoSessionID)
+                                        .FirstOrDefault();
+                currentSession.IsClosed = true;
 
-            BaccaratDBContext.UpdateAutoSession(CurrentAutoSession);
+                dBContext.UpdateAutoSession(currentSession);
 
-            CurrentAutoSession = CreateNewSession();
+                var newSession = CreateNewSession();
+                CurrentAutoSessionID = newSession.ID;
+            }
+            
         }
         
 
         public void Initial(int tableNumber)
         {
-            CurrentAutoSession = BaccaratDBContext
+            using (GlobalDBContext dBContext = new GlobalDBContext(ConnectionString))
+            {
+                var currentAutoSession = dBContext
                                         .FindAllAutoSessions(tableNumber)
                                         .Where(c => !c.IsClosed)
                                         .OrderByDescending(c => c.ID)
                                         .FirstOrDefault();
-            if (CurrentAutoSession == null)
-            {
-                CurrentAutoSession = CreateNewSession();
+                if (currentAutoSession == null)
+                {
+                    currentAutoSession = CreateNewSession();                    
+                }
+                CurrentAutoSessionID = currentAutoSession.ID;
+
+
+                //Lấy 100 bước gần nhất
+                MainAutoRoots = dBContext.FindLastNAutoRoots(CurrentAutoSessionID, 100).ToList();
             }
-            
-            //Lấy 100 bước gần nhất
-            MainAutoRoots = BaccaratDBContext.FindLastNAutoRoots(CurrentAutoSession.ID, 100).ToList();
         }        
 
-        public bool InProcessingSession()
-        {
-            return BaccaratDBContext.FindAutoRootsBySession(CurrentAutoSession.ID).Count() > 1; 
-        }        
+           
 
         public AutoSession CreateNewSession()
         {
             var newAutoSession = new AutoSession { TableNumber = TableNumber};
-            BaccaratDBContext.AddAutoSession(newAutoSession);
+            using (GlobalDBContext dBContext = new GlobalDBContext(ConnectionString))
+            {
+                dBContext.AddAutoSession(newAutoSession);
+            }
             return newAutoSession;
         }
 
@@ -440,44 +466,57 @@ namespace CoreLogic.StandardlizedAlgorithms
 
         public void UpdateDatabase(Tuple<RootProfit<int>, RootProfit<int>> profits)
         {
-            var lastAutoRoot = MainAutoRoots.LastOrDefault();
-            if (lastAutoRoot == null)
+            var lastAutoRoot1 = MainAutoRoots.LastOrDefault();
+            if (lastAutoRoot1 == null)
                 return;
+
+            using (GlobalDBContext dBContext = new GlobalDBContext(ConnectionString))
+            {
+                var lastAutoRoot = dBContext.FindAllAutoRoots().Where(c => c.ID == lastAutoRoot1.ID)
+                                        .FirstOrDefault();
+
+                lastAutoRoot.MainProfit = profits.Item1.Main;
+                lastAutoRoot.Profit0 = profits.Item1.Sub0;
+                lastAutoRoot.Profit1 = profits.Item1.Sub1;
+                lastAutoRoot.Profit2 = profits.Item1.Sub2;
+                lastAutoRoot.Profit3 = profits.Item1.Sub3;
+                lastAutoRoot.AllSubProfit = profits.Item1.AllSub;
+
+                lastAutoRoot.ModMainProfit = profits.Item2.Main;
+                lastAutoRoot.ModProfit0 = profits.Item2.Sub0;
+                lastAutoRoot.ModProfit1 = profits.Item1.Sub1;
+                lastAutoRoot.ModProfit2 = profits.Item2.Sub2;
+                lastAutoRoot.ModProfit3 = profits.Item2.Sub3;
+                lastAutoRoot.ModAllSubProfit = profits.Item2.AllSub;
+
+                var allAutoRootsThisSession = new List<AutoRoot>();
             
-            lastAutoRoot.MainProfit = profits.Item1.Main;
-            lastAutoRoot.Profit0 = profits.Item1.Sub0;
-            lastAutoRoot.Profit1 = profits.Item1.Sub1;
-            lastAutoRoot.Profit2 = profits.Item1.Sub2;
-            lastAutoRoot.Profit3 = profits.Item1.Sub3;
-            lastAutoRoot.AllSubProfit = profits.Item1.AllSub;
+                dBContext.UpdateAutoRoot(lastAutoRoot);
 
-            lastAutoRoot.ModMainProfit = profits.Item2.Main;
-            lastAutoRoot.ModProfit0 = profits.Item2.Sub0;
-            lastAutoRoot.ModProfit1 = profits.Item1.Sub1;
-            lastAutoRoot.ModProfit2 = profits.Item2.Sub2;
-            lastAutoRoot.ModProfit3 = profits.Item2.Sub3;
-            lastAutoRoot.ModAllSubProfit = profits.Item2.AllSub;
 
-            BaccaratDBContext.UpdateAutoRoot(lastAutoRoot);
+                //Cập nhật số lượng bước cho AutoSession (Dễ dàng cho việc tổng hợp)
+                //và Max, Min (cho tiền) 
+                allAutoRootsThisSession = dBContext.FindAutoRootsBySession(CurrentAutoSessionID).ToList();
 
-            //Cập nhật số lượng bước cho AutoSession (Dễ dàng cho việc tổng hợp)
-            //và Max, Min (cho tiền) 
-            var allAutoRootsThisSession = BaccaratDBContext.FindAutoRootsBySession(CurrentAutoSession.ID).ToList();
-            var sumProfit = allAutoRootsThisSession.Select(c => c.GlobalProfit).Sum();
-            CurrentAutoSession.NoOfStepsRoot = allAutoRootsThisSession.Count;
-            if (CurrentAutoSession.MaxRoot < sumProfit)
-                CurrentAutoSession.MaxRoot = sumProfit;
-            if (CurrentAutoSession.MinRoot > sumProfit)
-                CurrentAutoSession.MinRoot = sumProfit;
-            //Cập nhật PROFITS 
-            CurrentAutoSession.RootMainProfit = allAutoRootsThisSession.Select(c => c.MainProfit).Sum();
-            CurrentAutoSession.RootProfit0 = allAutoRootsThisSession.Select(c => c.Profit0).Sum();
-            CurrentAutoSession.RootProfit1 = allAutoRootsThisSession.Select(c => c.Profit1).Sum();
-            CurrentAutoSession.RootProfit2 = allAutoRootsThisSession.Select(c => c.Profit2).Sum();
-            CurrentAutoSession.RootProfit3 = allAutoRootsThisSession.Select(c => c.Profit3).Sum();
-            CurrentAutoSession.RootAllSub = allAutoRootsThisSession.Select(c => c.AllSubProfit).Sum();
+                var sumProfit = allAutoRootsThisSession.Select(c => c.GlobalProfit).Sum();
+                var updateSession = dBContext.FindAllAutoSessions(TableNumber).Where(c => c.ID == CurrentAutoSessionID)
+                                        .FirstOrDefault();
 
-            BaccaratDBContext.UpdateAutoSession(CurrentAutoSession);
+                updateSession.NoOfStepsRoot = allAutoRootsThisSession.Count;
+                if (updateSession.MaxRoot < sumProfit)
+                    updateSession.MaxRoot = sumProfit;
+                if (updateSession.MinRoot > sumProfit)
+                    updateSession.MinRoot = sumProfit;
+                //Cập nhật PROFITS 
+                updateSession.RootMainProfit = allAutoRootsThisSession.Select(c => c.MainProfit).Sum();
+                updateSession.RootProfit0 = allAutoRootsThisSession.Select(c => c.Profit0).Sum();
+                updateSession.RootProfit1 = allAutoRootsThisSession.Select(c => c.Profit1).Sum();
+                updateSession.RootProfit2 = allAutoRootsThisSession.Select(c => c.Profit2).Sum();
+                updateSession.RootProfit3 = allAutoRootsThisSession.Select(c => c.Profit3).Sum();
+                updateSession.RootAllSub = allAutoRootsThisSession.Select(c => c.AllSubProfit).Sum();
+
+                dBContext.UpdateAutoSession(updateSession);
+            }
         }
     }
 }
