@@ -223,6 +223,9 @@ namespace Midas
 
         public void GetResult_AllTableView_Table(IWebElement table)
         {
+            var scannedResult = new AutomationTableResult { };
+            var lastTableResult = new AutomationTableResult { };
+            bool needToUpdate = true;
             try
             {
                 var _currentBanker = table.FindElement(By.Id("StatisticsB")).Text;
@@ -233,7 +236,7 @@ namespace Midas
                 if (_tableNumberInt == 0)
                     return;
 
-                var scannedResult = new AutomationTableResult
+                scannedResult = new AutomationTableResult
                 {
                     TotalBanker = ParseInt(_currentBanker),
                     TotalPlayer = ParseInt(_currentPlayer),
@@ -243,16 +246,16 @@ namespace Midas
                 SetLabel(scannedResult);
 
                 BaccratCard newCard = BaccratCard.NoTrade;
+                lastTableResult = SavedAllTableResults.FirstOrDefault(c => c.TableNumber == _tableNumber);
 
                 //Nếu chưa có bàn này trong kết quả
-                if (!SavedAllTableResults.Any(c => c.TableNumber == _tableNumber))
+                if (lastTableResult == null)
                 {
                     SavedAllTableResults.Add(scannedResult);
                 }
                 else
                 {
-                    var lastTableResult = SavedAllTableResults.FirstOrDefault(c => c.TableNumber == _tableNumber);
-
+                    needToUpdate = true;
                     if (lastTableResult.Total != scannedResult.Total)
                     {
                         if (chboxShowDetail.Checked)
@@ -291,10 +294,7 @@ namespace Midas
                         if (chBoxShowPredict.Checked && predict.Value != BaccratCard.NoTrade)
                         {
                             Log(Color.Green, $"Bàn số {_tableNumber}, ra card {newCard}, dự đoán card tiếp {predict.Value} {predict.Volume} units");
-                        }
-
-                        SavedAllTableResults.Remove(lastTableResult);
-                        SavedAllTableResults.Add(scannedResult);
+                        }                        
                     }
                 }
             }
@@ -302,6 +302,11 @@ namespace Midas
             {
                 Log(Color.Red, ex.Message);
                 LogService.LogError(ex.Message);
+            }
+            if (needToUpdate)
+            {
+                SavedAllTableResults.Remove(lastTableResult);
+                SavedAllTableResults.Add(scannedResult);
             }
 
             //End of GetResult_AllTableView_Table
@@ -315,15 +320,16 @@ namespace Midas
         {
             //Lấy kết quả BANKER, PLAYER và TIE ở tất cả các bàn 
             var uiAllTables = AllTable_NoBet_Driver.FindElements(By.CssSelector("table-list table-item")).ToList();
-
-            var thread = new System.Threading.Thread(() => 
+            
+            foreach (var table in uiAllTables)
             {
-                foreach (var table in uiAllTables)
+                //Mỗi bàn mỗi thread (bàn này khỏi phải đợi bàn kia)
+                var thread = new System.Threading.Thread(() =>
                 {
                     GetResult_AllTableView_Table(table);
-                }
-            });
-            thread.Start();
+                });
+                thread.Start();
+            }            
         }
         
         private void CheckResultTimer_Tick(object sender, EventArgs e)
@@ -414,13 +420,11 @@ namespace Midas
                 LogService.LogError(ex.Message);
             }
         }
-
         
         private void btnClearLog_Click(object sender, EventArgs e)
         {
             txtLog.Text = "";
         }
-
         private void EnableAuto(bool isEnable)
         {
             if (isEnable)
@@ -491,39 +495,12 @@ namespace Midas
 
             var table1 = AllTable_NoBet_Driver.FindElements(By.CssSelector(".lobbyTable"))[1];
             table1.Click(); //Nhấn vô bàn số 7
-
-
-            //EventFiringWebDriver = new EventFiringWebDriver(AllTable_NoBet_Driver);
-            //EventFiringWebDriver.ElementValueChanged += EventFiringWebDriver_ElementValueChanged;
-            //EventFiringWebDriver.ElementValueChanging += EventFiringWebDriver_ElementValueChanging;
-
         }
 
-        private void button1_Click(object sender, EventArgs e)
-        {
-            AutoBacMaster.ResetTable(4);
-            AutoBacMaster.Process(4, BaccratCard.Player, new AutomationTableResult {  });
-            AutoBacMaster.Process(4, BaccratCard.Tie, new AutomationTableResult { });
-            AutoBacMaster.Process(4, BaccratCard.Player, new AutomationTableResult { });
-        }
+      
 
-        //private void EventFiringWebDriver_ElementValueChanging(object sender, WebElementValueEventArgs e)
-        //{
-        //    Log(Color.Black, $"{e.Element.Text} | ");
-        //    Log(Color.Black, JsonConvert.SerializeObject(sender));
-        //}
+        
 
-        //private void EventFiringWebDriver_ElementValueChanged(object sender, WebElementValueEventArgs e)
-        //{
-        //    Log(Color.Black, $"{e.Element.Text} | ");
-        //    Log(Color.Black, JsonConvert.SerializeObject(sender));
-        //}
-
-        //private void button1_Click(object sender, EventArgs e)
-        //{
-        //    EventFiringWebDriver = new EventFiringWebDriver(Driver);
-        //    EventFiringWebDriver.ElementValueChanged += EventFiringWebDriver_ElementValueChanged;
-        //    EventFiringWebDriver.ElementValueChanging += EventFiringWebDriver_ElementValueChanging;
-        //}
+        
     }
 }

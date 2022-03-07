@@ -34,16 +34,24 @@ namespace CoreLogic.StandardlizedAlgorithms
         public bool IsBankerWin { get; set; }
     }
 
+    public class SaveRootInfo
+    { 
+        public BaccratCard BaccratCard { get; set; }
+        public int GlobalIndex { get; set; }
+        public int ID { get; set; }
+        public string ListCurrentModCoeffs { get; set; }
+        public string ListCurrentPredicts { get; set; }
+    }
+
     /// <summary>
     /// Tham khảo thêm ở BaccaratRootCalculator. 
     /// Các bước chính
     /// </summary>
     public class AutoBacRootAlgorithm : IAutoBacAlgorithm<AutoBacRootInputCoeff, AutoBacRootOutputCoeff>
     {
-        #region Properties
+        #region Properties      
        
-       
-        private List<AutoRoot> MainAutoRoots { get; set; }       
+        private List<SaveRootInfo> MainAutoRoots { get; set; }       
 
         /// <summary>
         /// Shoe đang chơi
@@ -110,7 +118,10 @@ namespace CoreLogic.StandardlizedAlgorithms
                 dBContext.AddAutoRoot(newAutoRoot);
             }
 
-            MainAutoRoots.Add(newAutoRoot);
+            MainAutoRoots.Add(new SaveRootInfo 
+            { 
+                GlobalIndex = globalIndex , BaccratCard = baccratCard
+            });
         }
 
         /// <summary>
@@ -119,13 +130,13 @@ namespace CoreLogic.StandardlizedAlgorithms
         /// <param name="cards"></param>
         /// <param name="volume"></param>
         /// <returns></returns>
-        private BaccaratPredict PredictSingleThread(List<AutoRoot> autoRoots, int volume)
+        private BaccaratPredict PredictSingleThread(List<SaveRootInfo> autoRoots, int volume)
         {
             //Lấy 3 card cuối
             var skip = autoRoots.Count > 3 ? autoRoots.Count - 3 : 0;
             var take = autoRoots.Count > 3 ? 3 : autoRoots.Count;
             var cards = autoRoots.Skip(skip).Take(take)
-                                        .Select(c => (BaccratCard)c.Card)
+                                        .Select(c => c.BaccratCard)
                                         .ToList();
             //Nếu không đủ 3 card thì thoát
             if (cards.Count < 3)
@@ -164,7 +175,7 @@ namespace CoreLogic.StandardlizedAlgorithms
             var predictMainThread = PredictSingleThread(MainAutoRoots, FlatCoeffBase);            
 
             #region Dự đoán phiên tổng hợp của các phiên con
-            AutoRoot lastAutoRoot = MainAutoRoots.LastOrDefault();
+            var lastAutoRoot = MainAutoRoots.LastOrDefault();
 
             //Đã có N kết quả, vậy dự đoán cho bước N + 1
             //Vậy sẽ dùng các điểm: (N + 1) - 4 , (N + 1)- 8 và (N + 1) - 12
@@ -235,8 +246,7 @@ namespace CoreLogic.StandardlizedAlgorithms
             };
 
             if (lastAutoRoot != null)
-            {
-                
+            {                
                 using (GlobalDBContext dBContext = new GlobalDBContext(ConnectionString))
                 {
                     var dbLastAutoRoot = dBContext.FindAllAutoRoots().AsQueryable().Where(c => c.ID == lastAutoRoot.ID).FirstOrDefault();
@@ -278,7 +288,6 @@ namespace CoreLogic.StandardlizedAlgorithms
             }
             
         }
-        
 
         public void Initial(int tableNumber)
         {
@@ -297,7 +306,13 @@ namespace CoreLogic.StandardlizedAlgorithms
 
 
                 //Lấy 100 bước gần nhất
-                MainAutoRoots = dBContext.FindLastNAutoRoots(CurrentAutoSessionID, 100).ToList();
+                MainAutoRoots = dBContext.FindLastNAutoRoots(CurrentAutoSessionID, 100)
+                                    .Select(c => new SaveRootInfo 
+                                    {
+                                        BaccratCard = (BaccratCard)c.Card,
+                                        GlobalIndex = c.GlobalIndex
+                                    })
+                                    .ToList();
             }
         }        
 

@@ -90,7 +90,6 @@ namespace Midas
             this.lb_T_1 = new System.Windows.Forms.Label();
             this.lb_P_1 = new System.Windows.Forms.Label();
             this.lb_B_1 = new System.Windows.Forms.Label();
-            this.button1 = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -113,7 +112,6 @@ namespace Midas
             // 
             // tabPage1
             // 
-            this.tabPage1.Controls.Add(this.button1);
             this.tabPage1.Controls.Add(this.lb_Balance);
             this.tabPage1.Controls.Add(this.label4);
             this.tabPage1.Controls.Add(this.chBoxAllowTrade);
@@ -880,18 +878,6 @@ namespace Midas
             this.lb_B_1.Text = "-1";
             this.lb_B_1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // button1
-            // 
-            this.button1.ForeColor = System.Drawing.Color.Green;
-            this.button1.Location = new System.Drawing.Point(268, 342);
-            this.button1.Margin = new System.Windows.Forms.Padding(4);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(128, 73);
-            this.button1.TabIndex = 133;
-            this.button1.Text = "Start auto";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 22F);
@@ -980,6 +966,5 @@ namespace Midas
         private System.Windows.Forms.CheckBox chBoxAllowTrade;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label lb_Balance;
-        private System.Windows.Forms.Button button1;
     }
 }

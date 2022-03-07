@@ -18,7 +18,7 @@ namespace Midas.Utils
             {
                 Directory.CreateDirectory(folderName);
             }
-            File.AppendAllText(DateTime.Now.ToString() + " " + folderName + "\\Error.log", text + Environment.NewLine);
+            File.AppendAllText(folderName + "\\Error.log", DateTime.Now.ToString() + " " + text + Environment.NewLine);
         }
     }
 }
