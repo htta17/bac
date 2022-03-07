@@ -19,6 +19,14 @@ namespace Midas.Utils
             box.AppendText(text);
             box.SelectionColor = box.ForeColor;
         }
+
+        public static void InsertOnTop(this RichTextBox box, string text, Color color) 
+        {
+            box.Text = box.Text.Insert(0, text);
+            box.SelectionStart = 0;
+            box.SelectionLength = text.Length;
+            box.SelectionColor = color;
+        }
     }
 
 }
