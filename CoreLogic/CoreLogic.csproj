@@ -59,12 +59,14 @@
     <Compile Include="BaccaratSimulator\Card.cs" />
     <Compile Include="BaccaratSimulator\Deck.cs" />
     <Compile Include="BacSeparatedAlgorithms\IBaccaratCalculator.cs" />
+    <Compile Include="LogService.cs" />
     <Compile Include="Models\BaccaratResult.cs" />
     <Compile Include="Models\BaccratCard.cs" />
     <Compile Include="Models\CalculatorItem.cs" />
     <Compile Include="AccumulateProfit.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="BacSeparatedAlgorithms\QuadrupleResult.cs" />
+    <Compile Include="StandardlizedAlgorithms\AutoBacMaster.cs" />
     <Compile Include="StandardlizedAlgorithms\IAutoBacAlgorithm.cs" />
     <Compile Include="StandardlizedAlgorithms\AutoBacRootAlgorithm.cs" />
     <Compile Include="VietnameseLottery.cs" />

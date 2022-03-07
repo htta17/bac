@@ -77,7 +77,7 @@ namespace CoreLogic.StandardlizedAlgorithms
         ///     3. Predict.
         ///     Các bước phải implement riêng rẽ để có thể gọi lại hàm TakeProfit() hoặc Predict() nhiều lần
         /// </summary>
-        BaccaratPredict Process(BaccratCard baccratCard);
+        BaccaratPredict Process(BaccratCard baccratCard, AutoResult autoResult = null);
 
         /// <summary>
         /// Tạo session mới

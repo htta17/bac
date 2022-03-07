@@ -53,7 +53,8 @@ namespace Midas
                 StartApp.LoadRegistryConnectionString();
             }
 
-            LogicAllTables = new Dictionary<int, AutoBacRootAlgorithm>();
+            //LogicAllTables = new Dictionary<int, AutoBacRootAlgorithm>();
+            AutoBacMaster = new AutoBacMaster(StartApp.GlobalConnectionString);
         }
 
         #endregion
@@ -76,7 +77,8 @@ namespace Midas
         readonly string USER_KEY = "UserName";
         readonly string PWD_KEY = "Password";
 
-        Dictionary<int, AutoBacRootAlgorithm> LogicAllTables { get; set; }
+        //Dictionary<int, AutoBacRootAlgorithm> LogicAllTables { get; set; }
+        AutoBacMaster AutoBacMaster { get; set; }
 
         /// <summary>
         /// Đánh dấu cho biết đang ở trạng thái tất cả các bàn hay đang ở tại 1 bàn cụ thể nào
@@ -151,12 +153,7 @@ namespace Midas
             return int.Parse(s);
         }
 
-        private AutoBacRootAlgorithm GetTable(int _tableNo)
-        {
-            return LogicAllTables.ContainsKey(_tableNo) 
-                ? LogicAllTables[_tableNo]
-                : default;
-        }
+        
         private void Log(Color color, string text)
         {
             if (InvokeRequired)
@@ -261,51 +258,34 @@ namespace Midas
                         if (chboxShowDetail.Checked)
                         {
                             Log(Color.Black, $"Bàn {_tableNumber}: Last Result: { lastTableResult.TextResult }, New Result: { scannedResult.TextResult }");
-                        }
-
-                        var logicTable = GetTable(_tableNumberInt);
+                        }                        
 
                         var predict = new BaccaratPredict { Value = BaccratCard.NoTrade, Volume = 0 };
 
                         if (scannedResult.Total == 0)
                         {
-                            if (logicTable == null)
-                            {
-                                logicTable = new AutoBacRootAlgorithm(StartApp.GlobalConnectionString, _tableNumberInt);
-                                logicTable.Reset();
-                                LogicAllTables.Add(_tableNumberInt, logicTable);
-                                Log(Color.Green, $"Tạo mới bàn số {_tableNumberInt} khi chưa có card nào. SessionID: {logicTable.CurrentAutoSession.ID}");
-                            }
-                            else
-                            {
-                                logicTable.Reset();
-                            }                            
+                            var newSessionID = AutoBacMaster.ResetTable(_tableNumberInt);
+                            Log(Color.Green, $"Tạo mới bàn số {_tableNumberInt} khi chưa có card nào. SessionID: {newSessionID}.");
                         }
-                        else if (scannedResult.Total == 1 && logicTable == null)
+                        else if (scannedResult.Total == 1 && AutoBacMaster.TableIsNull(_tableNumberInt))
                         {
 
                             //Vừa mới join vào, đáng lẽ đợi hết phiên
                             //nhưng vì mới có 1 card, nên có thể chơi chơi luôn vì có thể vẫn kịp
                             newCard = scannedResult.TotalBanker == 1 ? BaccratCard.Banker :
                                             scannedResult.TotalPlayer == 1 ? BaccratCard.Player : BaccratCard.Tie;
-                            
-                            logicTable = new AutoBacRootAlgorithm(StartApp.GlobalConnectionString, _tableNumberInt);
-                            logicTable.Reset();
-                            LogicAllTables.Add(_tableNumberInt, logicTable);
-                            Log(Color.Green, $"Tạo mới bàn số {_tableNumberInt} khi có 1 card  {newCard}. SessionID: {logicTable.CurrentAutoSession.ID}");
+
+                            var newSessionID =  AutoBacMaster.ResetTable(_tableNumberInt);
+                            Log(Color.Green, $"Tạo mới bàn số {_tableNumberInt} khi có 1 card  {newCard}. SessionID: {newSessionID}.");
                            
-                            predict = logicTable.Process(newCard);
+                            predict = AutoBacMaster.Process(_tableNumberInt, newCard, scannedResult);
                         }
                         else if (lastTableResult.Total + 1 == scannedResult.Total)
                         {
-
-                            if (logicTable != null)
-                            {
-                                newCard = lastTableResult.TotalBanker + 1 == scannedResult.TotalBanker ? BaccratCard.Banker
-                                            : lastTableResult.TotalPlayer + 1 == scannedResult.TotalPlayer ? BaccratCard.Banker
-                                            : BaccratCard.Tie;
-                                predict = logicTable.Process(newCard);
-                            }
+                            newCard = lastTableResult.TotalBanker + 1 == scannedResult.TotalBanker ? BaccratCard.Banker
+                                        : lastTableResult.TotalPlayer + 1 == scannedResult.TotalPlayer ? BaccratCard.Banker
+                                        : BaccratCard.Tie;
+                            predict = AutoBacMaster.Process(_tableNumberInt, newCard, scannedResult);
                         }
 
                         if (chBoxShowPredict.Checked && predict.Value != BaccratCard.NoTrade)
@@ -321,6 +301,7 @@ namespace Midas
             catch (Exception ex)
             {
                 Log(Color.Red, ex.Message);
+                LogService.LogError(ex.Message);
             }
 
             //End of GetResult_AllTableView_Table
@@ -335,11 +316,14 @@ namespace Midas
             //Lấy kết quả BANKER, PLAYER và TIE ở tất cả các bàn 
             var uiAllTables = AllTable_NoBet_Driver.FindElements(By.CssSelector("table-list table-item")).ToList();
 
-            foreach(var table in uiAllTables)
+            var thread = new System.Threading.Thread(() => 
             {
-                var thread = new System.Threading.Thread(() => GetResult_AllTableView_Table(table));
-                thread.Start();
-            }
+                foreach (var table in uiAllTables)
+                {
+                    GetResult_AllTableView_Table(table);
+                }
+            });
+            thread.Start();
         }
         
         private void CheckResultTimer_Tick(object sender, EventArgs e)
@@ -398,35 +382,36 @@ namespace Midas
                 Driver.FindElement(By.CssSelector(".input-username input[name=username]")).SendKeys(txtUserName.Text);
                 Driver.FindElement(By.CssSelector(".input-password input[name=password]")).SendKeys(txtPassword.Text);
                 Driver.FindElement(By.CssSelector("button[type=submit]")).Click();
-                //System.Threading.Thread.Sleep(500); //Đợi nửa giây
-                Driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(1.0);
+                System.Threading.Thread.Sleep(500); //Đợi nửa giây
+                //Driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(5.0);
 
                 var liveCasino = Driver.FindElements(By.CssSelector("#menu-products > li > a"))[2];
                 liveCasino.Click();
-                //System.Threading.Thread.Sleep(5000); //Đợi 5 giây 
-                Driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(5.0);
+                System.Threading.Thread.Sleep(5000); //Đợi 5 giây 
+                //Driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(5.0);
 
                 var k9 = Driver.FindElements(By.CssSelector(".casino-list li"))[0];
                 Actions actions = new Actions(Driver);
                 actions.MoveToElement(k9).Perform(); //Đưa chuột lên phần K9
-                //System.Threading.Thread.Sleep(2000); //Đợi 2 giây
-                Driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(2.0);
+                System.Threading.Thread.Sleep(2000); //Đợi 2 giây
+                //Driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(2.0);
 
                 var playNowGrandSuite = Driver.FindElements(By.CssSelector(".game-popup a.btn-orange"))[0];
                 playNowGrandSuite.Click();
-                //System.Threading.Thread.Sleep(500);//Đợi 2 giây cho xuất hiện nút OK
-                Driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(1.0);
+                System.Threading.Thread.Sleep(1000);//Đợi 2 giây cho xuất hiện nút OK
+                //Driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(1.0);
 
                 var okButton = Driver.FindElement(By.CssSelector(".modal-dialog .text-center button.bet-btn"));
                 okButton.Click(); //Nhấn nút OK
                 System.Threading.Thread.Sleep(5000);//Đợi 5 giây để màn hình mới load
-                Driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(5.0);
+                //Driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(5.0);
 
                 EnableAuto(true);
             }
             catch (Exception ex)
             {
                 Log(Color.Red, ex.Message);
+                LogService.LogError(ex.Message);
             }
         }
 
@@ -493,9 +478,8 @@ namespace Midas
             {
                 EnableAuto(true);
             }            
-        }        
-
-        EventFiringWebDriver EventFiringWebDriver = null;
+        }
+       
         private void btnScanTableView_Click(object sender, EventArgs e)
         {
             //Switch qua màn hình mới 
@@ -513,6 +497,14 @@ namespace Midas
             //EventFiringWebDriver.ElementValueChanged += EventFiringWebDriver_ElementValueChanged;
             //EventFiringWebDriver.ElementValueChanging += EventFiringWebDriver_ElementValueChanging;
 
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            AutoBacMaster.ResetTable(4);
+            AutoBacMaster.Process(4, BaccratCard.Player, new AutomationTableResult {  });
+            AutoBacMaster.Process(4, BaccratCard.Tie, new AutomationTableResult { });
+            AutoBacMaster.Process(4, BaccratCard.Player, new AutomationTableResult { });
         }
 
         //private void EventFiringWebDriver_ElementValueChanging(object sender, WebElementValueEventArgs e)

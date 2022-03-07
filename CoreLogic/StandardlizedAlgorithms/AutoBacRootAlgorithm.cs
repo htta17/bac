@@ -62,9 +62,9 @@ namespace CoreLogic.StandardlizedAlgorithms
         RootInputUpdateModel LowRiskUpdateModel = new RootInputUpdateModel(2, ModCoeffBase, 0.95m);       
         #endregion
 
-        public AutoBacRootAlgorithm(string connectionString, int tableNumber)
+        public AutoBacRootAlgorithm( int tableNumber, GlobalDBContext dBContext)
         {
-            BaccaratDBContext = new GlobalDBContext(connectionString);
+            BaccaratDBContext = dBContext; //Truyền D
             TableNumber = tableNumber;
 
             Initial(TableNumber);
@@ -287,14 +287,14 @@ namespace CoreLogic.StandardlizedAlgorithms
             return newAutoSession;
         }
 
-        public BaccaratPredict Process(BaccratCard baccratCard)
+        public BaccaratPredict Process(BaccratCard baccratCard, AutoResult autoResult = null)
         {
-            if (baccratCard != BaccratCard.Banker && baccratCard != BaccratCard.Player)
-                return new BaccaratPredict { Value = BaccratCard.NoTrade, Volume =0 }; 
+            if ((baccratCard != BaccratCard.Banker) && (baccratCard != BaccratCard.Player))
+                return new BaccaratPredict { Value = BaccratCard.NoTrade, Volume = 0 }; 
 
             var profits = TakeProfit(baccratCard);
 
-            AddNewCard(baccratCard);
+            AddNewCard(baccratCard, autoResult);
 
             if (profits != null)
             {
