@@ -20,12 +20,12 @@ namespace DatabaseContext
         #endregion
 
         #region Hệ số thay đổi
-        public int ModMainProfit { get; set; }
-        public int ModProfit0 { get; set; }
-        public int ModProfit1 { get; set; }
-        public int ModProfit2 { get; set; }
-        public int ModProfit3 { get; set; }
-        public int ModAllSubProfit { get; set; }
+        public int? ModMainProfit { get; set; }
+        public int? ModProfit0 { get; set; }
+        public int? ModProfit1 { get; set; }
+        public int? ModProfit2 { get; set; }
+        public int? ModProfit3 { get; set; }
+        public int? ModAllSubProfit { get; set; }
         #endregion
 
         public string ListCurrentPredicts { get; set; }
@@ -43,8 +43,6 @@ namespace DatabaseContext
                 return MainProfit + Profit0 + Profit1 + Profit2 + Profit3 + AllSubProfit;
             } 
         }
-
-        
 
         /// <summary>
         /// Số thứ tự các bước, không được thay đổi
