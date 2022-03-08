@@ -195,7 +195,7 @@ namespace CoreLogic.StandardlizedAlgorithms
             var predictSubThread = PredictSingleThread(SubAutoRoots, FlatCoeffBase);
             #endregion
 
-
+            /*
             #region Dự đoán cho modification
             var allRootsInThisSession = new GlobalDBContext(ConnectionString)
                                             .FindAutoRootsBySession(CurrentAutoSessionID)
@@ -227,23 +227,26 @@ namespace CoreLogic.StandardlizedAlgorithms
             var modPredictAllSubThread = PredictSingleThread(SubAutoRoots, _allSubCoeff);
 
             #endregion
+            */
 
             //Cập nhật database cho dự đoán
             var listCurrentPredicts = new List<BaccaratPredict>
             {
                 predictMainThread,
                 predictSubThread,
-                modPredictMainThread, 
-                modPredictSubThread,
-                modPredictAllSubThread
+                //modPredictMainThread, 
+                //modPredictSubThread,
+                //modPredictAllSubThread
             };
 
+            /*
             var currentModCoeffs = new List<int>
             {
                 _mainCoeff,
                 _subCoeff, 
                 _allSubCoeff                
             };
+            */
 
             if (lastAutoRoot != null)
             {                
@@ -251,7 +254,7 @@ namespace CoreLogic.StandardlizedAlgorithms
                 {
                     var dbLastAutoRoot = dBContext.FindAllAutoRoots().AsQueryable().Where(c => c.ID == lastAutoRoot.ID).FirstOrDefault();
                     dbLastAutoRoot.ListCurrentPredicts = JsonConvert.SerializeObject(listCurrentPredicts);
-                    dbLastAutoRoot.ListCurrentModCoeffs = JsonConvert.SerializeObject(currentModCoeffs);
+                    dbLastAutoRoot.ListCurrentModCoeffs = String.Empty; // JsonConvert.SerializeObject(currentModCoeffs);
                     dBContext.UpdateAutoRoot(dbLastAutoRoot);
                 }                
             }
@@ -259,9 +262,11 @@ namespace CoreLogic.StandardlizedAlgorithms
             var flatVolume = (int)predictMainThread.Value * predictMainThread.Volume  //Main thread                            
                            + (int)predictSubThread.Value * (predictSubThread.Volume + FlatCoeffBase);
 
+            /*
             var modVolume = (int)modPredictMainThread.Value * modPredictMainThread.Volume
                                 + (int)modPredictSubThread.Value * modPredictSubThread.Volume
                                 + (int)modPredictAllSubThread.Value * modPredictAllSubThread.Volume;
+            */
 
             var flatResult = new BaccaratPredict
             {
@@ -310,7 +315,10 @@ namespace CoreLogic.StandardlizedAlgorithms
                                     .Select(c => new SaveRootInfo 
                                     {
                                         BaccratCard = (BaccratCard)c.Card,
-                                        GlobalIndex = c.GlobalIndex
+                                        GlobalIndex = c.GlobalIndex, 
+                                        ListCurrentModCoeffs = c.ListCurrentModCoeffs,
+                                        ListCurrentPredicts = c.ListCurrentPredicts,
+                                        ID = c.ID,
                                     })
                                     .ToList();
             }
@@ -398,19 +406,25 @@ namespace CoreLogic.StandardlizedAlgorithms
             //Dự đoán hiện tại, xử lý nếu không đủ 8 items
             //index = 0: Main thread cho flat
             //index = 1: Dự đoán của 1 thread
-            var currentPredicts = JsonConvert.DeserializeObject<List<BaccaratPredict>>(lastAutoRoot.ListCurrentPredicts);
+
+            var currentPredicts = string.IsNullOrEmpty(lastAutoRoot.ListCurrentPredicts)
+                            ? new List<BaccaratPredict>()
+                            : JsonConvert.DeserializeObject<List<BaccaratPredict>>(lastAutoRoot.ListCurrentPredicts);
+            
             if (currentPredicts == null)
             {
-                currentPredicts = new List<BaccaratPredict>();
-                while (currentPredicts.Count < 5) currentPredicts.Add(new BaccaratPredict { Value = BaccratCard.NoTrade, Volume = 0 });
+                currentPredicts = new List<BaccaratPredict>();                
             }
+            while (currentPredicts.Count < 2) currentPredicts.Add(new BaccaratPredict { Value = BaccratCard.NoTrade, Volume = 0 });
 
+            /*
             var currentModCoeff = JsonConvert.DeserializeObject<List<int>>(lastAutoRoot.ListCurrentModCoeffs);
             if (currentModCoeff == null)
             {
                 currentModCoeff = new List<int>();
                 while (currentModCoeff.Count < 3) currentModCoeff.Add(LowRiskUpdateModel.StartNumber);
             }
+            */
 
             var flatBacRootInputCoeff = new AutoBacRootInputCoeff
             {
@@ -447,6 +461,7 @@ namespace CoreLogic.StandardlizedAlgorithms
 
             //Làm việc với các hệ số thay đổi    
             //Main thead
+            /*
             var _lowRiskBacRootInputCoeff = new AutoBacRootInputCoeff
             {
                 NewCard = newCard,
@@ -474,7 +489,8 @@ namespace CoreLogic.StandardlizedAlgorithms
             _lowRiskBacRootInputCoeff.CurrentPredict = currentPredicts[4];
             _lowRiskBacRootInputCoeff.CurrentCoeff = currentModCoeff[2];
             var modAllSubThreadPredict = UpdateCoeff(_lowRiskBacRootInputCoeff);
-            retVal.Item2.AllSub = modAllSubThreadPredict.TheoricalProfit;            
+            retVal.Item2.AllSub = modAllSubThreadPredict.TheoricalProfit; 
+            */
 
             return retVal;
         }
@@ -497,12 +513,12 @@ namespace CoreLogic.StandardlizedAlgorithms
                 lastAutoRoot.Profit3 = profits.Item1.Sub3;
                 lastAutoRoot.AllSubProfit = profits.Item1.AllSub;
 
-                lastAutoRoot.ModMainProfit = profits.Item2.Main;
-                lastAutoRoot.ModProfit0 = profits.Item2.Sub0;
-                lastAutoRoot.ModProfit1 = profits.Item1.Sub1;
-                lastAutoRoot.ModProfit2 = profits.Item2.Sub2;
-                lastAutoRoot.ModProfit3 = profits.Item2.Sub3;
-                lastAutoRoot.ModAllSubProfit = profits.Item2.AllSub;
+                //lastAutoRoot.ModMainProfit = profits.Item2.Main;
+                //lastAutoRoot.ModProfit0 = profits.Item2.Sub0;
+                //lastAutoRoot.ModProfit1 = profits.Item1.Sub1;
+                //lastAutoRoot.ModProfit2 = profits.Item2.Sub2;
+                //lastAutoRoot.ModProfit3 = profits.Item2.Sub3;
+                //lastAutoRoot.ModAllSubProfit = profits.Item2.AllSub;
 
                 var allAutoRootsThisSession = new List<AutoRoot>();
             
