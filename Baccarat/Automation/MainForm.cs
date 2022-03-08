@@ -298,7 +298,7 @@ namespace Midas
                             else if (lastTableResult.Total + 1 == scannedResult.Total)
                             {
                                 newCard = lastTableResult.TotalBanker + 1 == scannedResult.TotalBanker ? BaccratCard.Banker
-                                            : lastTableResult.TotalPlayer + 1 == scannedResult.TotalPlayer ? BaccratCard.Banker
+                                            : lastTableResult.TotalPlayer + 1 == scannedResult.TotalPlayer ? BaccratCard.Player
                                             : BaccratCard.Tie;
                                 predict = AutoBacMaster.Process(_tableNumberInt, newCard, scannedResult);
                             }
@@ -507,11 +507,5 @@ namespace Midas
             var table1 = AllTable_NoBet_Driver.FindElements(By.CssSelector(".lobbyTable"))[1];
             table1.Click(); //Nhấn vô bàn số 7
         }
-
-      
-
-        
-
-        
     }
 }
