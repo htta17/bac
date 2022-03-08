@@ -292,6 +292,8 @@ namespace Midas
             // 
             this.chBoxShowPredict.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.chBoxShowPredict.AutoSize = true;
+            this.chBoxShowPredict.Checked = true;
+            this.chBoxShowPredict.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chBoxShowPredict.Location = new System.Drawing.Point(30, 600);
             this.chBoxShowPredict.Margin = new System.Windows.Forms.Padding(4);
             this.chBoxShowPredict.Name = "chBoxShowPredict";
@@ -304,6 +306,8 @@ namespace Midas
             // 
             this.chboxShowDetail.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.chboxShowDetail.AutoSize = true;
+            this.chboxShowDetail.Checked = true;
+            this.chboxShowDetail.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chboxShowDetail.Location = new System.Drawing.Point(30, 551);
             this.chboxShowDetail.Margin = new System.Windows.Forms.Padding(4);
             this.chboxShowDetail.Name = "chboxShowDetail";
