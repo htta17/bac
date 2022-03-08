@@ -127,20 +127,31 @@ namespace Midas
         {
             if (AllTable_NoBet_Driver == null)
                 return;
-
+            
             var table1 = AllTable_NoBet_Driver.FindElements(By.CssSelector(".lobbyTable"))[0];
             table1.Click(); //Nhấn vô bàn số 1
             IsInAllTableView = false;
             CheckResultTimer.Stop();
 
-            //System.Threading.Thread.Sleep(2000); //Đợi khoảng 2 giây
-            Driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(1.5);
-
-            var allTableButton = AllTable_NoBet_Driver.FindElement(By.CssSelector("#IconBaccarat"));
-            allTableButton.Click();
-            IsInAllTableView = true;
-            CheckResultTimer.Start();
-            CheckResultTimer_Tick(null, null);
+            System.Threading.Thread.Sleep(2000); //Đợi khoảng 2 giây
+            //Driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(1.5);
+            try
+            {
+                var allTableButton = AllTable_NoBet_Driver.FindElement(By.CssSelector("#IconBaccarat"));
+                allTableButton.Click();                
+            }
+            catch (Exception ex)
+            {
+                Log(Color.Red, ex.Message);
+                LogService.LogError(ex.Message);
+            }
+            finally
+            {
+                IsInAllTableView = true;
+                CheckResultTimer.Start();
+                CheckResultTimer_Tick(null, null);
+            }
+            
 
             //Hiển thị số tiền 
             lb_Balance.Text = Driver.FindElement(By.Id("Balance")).Text;
