@@ -260,7 +260,8 @@ namespace CoreLogic.StandardlizedAlgorithms
                     dbLastAutoRoot.ListCurrentPredicts = JsonConvert.SerializeObject(listCurrentPredicts);
                     dbLastAutoRoot.ListCurrentModCoeffs = String.Empty; // JsonConvert.SerializeObject(currentModCoeffs);
                     dBContext.UpdateAutoRoot(dbLastAutoRoot);
-                }                
+                }
+                lastAutoRoot.ListCurrentPredicts = JsonConvert.SerializeObject(listCurrentPredicts);
             }
 
             var flatVolume = (int)predictMainThread.Value * predictMainThread.Volume  //Main thread                            
