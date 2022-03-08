@@ -62,10 +62,6 @@ namespace CoreLogic.StandardlizedAlgorithms
         /// <returns></returns>
         BaccaratPredict Predict();
 
-        
-        
-
-
         /// <summary>
         /// Các bước khi process 1 card 
         ///     1. TakeProfit.

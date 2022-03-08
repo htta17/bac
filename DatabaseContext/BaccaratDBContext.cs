@@ -148,12 +148,15 @@ namespace DatabaseContext
             return AutoRoots.AsQueryable().Where(c => c.AutoSessionID == autoSessionID);
         }
 
-        public IQueryable<AutoRoot> FindLastNAutoRoots(int autoSessionID, int N)
+        public IQueryable<AutoRoot> FindLastNAutoRoots(int tableNo, int N)
         {
             var skip = N > 100 ? N - 100 : 0;
             var take = N > 100 ? 100 : N;
-            return AutoRoots.AsQueryable()
-                        .Where(c => c.AutoSessionID == autoSessionID)
+            return AutoRoots.AsQueryable().Join(AutoSessions.AsQueryable().Where(d => d.TableNumber == tableNo), 
+                         a => a.AutoSessionID, 
+                         b => b.ID, 
+                         (a, b) => a
+                         )
                         .OrderBy(c => c.ID)
                         .Skip(skip)
                         .Take(take);

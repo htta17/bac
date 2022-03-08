@@ -57,14 +57,12 @@ namespace CoreLogic.StandardlizedAlgorithms
             var logicTable = GetTable(_tableNo);
             if (logicTable == null)
             {
-                logicTable = new AutoBacRootAlgorithm(_tableNo, ConnectionString);
-                logicTable.Reset();
+                logicTable = new AutoBacRootAlgorithm(_tableNo, ConnectionString); //Đã bao gồm reset
                 LogicAllTables.Add(_tableNo, logicTable);
             }
             else
             {               
                 logicTable.Reset();
-                LogicAllTables[_tableNo] = logicTable;
             }
             return logicTable.CurrentAutoSessionID;
         }

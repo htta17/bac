@@ -120,7 +120,11 @@ namespace CoreLogic.StandardlizedAlgorithms
 
             MainAutoRoots.Add(new SaveRootInfo 
             { 
-                GlobalIndex = globalIndex , BaccratCard = baccratCard
+                GlobalIndex = globalIndex , 
+                BaccratCard = baccratCard, 
+                ID = autoResult.ID,
+                ListCurrentPredicts = string.Empty, 
+                ListCurrentModCoeffs = string.Empty
             });
         }
 
@@ -284,10 +288,11 @@ namespace CoreLogic.StandardlizedAlgorithms
                 var currentSession = dBContext.FindAllAutoSessions(TableNumber).AsQueryable()
                                         .Where(c => c.ID == CurrentAutoSessionID)
                                         .FirstOrDefault();
-                currentSession.IsClosed = true;
-
-                dBContext.UpdateAutoSession(currentSession);
-
+                if (currentSession != null)
+                {
+                    currentSession.IsClosed = true;
+                    dBContext.UpdateAutoSession(currentSession);
+                }
                 var newSession = CreateNewSession();
                 CurrentAutoSessionID = newSession.ID;
             }
@@ -305,13 +310,21 @@ namespace CoreLogic.StandardlizedAlgorithms
                                         .FirstOrDefault();
                 if (currentAutoSession == null)
                 {
-                    currentAutoSession = CreateNewSession();                    
+                    currentAutoSession = CreateNewSession();
+                }
+                else if (currentAutoSession.NoOfStepsRoot > 1) //Bàn đã quá lâu
+                {
+                    currentAutoSession.IsClosed = true;
+
+                    dBContext.UpdateAutoSession(currentAutoSession);
+
+                    currentAutoSession = CreateNewSession();
                 }
                 CurrentAutoSessionID = currentAutoSession.ID;
 
 
-                //Lấy 100 bước gần nhất
-                MainAutoRoots = dBContext.FindLastNAutoRoots(CurrentAutoSessionID, 100)
+                //Lấy 100 bước gần nhất của bàn 
+                MainAutoRoots = dBContext.FindLastNAutoRoots(TableNumber, 100)
                                     .Select(c => new SaveRootInfo 
                                     {
                                         BaccratCard = (BaccratCard)c.Card,
