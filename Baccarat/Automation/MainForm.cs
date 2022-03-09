@@ -283,7 +283,7 @@ namespace Midas
                         {
                             if (chboxShowDetail.Checked)
                             {
-                                Log(Color.Black, $"Bàn {_tableNumber}: Last Result: { lastTableResult.TextResult }, New Result: { scannedResult.TextResult }");
+                                Log(Color.Black, $"Bàn {_tableNumber}: { lastTableResult.TextResult } ---> { scannedResult.TextResult }");
                             }
 
                             var predict = new BaccaratPredict { Value = BaccratCard.NoTrade, Volume = 0 };

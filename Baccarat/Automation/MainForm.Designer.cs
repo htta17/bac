@@ -137,7 +137,7 @@ namespace Midas
             this.lb_Balance.Location = new System.Drawing.Point(432, 203);
             this.lb_Balance.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lb_Balance.Name = "lb_Balance";
-            this.lb_Balance.Size = new System.Drawing.Size(35, 24);
+            this.lb_Balance.Size = new System.Drawing.Size(35, 22);
             this.lb_Balance.TabIndex = 132;
             this.lb_Balance.Text = "0.0";
             // 
@@ -147,7 +147,7 @@ namespace Midas
             this.label4.Location = new System.Drawing.Point(264, 203);
             this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(88, 24);
+            this.label4.Size = new System.Drawing.Size(85, 22);
             this.label4.TabIndex = 131;
             this.label4.Text = "Balance: ";
             // 
@@ -158,7 +158,7 @@ namespace Midas
             this.chBoxAllowTrade.Location = new System.Drawing.Point(135, 516);
             this.chBoxAllowTrade.Margin = new System.Windows.Forms.Padding(4);
             this.chBoxAllowTrade.Name = "chBoxAllowTrade";
-            this.chBoxAllowTrade.Size = new System.Drawing.Size(328, 28);
+            this.chBoxAllowTrade.Size = new System.Drawing.Size(312, 26);
             this.chBoxAllowTrade.TabIndex = 130;
             this.chBoxAllowTrade.Text = "Cho phép vào lệnh tự động (Bàn 1)";
             this.chBoxAllowTrade.UseVisualStyleBackColor = true;
@@ -169,7 +169,7 @@ namespace Midas
             this.label3.Location = new System.Drawing.Point(264, 259);
             this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(116, 24);
+            this.label3.Size = new System.Drawing.Size(114, 22);
             this.label3.TabIndex = 121;
             this.label3.Text = "Timer status:";
             // 
@@ -181,7 +181,7 @@ namespace Midas
             this.lb_TimerStatus.Location = new System.Drawing.Point(444, 259);
             this.lb_TimerStatus.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lb_TimerStatus.Name = "lb_TimerStatus";
-            this.lb_TimerStatus.Size = new System.Drawing.Size(85, 24);
+            this.lb_TimerStatus.Size = new System.Drawing.Size(80, 22);
             this.lb_TimerStatus.TabIndex = 121;
             this.lb_TimerStatus.Text = "Sleeping";
             // 
@@ -235,7 +235,7 @@ namespace Midas
             this.label1.Location = new System.Drawing.Point(66, 33);
             this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(102, 24);
+            this.label1.Size = new System.Drawing.Size(97, 22);
             this.label1.TabIndex = 119;
             this.label1.Text = "User name";
             // 
@@ -245,7 +245,7 @@ namespace Midas
             this.label2.Location = new System.Drawing.Point(76, 78);
             this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(92, 24);
+            this.label2.Size = new System.Drawing.Size(89, 22);
             this.label2.TabIndex = 120;
             this.label2.Text = "Password";
             // 
@@ -294,10 +294,10 @@ namespace Midas
             this.chBoxShowPredict.AutoSize = true;
             this.chBoxShowPredict.Checked = true;
             this.chBoxShowPredict.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chBoxShowPredict.Location = new System.Drawing.Point(30, 600);
+            this.chBoxShowPredict.Location = new System.Drawing.Point(30, 602);
             this.chBoxShowPredict.Margin = new System.Windows.Forms.Padding(4);
             this.chBoxShowPredict.Name = "chBoxShowPredict";
-            this.chBoxShowPredict.Size = new System.Drawing.Size(172, 28);
+            this.chBoxShowPredict.Size = new System.Drawing.Size(163, 26);
             this.chBoxShowPredict.TabIndex = 3;
             this.chBoxShowPredict.Text = "Hiển thị dự đoán";
             this.chBoxShowPredict.UseVisualStyleBackColor = true;
@@ -308,10 +308,10 @@ namespace Midas
             this.chboxShowDetail.AutoSize = true;
             this.chboxShowDetail.Checked = true;
             this.chboxShowDetail.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chboxShowDetail.Location = new System.Drawing.Point(30, 551);
+            this.chboxShowDetail.Location = new System.Drawing.Point(30, 553);
             this.chboxShowDetail.Margin = new System.Windows.Forms.Padding(4);
             this.chboxShowDetail.Name = "chboxShowDetail";
-            this.chboxShowDetail.Size = new System.Drawing.Size(220, 28);
+            this.chboxShowDetail.Size = new System.Drawing.Size(214, 26);
             this.chboxShowDetail.TabIndex = 2;
             this.chboxShowDetail.Text = "Hiển thị kết quả chi tiết";
             this.chboxShowDetail.UseVisualStyleBackColor = true;
@@ -333,6 +333,7 @@ namespace Midas
             this.txtLog.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtLog.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtLog.Location = new System.Drawing.Point(10, 8);
             this.txtLog.Margin = new System.Windows.Forms.Padding(4);
             this.txtLog.Name = "txtLog";
@@ -395,100 +396,110 @@ namespace Midas
             // label34
             // 
             this.label34.AutoSize = true;
-            this.label34.Location = new System.Drawing.Point(36, 558);
+            this.label34.Font = new System.Drawing.Font("Microsoft Sans Serif", 16.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label34.Location = new System.Drawing.Point(353, 483);
             this.label34.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label34.Name = "label34";
-            this.label34.Size = new System.Drawing.Size(30, 24);
+            this.label34.Size = new System.Drawing.Size(46, 32);
             this.label34.TabIndex = 39;
             this.label34.Text = "10";
             // 
             // label35
             // 
             this.label35.AutoSize = true;
-            this.label35.Location = new System.Drawing.Point(36, 499);
+            this.label35.Font = new System.Drawing.Font("Microsoft Sans Serif", 16.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label35.Location = new System.Drawing.Point(22, 483);
             this.label35.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label35.Name = "label35";
-            this.label35.Size = new System.Drawing.Size(20, 24);
+            this.label35.Size = new System.Drawing.Size(30, 32);
             this.label35.TabIndex = 38;
             this.label35.Text = "9";
             // 
             // label36
             // 
             this.label36.AutoSize = true;
-            this.label36.Location = new System.Drawing.Point(36, 440);
+            this.label36.Font = new System.Drawing.Font("Microsoft Sans Serif", 16.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label36.Location = new System.Drawing.Point(361, 369);
             this.label36.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label36.Name = "label36";
-            this.label36.Size = new System.Drawing.Size(20, 24);
+            this.label36.Size = new System.Drawing.Size(30, 32);
             this.label36.TabIndex = 37;
             this.label36.Text = "8";
             // 
             // label37
             // 
             this.label37.AutoSize = true;
-            this.label37.Location = new System.Drawing.Point(36, 381);
+            this.label37.Font = new System.Drawing.Font("Microsoft Sans Serif", 16.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label37.Location = new System.Drawing.Point(22, 369);
             this.label37.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label37.Name = "label37";
-            this.label37.Size = new System.Drawing.Size(20, 24);
+            this.label37.Size = new System.Drawing.Size(30, 32);
             this.label37.TabIndex = 36;
             this.label37.Text = "7";
             // 
             // label38
             // 
             this.label38.AutoSize = true;
-            this.label38.Location = new System.Drawing.Point(36, 322);
+            this.label38.Font = new System.Drawing.Font("Microsoft Sans Serif", 16.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label38.Location = new System.Drawing.Point(361, 255);
             this.label38.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label38.Name = "label38";
-            this.label38.Size = new System.Drawing.Size(20, 24);
+            this.label38.Size = new System.Drawing.Size(30, 32);
             this.label38.TabIndex = 35;
             this.label38.Text = "6";
             // 
             // label39
             // 
             this.label39.AutoSize = true;
-            this.label39.Location = new System.Drawing.Point(36, 263);
+            this.label39.Font = new System.Drawing.Font("Microsoft Sans Serif", 16.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label39.Location = new System.Drawing.Point(22, 255);
             this.label39.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label39.Name = "label39";
-            this.label39.Size = new System.Drawing.Size(20, 24);
+            this.label39.Size = new System.Drawing.Size(30, 32);
             this.label39.TabIndex = 34;
             this.label39.Text = "5";
             // 
             // label40
             // 
             this.label40.AutoSize = true;
-            this.label40.Location = new System.Drawing.Point(36, 204);
+            this.label40.Font = new System.Drawing.Font("Microsoft Sans Serif", 16.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label40.Location = new System.Drawing.Point(361, 141);
             this.label40.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label40.Name = "label40";
-            this.label40.Size = new System.Drawing.Size(20, 24);
+            this.label40.Size = new System.Drawing.Size(30, 32);
             this.label40.TabIndex = 33;
             this.label40.Text = "4";
             // 
             // label41
             // 
             this.label41.AutoSize = true;
-            this.label41.Location = new System.Drawing.Point(36, 144);
+            this.label41.Font = new System.Drawing.Font("Microsoft Sans Serif", 16.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label41.Location = new System.Drawing.Point(22, 141);
             this.label41.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label41.Name = "label41";
-            this.label41.Size = new System.Drawing.Size(20, 24);
+            this.label41.Size = new System.Drawing.Size(30, 32);
             this.label41.TabIndex = 32;
             this.label41.Text = "3";
             // 
             // label42
             // 
             this.label42.AutoSize = true;
-            this.label42.Location = new System.Drawing.Point(36, 85);
+            this.label42.Font = new System.Drawing.Font("Microsoft Sans Serif", 16.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label42.Location = new System.Drawing.Point(361, 27);
             this.label42.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label42.Name = "label42";
-            this.label42.Size = new System.Drawing.Size(20, 24);
+            this.label42.Size = new System.Drawing.Size(30, 32);
             this.label42.TabIndex = 31;
             this.label42.Text = "2";
             // 
             // label43
             // 
             this.label43.AutoSize = true;
-            this.label43.Location = new System.Drawing.Point(36, 26);
+            this.label43.Font = new System.Drawing.Font("Microsoft Sans Serif", 16.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label43.Location = new System.Drawing.Point(22, 27);
             this.label43.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label43.Name = "label43";
-            this.label43.Size = new System.Drawing.Size(20, 24);
+            this.label43.Size = new System.Drawing.Size(30, 32);
             this.label43.TabIndex = 30;
             this.label43.Text = "1";
             // 
@@ -496,11 +507,12 @@ namespace Midas
             // 
             this.lb_T_10.AutoSize = true;
             this.lb_T_10.BackColor = System.Drawing.Color.Green;
+            this.lb_T_10.Font = new System.Drawing.Font("Microsoft Sans Serif", 16.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lb_T_10.ForeColor = System.Drawing.Color.White;
-            this.lb_T_10.Location = new System.Drawing.Point(344, 557);
+            this.lb_T_10.Location = new System.Drawing.Point(567, 483);
             this.lb_T_10.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lb_T_10.Name = "lb_T_10";
-            this.lb_T_10.Size = new System.Drawing.Size(26, 24);
+            this.lb_T_10.Size = new System.Drawing.Size(39, 32);
             this.lb_T_10.TabIndex = 29;
             this.lb_T_10.Text = "-1";
             this.lb_T_10.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -509,11 +521,12 @@ namespace Midas
             // 
             this.lb_P_10.AutoSize = true;
             this.lb_P_10.BackColor = System.Drawing.Color.Blue;
+            this.lb_P_10.Font = new System.Drawing.Font("Microsoft Sans Serif", 16.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lb_P_10.ForeColor = System.Drawing.Color.White;
-            this.lb_P_10.Location = new System.Drawing.Point(242, 557);
+            this.lb_P_10.Location = new System.Drawing.Point(490, 483);
             this.lb_P_10.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lb_P_10.Name = "lb_P_10";
-            this.lb_P_10.Size = new System.Drawing.Size(26, 24);
+            this.lb_P_10.Size = new System.Drawing.Size(39, 32);
             this.lb_P_10.TabIndex = 28;
             this.lb_P_10.Text = "-1";
             this.lb_P_10.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -522,11 +535,12 @@ namespace Midas
             // 
             this.lb_B_10.AutoSize = true;
             this.lb_B_10.BackColor = System.Drawing.Color.Red;
+            this.lb_B_10.Font = new System.Drawing.Font("Microsoft Sans Serif", 16.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lb_B_10.ForeColor = System.Drawing.Color.White;
-            this.lb_B_10.Location = new System.Drawing.Point(148, 557);
+            this.lb_B_10.Location = new System.Drawing.Point(413, 483);
             this.lb_B_10.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lb_B_10.Name = "lb_B_10";
-            this.lb_B_10.Size = new System.Drawing.Size(26, 24);
+            this.lb_B_10.Size = new System.Drawing.Size(39, 32);
             this.lb_B_10.TabIndex = 27;
             this.lb_B_10.Text = "-1";
             this.lb_B_10.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -535,11 +549,12 @@ namespace Midas
             // 
             this.lb_T_9.AutoSize = true;
             this.lb_T_9.BackColor = System.Drawing.Color.Green;
+            this.lb_T_9.Font = new System.Drawing.Font("Microsoft Sans Serif", 16.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lb_T_9.ForeColor = System.Drawing.Color.White;
-            this.lb_T_9.Location = new System.Drawing.Point(344, 498);
+            this.lb_T_9.Location = new System.Drawing.Point(228, 483);
             this.lb_T_9.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lb_T_9.Name = "lb_T_9";
-            this.lb_T_9.Size = new System.Drawing.Size(26, 24);
+            this.lb_T_9.Size = new System.Drawing.Size(39, 32);
             this.lb_T_9.TabIndex = 26;
             this.lb_T_9.Text = "-1";
             this.lb_T_9.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -548,11 +563,12 @@ namespace Midas
             // 
             this.lb_P_9.AutoSize = true;
             this.lb_P_9.BackColor = System.Drawing.Color.Blue;
+            this.lb_P_9.Font = new System.Drawing.Font("Microsoft Sans Serif", 16.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lb_P_9.ForeColor = System.Drawing.Color.White;
-            this.lb_P_9.Location = new System.Drawing.Point(242, 498);
+            this.lb_P_9.Location = new System.Drawing.Point(148, 483);
             this.lb_P_9.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lb_P_9.Name = "lb_P_9";
-            this.lb_P_9.Size = new System.Drawing.Size(26, 24);
+            this.lb_P_9.Size = new System.Drawing.Size(39, 32);
             this.lb_P_9.TabIndex = 25;
             this.lb_P_9.Text = "-1";
             this.lb_P_9.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -561,11 +577,12 @@ namespace Midas
             // 
             this.lb_B_9.AutoSize = true;
             this.lb_B_9.BackColor = System.Drawing.Color.Red;
+            this.lb_B_9.Font = new System.Drawing.Font("Microsoft Sans Serif", 16.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lb_B_9.ForeColor = System.Drawing.Color.White;
-            this.lb_B_9.Location = new System.Drawing.Point(148, 498);
+            this.lb_B_9.Location = new System.Drawing.Point(74, 483);
             this.lb_B_9.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lb_B_9.Name = "lb_B_9";
-            this.lb_B_9.Size = new System.Drawing.Size(26, 24);
+            this.lb_B_9.Size = new System.Drawing.Size(39, 32);
             this.lb_B_9.TabIndex = 24;
             this.lb_B_9.Text = "-1";
             this.lb_B_9.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -574,11 +591,12 @@ namespace Midas
             // 
             this.lb_T_8.AutoSize = true;
             this.lb_T_8.BackColor = System.Drawing.Color.Green;
+            this.lb_T_8.Font = new System.Drawing.Font("Microsoft Sans Serif", 16.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lb_T_8.ForeColor = System.Drawing.Color.White;
-            this.lb_T_8.Location = new System.Drawing.Point(344, 439);
+            this.lb_T_8.Location = new System.Drawing.Point(567, 369);
             this.lb_T_8.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lb_T_8.Name = "lb_T_8";
-            this.lb_T_8.Size = new System.Drawing.Size(26, 24);
+            this.lb_T_8.Size = new System.Drawing.Size(39, 32);
             this.lb_T_8.TabIndex = 23;
             this.lb_T_8.Text = "-1";
             this.lb_T_8.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -587,11 +605,12 @@ namespace Midas
             // 
             this.lb_P_8.AutoSize = true;
             this.lb_P_8.BackColor = System.Drawing.Color.Blue;
+            this.lb_P_8.Font = new System.Drawing.Font("Microsoft Sans Serif", 16.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lb_P_8.ForeColor = System.Drawing.Color.White;
-            this.lb_P_8.Location = new System.Drawing.Point(242, 439);
+            this.lb_P_8.Location = new System.Drawing.Point(490, 369);
             this.lb_P_8.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lb_P_8.Name = "lb_P_8";
-            this.lb_P_8.Size = new System.Drawing.Size(26, 24);
+            this.lb_P_8.Size = new System.Drawing.Size(39, 32);
             this.lb_P_8.TabIndex = 22;
             this.lb_P_8.Text = "-1";
             this.lb_P_8.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -600,11 +619,12 @@ namespace Midas
             // 
             this.lb_B_8.AutoSize = true;
             this.lb_B_8.BackColor = System.Drawing.Color.Red;
+            this.lb_B_8.Font = new System.Drawing.Font("Microsoft Sans Serif", 16.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lb_B_8.ForeColor = System.Drawing.Color.White;
-            this.lb_B_8.Location = new System.Drawing.Point(148, 439);
+            this.lb_B_8.Location = new System.Drawing.Point(413, 369);
             this.lb_B_8.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lb_B_8.Name = "lb_B_8";
-            this.lb_B_8.Size = new System.Drawing.Size(26, 24);
+            this.lb_B_8.Size = new System.Drawing.Size(39, 32);
             this.lb_B_8.TabIndex = 21;
             this.lb_B_8.Text = "-1";
             this.lb_B_8.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -613,11 +633,12 @@ namespace Midas
             // 
             this.lb_T_7.AutoSize = true;
             this.lb_T_7.BackColor = System.Drawing.Color.Green;
+            this.lb_T_7.Font = new System.Drawing.Font("Microsoft Sans Serif", 16.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lb_T_7.ForeColor = System.Drawing.Color.White;
-            this.lb_T_7.Location = new System.Drawing.Point(344, 380);
+            this.lb_T_7.Location = new System.Drawing.Point(228, 369);
             this.lb_T_7.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lb_T_7.Name = "lb_T_7";
-            this.lb_T_7.Size = new System.Drawing.Size(26, 24);
+            this.lb_T_7.Size = new System.Drawing.Size(39, 32);
             this.lb_T_7.TabIndex = 20;
             this.lb_T_7.Text = "-1";
             this.lb_T_7.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -626,11 +647,12 @@ namespace Midas
             // 
             this.lb_P_7.AutoSize = true;
             this.lb_P_7.BackColor = System.Drawing.Color.Blue;
+            this.lb_P_7.Font = new System.Drawing.Font("Microsoft Sans Serif", 16.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lb_P_7.ForeColor = System.Drawing.Color.White;
-            this.lb_P_7.Location = new System.Drawing.Point(242, 380);
+            this.lb_P_7.Location = new System.Drawing.Point(148, 369);
             this.lb_P_7.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lb_P_7.Name = "lb_P_7";
-            this.lb_P_7.Size = new System.Drawing.Size(26, 24);
+            this.lb_P_7.Size = new System.Drawing.Size(39, 32);
             this.lb_P_7.TabIndex = 19;
             this.lb_P_7.Text = "-1";
             this.lb_P_7.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -639,11 +661,12 @@ namespace Midas
             // 
             this.lb_B_7.AutoSize = true;
             this.lb_B_7.BackColor = System.Drawing.Color.Red;
+            this.lb_B_7.Font = new System.Drawing.Font("Microsoft Sans Serif", 16.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lb_B_7.ForeColor = System.Drawing.Color.White;
-            this.lb_B_7.Location = new System.Drawing.Point(148, 380);
+            this.lb_B_7.Location = new System.Drawing.Point(74, 369);
             this.lb_B_7.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lb_B_7.Name = "lb_B_7";
-            this.lb_B_7.Size = new System.Drawing.Size(26, 24);
+            this.lb_B_7.Size = new System.Drawing.Size(39, 32);
             this.lb_B_7.TabIndex = 18;
             this.lb_B_7.Text = "-1";
             this.lb_B_7.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -652,11 +675,12 @@ namespace Midas
             // 
             this.lb_T_6.AutoSize = true;
             this.lb_T_6.BackColor = System.Drawing.Color.Green;
+            this.lb_T_6.Font = new System.Drawing.Font("Microsoft Sans Serif", 16.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lb_T_6.ForeColor = System.Drawing.Color.White;
-            this.lb_T_6.Location = new System.Drawing.Point(344, 320);
+            this.lb_T_6.Location = new System.Drawing.Point(567, 255);
             this.lb_T_6.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lb_T_6.Name = "lb_T_6";
-            this.lb_T_6.Size = new System.Drawing.Size(26, 24);
+            this.lb_T_6.Size = new System.Drawing.Size(39, 32);
             this.lb_T_6.TabIndex = 17;
             this.lb_T_6.Text = "-1";
             this.lb_T_6.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -665,11 +689,12 @@ namespace Midas
             // 
             this.lb_P_6.AutoSize = true;
             this.lb_P_6.BackColor = System.Drawing.Color.Blue;
+            this.lb_P_6.Font = new System.Drawing.Font("Microsoft Sans Serif", 16.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lb_P_6.ForeColor = System.Drawing.Color.White;
-            this.lb_P_6.Location = new System.Drawing.Point(242, 320);
+            this.lb_P_6.Location = new System.Drawing.Point(490, 255);
             this.lb_P_6.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lb_P_6.Name = "lb_P_6";
-            this.lb_P_6.Size = new System.Drawing.Size(26, 24);
+            this.lb_P_6.Size = new System.Drawing.Size(39, 32);
             this.lb_P_6.TabIndex = 16;
             this.lb_P_6.Text = "-1";
             this.lb_P_6.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -678,11 +703,12 @@ namespace Midas
             // 
             this.lb_B_6.AutoSize = true;
             this.lb_B_6.BackColor = System.Drawing.Color.Red;
+            this.lb_B_6.Font = new System.Drawing.Font("Microsoft Sans Serif", 16.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lb_B_6.ForeColor = System.Drawing.Color.White;
-            this.lb_B_6.Location = new System.Drawing.Point(148, 320);
+            this.lb_B_6.Location = new System.Drawing.Point(413, 255);
             this.lb_B_6.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lb_B_6.Name = "lb_B_6";
-            this.lb_B_6.Size = new System.Drawing.Size(26, 24);
+            this.lb_B_6.Size = new System.Drawing.Size(39, 32);
             this.lb_B_6.TabIndex = 15;
             this.lb_B_6.Text = "-1";
             this.lb_B_6.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -691,11 +717,12 @@ namespace Midas
             // 
             this.lb_T_5.AutoSize = true;
             this.lb_T_5.BackColor = System.Drawing.Color.Green;
+            this.lb_T_5.Font = new System.Drawing.Font("Microsoft Sans Serif", 16.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lb_T_5.ForeColor = System.Drawing.Color.White;
-            this.lb_T_5.Location = new System.Drawing.Point(344, 261);
+            this.lb_T_5.Location = new System.Drawing.Point(228, 255);
             this.lb_T_5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lb_T_5.Name = "lb_T_5";
-            this.lb_T_5.Size = new System.Drawing.Size(26, 24);
+            this.lb_T_5.Size = new System.Drawing.Size(39, 32);
             this.lb_T_5.TabIndex = 14;
             this.lb_T_5.Text = "-1";
             this.lb_T_5.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -704,11 +731,12 @@ namespace Midas
             // 
             this.lb_P_5.AutoSize = true;
             this.lb_P_5.BackColor = System.Drawing.Color.Blue;
+            this.lb_P_5.Font = new System.Drawing.Font("Microsoft Sans Serif", 16.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lb_P_5.ForeColor = System.Drawing.Color.White;
-            this.lb_P_5.Location = new System.Drawing.Point(242, 261);
+            this.lb_P_5.Location = new System.Drawing.Point(148, 255);
             this.lb_P_5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lb_P_5.Name = "lb_P_5";
-            this.lb_P_5.Size = new System.Drawing.Size(26, 24);
+            this.lb_P_5.Size = new System.Drawing.Size(39, 32);
             this.lb_P_5.TabIndex = 13;
             this.lb_P_5.Text = "-1";
             this.lb_P_5.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -717,11 +745,12 @@ namespace Midas
             // 
             this.lb_B_5.AutoSize = true;
             this.lb_B_5.BackColor = System.Drawing.Color.Red;
+            this.lb_B_5.Font = new System.Drawing.Font("Microsoft Sans Serif", 16.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lb_B_5.ForeColor = System.Drawing.Color.White;
-            this.lb_B_5.Location = new System.Drawing.Point(148, 261);
+            this.lb_B_5.Location = new System.Drawing.Point(74, 255);
             this.lb_B_5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lb_B_5.Name = "lb_B_5";
-            this.lb_B_5.Size = new System.Drawing.Size(26, 24);
+            this.lb_B_5.Size = new System.Drawing.Size(39, 32);
             this.lb_B_5.TabIndex = 12;
             this.lb_B_5.Text = "-1";
             this.lb_B_5.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -730,11 +759,12 @@ namespace Midas
             // 
             this.lb_T_4.AutoSize = true;
             this.lb_T_4.BackColor = System.Drawing.Color.Green;
+            this.lb_T_4.Font = new System.Drawing.Font("Microsoft Sans Serif", 16.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lb_T_4.ForeColor = System.Drawing.Color.White;
-            this.lb_T_4.Location = new System.Drawing.Point(344, 202);
+            this.lb_T_4.Location = new System.Drawing.Point(567, 141);
             this.lb_T_4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lb_T_4.Name = "lb_T_4";
-            this.lb_T_4.Size = new System.Drawing.Size(26, 24);
+            this.lb_T_4.Size = new System.Drawing.Size(39, 32);
             this.lb_T_4.TabIndex = 11;
             this.lb_T_4.Text = "-1";
             this.lb_T_4.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -743,11 +773,12 @@ namespace Midas
             // 
             this.lb_P_4.AutoSize = true;
             this.lb_P_4.BackColor = System.Drawing.Color.Blue;
+            this.lb_P_4.Font = new System.Drawing.Font("Microsoft Sans Serif", 16.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lb_P_4.ForeColor = System.Drawing.Color.White;
-            this.lb_P_4.Location = new System.Drawing.Point(242, 202);
+            this.lb_P_4.Location = new System.Drawing.Point(490, 141);
             this.lb_P_4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lb_P_4.Name = "lb_P_4";
-            this.lb_P_4.Size = new System.Drawing.Size(26, 24);
+            this.lb_P_4.Size = new System.Drawing.Size(39, 32);
             this.lb_P_4.TabIndex = 10;
             this.lb_P_4.Text = "-1";
             this.lb_P_4.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -756,11 +787,12 @@ namespace Midas
             // 
             this.lb_B_4.AutoSize = true;
             this.lb_B_4.BackColor = System.Drawing.Color.Red;
+            this.lb_B_4.Font = new System.Drawing.Font("Microsoft Sans Serif", 16.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lb_B_4.ForeColor = System.Drawing.Color.White;
-            this.lb_B_4.Location = new System.Drawing.Point(148, 202);
+            this.lb_B_4.Location = new System.Drawing.Point(413, 141);
             this.lb_B_4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lb_B_4.Name = "lb_B_4";
-            this.lb_B_4.Size = new System.Drawing.Size(26, 24);
+            this.lb_B_4.Size = new System.Drawing.Size(39, 32);
             this.lb_B_4.TabIndex = 9;
             this.lb_B_4.Text = "-1";
             this.lb_B_4.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -769,11 +801,12 @@ namespace Midas
             // 
             this.lb_T_3.AutoSize = true;
             this.lb_T_3.BackColor = System.Drawing.Color.Green;
+            this.lb_T_3.Font = new System.Drawing.Font("Microsoft Sans Serif", 16.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lb_T_3.ForeColor = System.Drawing.Color.White;
-            this.lb_T_3.Location = new System.Drawing.Point(344, 143);
+            this.lb_T_3.Location = new System.Drawing.Point(228, 141);
             this.lb_T_3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lb_T_3.Name = "lb_T_3";
-            this.lb_T_3.Size = new System.Drawing.Size(26, 24);
+            this.lb_T_3.Size = new System.Drawing.Size(39, 32);
             this.lb_T_3.TabIndex = 8;
             this.lb_T_3.Text = "-1";
             this.lb_T_3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -782,11 +815,12 @@ namespace Midas
             // 
             this.lb_P_3.AutoSize = true;
             this.lb_P_3.BackColor = System.Drawing.Color.Blue;
+            this.lb_P_3.Font = new System.Drawing.Font("Microsoft Sans Serif", 16.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lb_P_3.ForeColor = System.Drawing.Color.White;
-            this.lb_P_3.Location = new System.Drawing.Point(242, 143);
+            this.lb_P_3.Location = new System.Drawing.Point(148, 141);
             this.lb_P_3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lb_P_3.Name = "lb_P_3";
-            this.lb_P_3.Size = new System.Drawing.Size(26, 24);
+            this.lb_P_3.Size = new System.Drawing.Size(39, 32);
             this.lb_P_3.TabIndex = 7;
             this.lb_P_3.Text = "-1";
             this.lb_P_3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -795,11 +829,12 @@ namespace Midas
             // 
             this.lb_B_3.AutoSize = true;
             this.lb_B_3.BackColor = System.Drawing.Color.Red;
+            this.lb_B_3.Font = new System.Drawing.Font("Microsoft Sans Serif", 16.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lb_B_3.ForeColor = System.Drawing.Color.White;
-            this.lb_B_3.Location = new System.Drawing.Point(148, 143);
+            this.lb_B_3.Location = new System.Drawing.Point(74, 141);
             this.lb_B_3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lb_B_3.Name = "lb_B_3";
-            this.lb_B_3.Size = new System.Drawing.Size(26, 24);
+            this.lb_B_3.Size = new System.Drawing.Size(39, 32);
             this.lb_B_3.TabIndex = 6;
             this.lb_B_3.Text = "-1";
             this.lb_B_3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -808,11 +843,12 @@ namespace Midas
             // 
             this.lb_T_2.AutoSize = true;
             this.lb_T_2.BackColor = System.Drawing.Color.Green;
+            this.lb_T_2.Font = new System.Drawing.Font("Microsoft Sans Serif", 16.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lb_T_2.ForeColor = System.Drawing.Color.White;
-            this.lb_T_2.Location = new System.Drawing.Point(344, 84);
+            this.lb_T_2.Location = new System.Drawing.Point(567, 27);
             this.lb_T_2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lb_T_2.Name = "lb_T_2";
-            this.lb_T_2.Size = new System.Drawing.Size(26, 24);
+            this.lb_T_2.Size = new System.Drawing.Size(39, 32);
             this.lb_T_2.TabIndex = 5;
             this.lb_T_2.Text = "-1";
             this.lb_T_2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -821,11 +857,12 @@ namespace Midas
             // 
             this.lb_P_2.AutoSize = true;
             this.lb_P_2.BackColor = System.Drawing.Color.Blue;
+            this.lb_P_2.Font = new System.Drawing.Font("Microsoft Sans Serif", 16.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lb_P_2.ForeColor = System.Drawing.Color.White;
-            this.lb_P_2.Location = new System.Drawing.Point(242, 84);
+            this.lb_P_2.Location = new System.Drawing.Point(490, 27);
             this.lb_P_2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lb_P_2.Name = "lb_P_2";
-            this.lb_P_2.Size = new System.Drawing.Size(26, 24);
+            this.lb_P_2.Size = new System.Drawing.Size(39, 32);
             this.lb_P_2.TabIndex = 4;
             this.lb_P_2.Text = "-1";
             this.lb_P_2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -834,11 +871,12 @@ namespace Midas
             // 
             this.lb_B_2.AutoSize = true;
             this.lb_B_2.BackColor = System.Drawing.Color.Red;
+            this.lb_B_2.Font = new System.Drawing.Font("Microsoft Sans Serif", 16.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lb_B_2.ForeColor = System.Drawing.Color.White;
-            this.lb_B_2.Location = new System.Drawing.Point(148, 84);
+            this.lb_B_2.Location = new System.Drawing.Point(413, 27);
             this.lb_B_2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lb_B_2.Name = "lb_B_2";
-            this.lb_B_2.Size = new System.Drawing.Size(26, 24);
+            this.lb_B_2.Size = new System.Drawing.Size(39, 32);
             this.lb_B_2.TabIndex = 3;
             this.lb_B_2.Text = "-1";
             this.lb_B_2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -847,11 +885,12 @@ namespace Midas
             // 
             this.lb_T_1.AutoSize = true;
             this.lb_T_1.BackColor = System.Drawing.Color.Green;
+            this.lb_T_1.Font = new System.Drawing.Font("Microsoft Sans Serif", 16.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lb_T_1.ForeColor = System.Drawing.Color.White;
-            this.lb_T_1.Location = new System.Drawing.Point(344, 25);
+            this.lb_T_1.Location = new System.Drawing.Point(226, 27);
             this.lb_T_1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lb_T_1.Name = "lb_T_1";
-            this.lb_T_1.Size = new System.Drawing.Size(26, 24);
+            this.lb_T_1.Size = new System.Drawing.Size(39, 32);
             this.lb_T_1.TabIndex = 2;
             this.lb_T_1.Text = "-1";
             this.lb_T_1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -860,11 +899,12 @@ namespace Midas
             // 
             this.lb_P_1.AutoSize = true;
             this.lb_P_1.BackColor = System.Drawing.Color.Blue;
+            this.lb_P_1.Font = new System.Drawing.Font("Microsoft Sans Serif", 16.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lb_P_1.ForeColor = System.Drawing.Color.White;
-            this.lb_P_1.Location = new System.Drawing.Point(242, 25);
+            this.lb_P_1.Location = new System.Drawing.Point(155, 27);
             this.lb_P_1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lb_P_1.Name = "lb_P_1";
-            this.lb_P_1.Size = new System.Drawing.Size(26, 24);
+            this.lb_P_1.Size = new System.Drawing.Size(39, 32);
             this.lb_P_1.TabIndex = 1;
             this.lb_P_1.Text = "-1";
             this.lb_P_1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -873,11 +913,12 @@ namespace Midas
             // 
             this.lb_B_1.AutoSize = true;
             this.lb_B_1.BackColor = System.Drawing.Color.Red;
+            this.lb_B_1.Font = new System.Drawing.Font("Microsoft Sans Serif", 16.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lb_B_1.ForeColor = System.Drawing.Color.White;
-            this.lb_B_1.Location = new System.Drawing.Point(148, 25);
+            this.lb_B_1.Location = new System.Drawing.Point(84, 27);
             this.lb_B_1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lb_B_1.Name = "lb_B_1";
-            this.lb_B_1.Size = new System.Drawing.Size(26, 24);
+            this.lb_B_1.Size = new System.Drawing.Size(39, 32);
             this.lb_B_1.TabIndex = 0;
             this.lb_B_1.Text = "-1";
             this.lb_B_1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
