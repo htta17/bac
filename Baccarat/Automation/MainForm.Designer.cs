@@ -107,7 +107,7 @@ namespace Midas
             this.tabControl1.Margin = new System.Windows.Forms.Padding(4);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(640, 682);
+            this.tabControl1.Size = new System.Drawing.Size(679, 628);
             this.tabControl1.TabIndex = 0;
             // 
             // tabPage1
@@ -128,28 +128,30 @@ namespace Midas
             this.tabPage1.Padding = new System.Windows.Forms.Padding(4);
             this.tabPage1.Size = new System.Drawing.Size(632, 647);
             this.tabPage1.TabIndex = 0;
-            this.tabPage1.Text = "CONTROL";
+            this.tabPage1.Text = "DASHBOARD";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
             // lb_Balance
             // 
             this.lb_Balance.AutoSize = true;
-            this.lb_Balance.Location = new System.Drawing.Point(432, 203);
+            this.lb_Balance.Font = new System.Drawing.Font("Microsoft Sans Serif", 19.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lb_Balance.Location = new System.Drawing.Point(549, 263);
             this.lb_Balance.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lb_Balance.Name = "lb_Balance";
-            this.lb_Balance.Size = new System.Drawing.Size(35, 22);
+            this.lb_Balance.Size = new System.Drawing.Size(64, 39);
             this.lb_Balance.TabIndex = 132;
             this.lb_Balance.Text = "0.0";
+            this.lb_Balance.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(264, 203);
+            this.label4.Location = new System.Drawing.Point(215, 276);
             this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(85, 22);
+            this.label4.Size = new System.Drawing.Size(147, 22);
             this.label4.TabIndex = 131;
-            this.label4.Text = "Balance: ";
+            this.label4.Text = "Số dư Tài khoản:";
             // 
             // chBoxAllowTrade
             // 
@@ -158,37 +160,38 @@ namespace Midas
             this.chBoxAllowTrade.Location = new System.Drawing.Point(135, 516);
             this.chBoxAllowTrade.Margin = new System.Windows.Forms.Padding(4);
             this.chBoxAllowTrade.Name = "chBoxAllowTrade";
-            this.chBoxAllowTrade.Size = new System.Drawing.Size(312, 26);
+            this.chBoxAllowTrade.Size = new System.Drawing.Size(248, 26);
             this.chBoxAllowTrade.TabIndex = 130;
-            this.chBoxAllowTrade.Text = "Cho phép vào lệnh tự động (Bàn 1)";
+            this.chBoxAllowTrade.Text = "Cho phép vào lệnh tự động";
             this.chBoxAllowTrade.UseVisualStyleBackColor = true;
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(264, 259);
+            this.label3.Location = new System.Drawing.Point(215, 347);
             this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(114, 22);
+            this.label3.Size = new System.Drawing.Size(164, 22);
             this.label3.TabIndex = 121;
-            this.label3.Text = "Timer status:";
+            this.label3.Text = "Trạng thái Tự động";
             // 
             // lb_TimerStatus
             // 
             this.lb_TimerStatus.AutoSize = true;
             this.lb_TimerStatus.BackColor = System.Drawing.Color.Gray;
+            this.lb_TimerStatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 19.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lb_TimerStatus.ForeColor = System.Drawing.Color.White;
-            this.lb_TimerStatus.Location = new System.Drawing.Point(444, 259);
+            this.lb_TimerStatus.Location = new System.Drawing.Point(462, 334);
             this.lb_TimerStatus.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lb_TimerStatus.Name = "lb_TimerStatus";
-            this.lb_TimerStatus.Size = new System.Drawing.Size(80, 22);
+            this.lb_TimerStatus.Size = new System.Drawing.Size(151, 39);
             this.lb_TimerStatus.TabIndex = 121;
             this.lb_TimerStatus.Text = "Sleeping";
             // 
             // btnStartStopAuto
             // 
             this.btnStartStopAuto.ForeColor = System.Drawing.Color.Green;
-            this.btnStartStopAuto.Location = new System.Drawing.Point(10, 342);
+            this.btnStartStopAuto.Location = new System.Drawing.Point(8, 415);
             this.btnStartStopAuto.Margin = new System.Windows.Forms.Padding(4);
             this.btnStartStopAuto.Name = "btnStartStopAuto";
             this.btnStartStopAuto.Size = new System.Drawing.Size(178, 73);
@@ -199,6 +202,8 @@ namespace Midas
             // 
             // groupBox1
             // 
+            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox1.Controls.Add(this.txtUserName);
             this.groupBox1.Controls.Add(this.txtPassword);
             this.groupBox1.Controls.Add(this.label1);
@@ -207,10 +212,10 @@ namespace Midas
             this.groupBox1.Margin = new System.Windows.Forms.Padding(4);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Padding = new System.Windows.Forms.Padding(4);
-            this.groupBox1.Size = new System.Drawing.Size(541, 154);
+            this.groupBox1.Size = new System.Drawing.Size(603, 227);
             this.groupBox1.TabIndex = 127;
             this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Setting";
+            this.groupBox1.Text = "Cấu hình";
             // 
             // txtUserName
             // 
@@ -235,9 +240,9 @@ namespace Midas
             this.label1.Location = new System.Drawing.Point(66, 33);
             this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(97, 22);
+            this.label1.Size = new System.Drawing.Size(102, 22);
             this.label1.TabIndex = 119;
-            this.label1.Text = "User name";
+            this.label1.Text = "Người dùng";
             // 
             // label2
             // 
@@ -245,16 +250,16 @@ namespace Midas
             this.label2.Location = new System.Drawing.Point(76, 78);
             this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(89, 22);
+            this.label2.Size = new System.Drawing.Size(83, 22);
             this.label2.TabIndex = 120;
-            this.label2.Text = "Password";
+            this.label2.Text = "Mật khẩu";
             // 
             // btnCamera
             // 
             this.btnCamera.BackgroundImage = global::Midas.Properties.Resources.camera_icon_png;
             this.btnCamera.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.btnCamera.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnCamera.Location = new System.Drawing.Point(10, 182);
+            this.btnCamera.Location = new System.Drawing.Point(8, 255);
             this.btnCamera.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.btnCamera.Name = "btnCamera";
             this.btnCamera.Size = new System.Drawing.Size(56, 60);
@@ -264,7 +269,7 @@ namespace Midas
             // 
             // btnTest
             // 
-            this.btnTest.Location = new System.Drawing.Point(10, 249);
+            this.btnTest.Location = new System.Drawing.Point(8, 322);
             this.btnTest.Margin = new System.Windows.Forms.Padding(4);
             this.btnTest.Name = "btnTest";
             this.btnTest.Size = new System.Drawing.Size(178, 73);
@@ -283,7 +288,7 @@ namespace Midas
             this.tabPage2.Margin = new System.Windows.Forms.Padding(4);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(4);
-            this.tabPage2.Size = new System.Drawing.Size(632, 647);
+            this.tabPage2.Size = new System.Drawing.Size(671, 593);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "LOG";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -294,7 +299,7 @@ namespace Midas
             this.chBoxShowPredict.AutoSize = true;
             this.chBoxShowPredict.Checked = true;
             this.chBoxShowPredict.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chBoxShowPredict.Location = new System.Drawing.Point(30, 602);
+            this.chBoxShowPredict.Location = new System.Drawing.Point(30, 548);
             this.chBoxShowPredict.Margin = new System.Windows.Forms.Padding(4);
             this.chBoxShowPredict.Name = "chBoxShowPredict";
             this.chBoxShowPredict.Size = new System.Drawing.Size(163, 26);
@@ -308,7 +313,7 @@ namespace Midas
             this.chboxShowDetail.AutoSize = true;
             this.chboxShowDetail.Checked = true;
             this.chboxShowDetail.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chboxShowDetail.Location = new System.Drawing.Point(30, 553);
+            this.chboxShowDetail.Location = new System.Drawing.Point(30, 499);
             this.chboxShowDetail.Margin = new System.Windows.Forms.Padding(4);
             this.chboxShowDetail.Name = "chboxShowDetail";
             this.chboxShowDetail.Size = new System.Drawing.Size(214, 26);
@@ -319,7 +324,7 @@ namespace Midas
             // btnClearLog
             // 
             this.btnClearLog.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnClearLog.Location = new System.Drawing.Point(512, 587);
+            this.btnClearLog.Location = new System.Drawing.Point(551, 533);
             this.btnClearLog.Margin = new System.Windows.Forms.Padding(4);
             this.btnClearLog.Name = "btnClearLog";
             this.btnClearLog.Size = new System.Drawing.Size(108, 41);
@@ -337,7 +342,7 @@ namespace Midas
             this.txtLog.Location = new System.Drawing.Point(10, 8);
             this.txtLog.Margin = new System.Windows.Forms.Padding(4);
             this.txtLog.Name = "txtLog";
-            this.txtLog.Size = new System.Drawing.Size(609, 532);
+            this.txtLog.Size = new System.Drawing.Size(648, 478);
             this.txtLog.TabIndex = 0;
             this.txtLog.Text = "";
             // 
@@ -388,7 +393,7 @@ namespace Midas
             this.tabPage3.Margin = new System.Windows.Forms.Padding(4);
             this.tabPage3.Name = "tabPage3";
             this.tabPage3.Padding = new System.Windows.Forms.Padding(4);
-            this.tabPage3.Size = new System.Drawing.Size(632, 647);
+            this.tabPage3.Size = new System.Drawing.Size(632, 593);
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "REAL TIME ";
             this.tabPage3.UseVisualStyleBackColor = true;
@@ -927,7 +932,7 @@ namespace Midas
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 22F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(640, 682);
+            this.ClientSize = new System.Drawing.Size(679, 628);
             this.Controls.Add(this.tabControl1);
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Margin = new System.Windows.Forms.Padding(4);
