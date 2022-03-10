@@ -149,7 +149,7 @@ namespace Midas
             {
                 IsInAllTableView = true;
                 CheckResultTimer.Start();
-                CheckResultTimer_Tick(null, null);
+                //CheckResultTimer_Tick(null, null);
             }
             
 
@@ -236,12 +236,25 @@ namespace Midas
         {
             var scannedResult = new AutomationTableResult { };
             var lastTableResult = new AutomationTableResult { };
+
+            var _currentBanker = string.Empty;
+            var _currentPlayer = string.Empty;
+            var _currentTie = string.Empty; 
+            var _tableNumber = string.Empty;
+            var _tableNumberInt = 0;
+            try
+            {
+                _currentBanker = table.FindElement(By.Id("StatisticsB")).Text;
+                _currentPlayer = table.FindElement(By.Id("StatisticsP")).Text;
+                _currentTie = table.FindElement(By.Id("StatisticsT")).Text;
+                _tableNumber = table.FindElement(By.Id("TableNo")).Text.Replace("T", "");
+                _tableNumberInt = ParseInt(_tableNumber);
+            }
+            catch (Exception ex)
+            {
+                Log(Color.Red, ex.Message);
+            }
             
-            var _currentBanker = table.FindElement(By.Id("StatisticsB")).Text;
-            var _currentPlayer = table.FindElement(By.Id("StatisticsP")).Text;
-            var _currentTie = table.FindElement(By.Id("StatisticsT")).Text;
-            var _tableNumber = table.FindElement(By.Id("TableNo")).Text.Replace("T", "");
-            var _tableNumberInt = ParseInt(_tableNumber);
             if (_tableNumberInt == 0)
                 return;
 
