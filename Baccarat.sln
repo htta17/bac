@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DatabaseContext", "Database
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoreLogic", "CoreLogic\CoreLogic.csproj", "{7481A4A5-8032-4271-A159-AE56BF609069}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReportApp", "ReportApp\ReportApp.csproj", "{81140539-DDAB-4C7C-8734-697D70DD124C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{7481A4A5-8032-4271-A159-AE56BF609069}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7481A4A5-8032-4271-A159-AE56BF609069}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7481A4A5-8032-4271-A159-AE56BF609069}.Release|Any CPU.Build.0 = Release|Any CPU
+		{81140539-DDAB-4C7C-8734-697D70DD124C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{81140539-DDAB-4C7C-8734-697D70DD124C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{81140539-DDAB-4C7C-8734-697D70DD124C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{81140539-DDAB-4C7C-8734-697D70DD124C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

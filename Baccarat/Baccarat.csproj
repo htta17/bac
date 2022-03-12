@@ -92,6 +92,12 @@
     <Compile Include="Automation\TakingPhotocs.Designer.cs">
       <DependentUpon>TakingPhotocs.cs</DependentUpon>
     </Compile>
+    <Compile Include="Automation\Report.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Automation\Report.Designer.cs">
+      <DependentUpon>Report.cs</DependentUpon>
+    </Compile>
     <Compile Include="BaccaratSimulatorUI\BacSimulator.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -154,6 +160,7 @@
     <Compile Include="Configuration\SetConnection.Designer.cs">
       <DependentUpon>SetConnection.cs</DependentUpon>
     </Compile>
+    <Compile Include="Utils\Class1.cs" />
     <Compile Include="Utils\PhotoService.cs" />
     <Compile Include="Utils\RichTextBoxExtensions.cs" />
     <Compile Include="Utils\DatabaseUtil.cs" />
@@ -178,6 +185,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Automation\TakingPhotocs.resx">
       <DependentUpon>TakingPhotocs.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Automation\Report.resx">
+      <DependentUpon>Report.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="BaccaratSimulatorUI\BacSimulator.resx">
       <DependentUpon>BacSimulator.cs</DependentUpon>
