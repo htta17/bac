@@ -281,3 +281,9 @@ BEGIN
 
 END
 GO
+
+CREATE INDEX IDX_AutoResults_AutoSessionID
+ON AutoResults (AutoSessionID)
+
+CREATE INDEX IDX_AutoRoots_AutoSessionID
+ON AutoRoots (AutoSessionID)
