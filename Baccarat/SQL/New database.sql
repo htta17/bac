@@ -287,3 +287,6 @@ ON AutoResults (AutoSessionID)
 
 CREATE INDEX IDX_AutoRoots_AutoSessionID
 ON AutoRoots (AutoSessionID)
+
+CREATE INDEX IDX_AutoSessions_TableNumber
+ON AutoSessions (TableNumber)

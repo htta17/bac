@@ -75,7 +75,7 @@ namespace CoreLogic.StandardlizedAlgorithms
         /// Tạo session mới
         /// </summary>
         /// <returns></returns>
-        AutoSession CreateNewSession();
+        //AutoSession CreateNewSession();
 
         /// <summary>
         /// Cập nhật lại hệ số và lãi cho bước trước đó, không thêm card mới, không cập nhật database

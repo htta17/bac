@@ -31,6 +31,10 @@ namespace Midas
         {
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.btnTest = new System.Windows.Forms.Button();
+            this.label8 = new System.Windows.Forms.Label();
+            this.label7 = new System.Windows.Forms.Label();
+            this.btnTradeLogin = new System.Windows.Forms.Button();
             this.lb_Balance = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.chBoxAllowTrade = new System.Windows.Forms.CheckBox();
@@ -38,12 +42,16 @@ namespace Midas
             this.lb_TimerStatus = new System.Windows.Forms.Label();
             this.btnStartStopAuto = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.txtTradeUser = new System.Windows.Forms.TextBox();
+            this.txtTradePassword = new System.Windows.Forms.TextBox();
+            this.label5 = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
             this.txtUserName = new System.Windows.Forms.TextBox();
             this.txtPassword = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.btnCamera = new System.Windows.Forms.Button();
-            this.btnTest = new System.Windows.Forms.Button();
+            this.btnCollectDataAuto = new System.Windows.Forms.Button();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.chBoxShowPredict = new System.Windows.Forms.CheckBox();
             this.chboxShowDetail = new System.Windows.Forms.CheckBox();
@@ -90,6 +98,10 @@ namespace Midas
             this.lb_T_1 = new System.Windows.Forms.Label();
             this.lb_P_1 = new System.Windows.Forms.Label();
             this.lb_B_1 = new System.Windows.Forms.Label();
+            this.txtXPath = new System.Windows.Forms.TextBox();
+            this.label9 = new System.Windows.Forms.Label();
+            this.label10 = new System.Windows.Forms.Label();
+            this.txtCSS = new System.Windows.Forms.TextBox();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -112,6 +124,14 @@ namespace Midas
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.label10);
+            this.tabPage1.Controls.Add(this.txtCSS);
+            this.tabPage1.Controls.Add(this.label9);
+            this.tabPage1.Controls.Add(this.txtXPath);
+            this.tabPage1.Controls.Add(this.btnTest);
+            this.tabPage1.Controls.Add(this.label8);
+            this.tabPage1.Controls.Add(this.label7);
+            this.tabPage1.Controls.Add(this.btnTradeLogin);
             this.tabPage1.Controls.Add(this.lb_Balance);
             this.tabPage1.Controls.Add(this.label4);
             this.tabPage1.Controls.Add(this.chBoxAllowTrade);
@@ -120,25 +140,67 @@ namespace Midas
             this.tabPage1.Controls.Add(this.btnStartStopAuto);
             this.tabPage1.Controls.Add(this.groupBox1);
             this.tabPage1.Controls.Add(this.btnCamera);
-            this.tabPage1.Controls.Add(this.btnTest);
+            this.tabPage1.Controls.Add(this.btnCollectDataAuto);
             this.tabPage1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tabPage1.Location = new System.Drawing.Point(4, 31);
             this.tabPage1.Margin = new System.Windows.Forms.Padding(4);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(4);
-            this.tabPage1.Size = new System.Drawing.Size(632, 647);
+            this.tabPage1.Size = new System.Drawing.Size(671, 593);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "DASHBOARD";
             this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // btnTest
+            // 
+            this.btnTest.Location = new System.Drawing.Point(474, 469);
+            this.btnTest.Margin = new System.Windows.Forms.Padding(4);
+            this.btnTest.Name = "btnTest";
+            this.btnTest.Size = new System.Drawing.Size(178, 73);
+            this.btnTest.TabIndex = 136;
+            this.btnTest.Text = "Test a function";
+            this.btnTest.UseVisualStyleBackColor = true;
+            this.btnTest.Click += new System.EventHandler(this.btnTest_Click);
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(485, 260);
+            this.label8.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(72, 22);
+            this.label8.TabIndex = 135;
+            this.label8.Text = "TRADE";
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(9, 260);
+            this.label7.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(148, 22);
+            this.label7.TabIndex = 134;
+            this.label7.Text = "COLLECT DATA";
+            // 
+            // btnTradeLogin
+            // 
+            this.btnTradeLogin.Location = new System.Drawing.Point(474, 376);
+            this.btnTradeLogin.Margin = new System.Windows.Forms.Padding(4);
+            this.btnTradeLogin.Name = "btnTradeLogin";
+            this.btnTradeLogin.Size = new System.Drawing.Size(178, 73);
+            this.btnTradeLogin.TabIndex = 133;
+            this.btnTradeLogin.Text = "Đăng nhập tự động";
+            this.btnTradeLogin.UseVisualStyleBackColor = true;
+            this.btnTradeLogin.Click += new System.EventHandler(this.btnTradeLogin_Click);
             // 
             // lb_Balance
             // 
             this.lb_Balance.AutoSize = true;
             this.lb_Balance.Font = new System.Drawing.Font("Microsoft Sans Serif", 19.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lb_Balance.Location = new System.Drawing.Point(549, 263);
+            this.lb_Balance.Location = new System.Drawing.Point(194, 160);
             this.lb_Balance.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lb_Balance.Name = "lb_Balance";
-            this.lb_Balance.Size = new System.Drawing.Size(64, 39);
+            this.lb_Balance.Size = new System.Drawing.Size(62, 38);
             this.lb_Balance.TabIndex = 132;
             this.lb_Balance.Text = "0.0";
             this.lb_Balance.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -146,7 +208,7 @@ namespace Midas
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(215, 276);
+            this.label4.Location = new System.Drawing.Point(39, 173);
             this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(147, 22);
@@ -168,12 +230,12 @@ namespace Midas
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(215, 347);
+            this.label3.Location = new System.Drawing.Point(297, 173);
             this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(164, 22);
+            this.label3.Size = new System.Drawing.Size(92, 22);
             this.label3.TabIndex = 121;
-            this.label3.Text = "Trạng thái Tự động";
+            this.label3.Text = "Trạng thái";
             // 
             // lb_TimerStatus
             // 
@@ -181,10 +243,10 @@ namespace Midas
             this.lb_TimerStatus.BackColor = System.Drawing.Color.Gray;
             this.lb_TimerStatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 19.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lb_TimerStatus.ForeColor = System.Drawing.Color.White;
-            this.lb_TimerStatus.Location = new System.Drawing.Point(462, 334);
+            this.lb_TimerStatus.Location = new System.Drawing.Point(410, 160);
             this.lb_TimerStatus.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lb_TimerStatus.Name = "lb_TimerStatus";
-            this.lb_TimerStatus.Size = new System.Drawing.Size(151, 39);
+            this.lb_TimerStatus.Size = new System.Drawing.Size(143, 38);
             this.lb_TimerStatus.TabIndex = 121;
             this.lb_TimerStatus.Text = "Sleeping";
             // 
@@ -204,6 +266,10 @@ namespace Midas
             // 
             this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox1.Controls.Add(this.txtTradeUser);
+            this.groupBox1.Controls.Add(this.txtTradePassword);
+            this.groupBox1.Controls.Add(this.label5);
+            this.groupBox1.Controls.Add(this.label6);
             this.groupBox1.Controls.Add(this.txtUserName);
             this.groupBox1.Controls.Add(this.txtPassword);
             this.groupBox1.Controls.Add(this.label1);
@@ -212,32 +278,73 @@ namespace Midas
             this.groupBox1.Margin = new System.Windows.Forms.Padding(4);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Padding = new System.Windows.Forms.Padding(4);
-            this.groupBox1.Size = new System.Drawing.Size(603, 227);
+            this.groupBox1.Size = new System.Drawing.Size(642, 133);
             this.groupBox1.TabIndex = 127;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Cấu hình";
             // 
+            // txtTradeUser
+            // 
+            this.txtTradeUser.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtTradeUser.Location = new System.Drawing.Point(477, 30);
+            this.txtTradeUser.Margin = new System.Windows.Forms.Padding(4);
+            this.txtTradeUser.Name = "txtTradeUser";
+            this.txtTradeUser.Size = new System.Drawing.Size(146, 28);
+            this.txtTradeUser.TabIndex = 121;
+            // 
+            // txtTradePassword
+            // 
+            this.txtTradePassword.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtTradePassword.Location = new System.Drawing.Point(477, 73);
+            this.txtTradePassword.Margin = new System.Windows.Forms.Padding(4);
+            this.txtTradePassword.Name = "txtTradePassword";
+            this.txtTradePassword.PasswordChar = '*';
+            this.txtTradePassword.Size = new System.Drawing.Size(146, 28);
+            this.txtTradePassword.TabIndex = 122;
+            // 
+            // label5
+            // 
+            this.label5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(358, 33);
+            this.label5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(102, 22);
+            this.label5.TabIndex = 123;
+            this.label5.Text = "Người dùng";
+            // 
+            // label6
+            // 
+            this.label6.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(368, 78);
+            this.label6.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(83, 22);
+            this.label6.TabIndex = 124;
+            this.label6.Text = "Mật khẩu";
+            // 
             // txtUserName
             // 
-            this.txtUserName.Location = new System.Drawing.Point(211, 29);
+            this.txtUserName.Location = new System.Drawing.Point(141, 30);
             this.txtUserName.Margin = new System.Windows.Forms.Padding(4);
             this.txtUserName.Name = "txtUserName";
-            this.txtUserName.Size = new System.Drawing.Size(175, 28);
+            this.txtUserName.Size = new System.Drawing.Size(146, 28);
             this.txtUserName.TabIndex = 116;
             // 
             // txtPassword
             // 
-            this.txtPassword.Location = new System.Drawing.Point(211, 72);
+            this.txtPassword.Location = new System.Drawing.Point(141, 73);
             this.txtPassword.Margin = new System.Windows.Forms.Padding(4);
             this.txtPassword.Name = "txtPassword";
             this.txtPassword.PasswordChar = '*';
-            this.txtPassword.Size = new System.Drawing.Size(175, 28);
+            this.txtPassword.Size = new System.Drawing.Size(146, 28);
             this.txtPassword.TabIndex = 117;
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(66, 33);
+            this.label1.Location = new System.Drawing.Point(22, 33);
             this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(102, 22);
@@ -247,7 +354,7 @@ namespace Midas
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(76, 78);
+            this.label2.Location = new System.Drawing.Point(32, 78);
             this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(83, 22);
@@ -259,7 +366,7 @@ namespace Midas
             this.btnCamera.BackgroundImage = global::Midas.Properties.Resources.camera_icon_png;
             this.btnCamera.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.btnCamera.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnCamera.Location = new System.Drawing.Point(8, 255);
+            this.btnCamera.Location = new System.Drawing.Point(10, 516);
             this.btnCamera.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.btnCamera.Name = "btnCamera";
             this.btnCamera.Size = new System.Drawing.Size(56, 60);
@@ -267,16 +374,16 @@ namespace Midas
             this.btnCamera.UseVisualStyleBackColor = true;
             this.btnCamera.Click += new System.EventHandler(this.btnCamera_Click);
             // 
-            // btnTest
+            // btnCollectDataAuto
             // 
-            this.btnTest.Location = new System.Drawing.Point(8, 322);
-            this.btnTest.Margin = new System.Windows.Forms.Padding(4);
-            this.btnTest.Name = "btnTest";
-            this.btnTest.Size = new System.Drawing.Size(178, 73);
-            this.btnTest.TabIndex = 0;
-            this.btnTest.Text = "Đăng nhập tự động";
-            this.btnTest.UseVisualStyleBackColor = true;
-            this.btnTest.Click += new System.EventHandler(this.btnTest_Click);
+            this.btnCollectDataAuto.Location = new System.Drawing.Point(8, 322);
+            this.btnCollectDataAuto.Margin = new System.Windows.Forms.Padding(4);
+            this.btnCollectDataAuto.Name = "btnCollectDataAuto";
+            this.btnCollectDataAuto.Size = new System.Drawing.Size(178, 73);
+            this.btnCollectDataAuto.TabIndex = 0;
+            this.btnCollectDataAuto.Text = "Đăng nhập tự động";
+            this.btnCollectDataAuto.UseVisualStyleBackColor = true;
+            this.btnCollectDataAuto.Click += new System.EventHandler(this.btn_CollectData_Click);
             // 
             // tabPage2
             // 
@@ -393,7 +500,7 @@ namespace Midas
             this.tabPage3.Margin = new System.Windows.Forms.Padding(4);
             this.tabPage3.Name = "tabPage3";
             this.tabPage3.Padding = new System.Windows.Forms.Padding(4);
-            this.tabPage3.Size = new System.Drawing.Size(632, 593);
+            this.tabPage3.Size = new System.Drawing.Size(671, 593);
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "REAL TIME ";
             this.tabPage3.UseVisualStyleBackColor = true;
@@ -928,6 +1035,41 @@ namespace Midas
             this.lb_B_1.Text = "-1";
             this.lb_B_1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
+            // txtXPath
+            // 
+            this.txtXPath.Location = new System.Drawing.Point(265, 287);
+            this.txtXPath.Name = "txtXPath";
+            this.txtXPath.Size = new System.Drawing.Size(387, 28);
+            this.txtXPath.TabIndex = 137;
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(168, 287);
+            this.label9.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(71, 22);
+            this.label9.TabIndex = 138;
+            this.label9.Text = "XPATH";
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(194, 322);
+            this.label10.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(52, 22);
+            this.label10.TabIndex = 140;
+            this.label10.Text = "CSS ";
+            // 
+            // txtCSS
+            // 
+            this.txtCSS.Location = new System.Drawing.Point(265, 322);
+            this.txtCSS.Name = "txtCSS";
+            this.txtCSS.Size = new System.Drawing.Size(387, 28);
+            this.txtCSS.TabIndex = 139;
+            this.txtCSS.Text = "widget-game-baccarat[ng-reflect-table-code=\'0101\']";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 22F);
@@ -958,7 +1100,7 @@ namespace Midas
         private System.Windows.Forms.TabControl tabControl1;
         private System.Windows.Forms.TabPage tabPage1;
         private System.Windows.Forms.TabPage tabPage2;
-        private System.Windows.Forms.Button btnTest;
+        private System.Windows.Forms.Button btnCollectDataAuto;
         private System.Windows.Forms.Button btnCamera;
         private System.Windows.Forms.TextBox txtPassword;
         private System.Windows.Forms.TextBox txtUserName;
@@ -1016,5 +1158,17 @@ namespace Midas
         private System.Windows.Forms.CheckBox chBoxAllowTrade;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label lb_Balance;
+        private System.Windows.Forms.TextBox txtTradeUser;
+        private System.Windows.Forms.TextBox txtTradePassword;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Button btnTradeLogin;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.Button btnTest;
+        private System.Windows.Forms.TextBox txtXPath;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.TextBox txtCSS;
     }
 }

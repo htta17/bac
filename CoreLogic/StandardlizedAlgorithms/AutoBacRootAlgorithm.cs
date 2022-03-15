@@ -286,7 +286,7 @@ namespace CoreLogic.StandardlizedAlgorithms
         {
             using (GlobalDBContext dBContext = new GlobalDBContext(ConnectionString))
             {
-                var currentSession = dBContext.FindAllAutoSessions(TableNumber).AsQueryable()
+                var currentSession = dBContext.FindAllAutoSessions(TableNumber)
                                         .Where(c => c.ID == CurrentAutoSessionID)
                                         .FirstOrDefault();
                 if (currentSession != null)
@@ -294,14 +294,14 @@ namespace CoreLogic.StandardlizedAlgorithms
                     currentSession.IsClosed = true;
                     dBContext.UpdateAutoSession(currentSession);
                 }
-                var newSession = CreateNewSession();
-                CurrentAutoSessionID = newSession.ID;
+                var newAutoSession = new AutoSession { TableNumber = TableNumber };
+                dBContext.AddAutoSession(newAutoSession);
+                CurrentAutoSessionID = newAutoSession.ID;
             }
-            
         }
 
         public void Initial(int tableNumber)
-        {
+        {            
             using (GlobalDBContext dBContext = new GlobalDBContext(ConnectionString))
             {
                 var currentAutoSession = dBContext
@@ -311,7 +311,10 @@ namespace CoreLogic.StandardlizedAlgorithms
                                         .FirstOrDefault();
                 if (currentAutoSession == null)
                 {
-                    currentAutoSession = CreateNewSession();
+                    //currentAutoSession = CreateNewSession();
+                    var newAutoSession = new AutoSession { TableNumber = TableNumber };
+                    dBContext.AddAutoSession(newAutoSession);                    
+                    CurrentAutoSessionID = newAutoSession.ID;
                 }
                 else if (currentAutoSession.NoOfStepsRoot > 1) //Bàn đã quá lâu
                 {
@@ -319,9 +322,11 @@ namespace CoreLogic.StandardlizedAlgorithms
 
                     dBContext.UpdateAutoSession(currentAutoSession);
 
-                    currentAutoSession = CreateNewSession();
-                }
-                CurrentAutoSessionID = currentAutoSession.ID;
+                    //currentAutoSession = CreateNewSession();
+                    var newAutoSession = new AutoSession { TableNumber = TableNumber };
+                    dBContext.AddAutoSession(newAutoSession);
+                    CurrentAutoSessionID = newAutoSession.ID;
+                }               
 
 
                 //Lấy 100 bước gần nhất của bàn 
@@ -340,15 +345,15 @@ namespace CoreLogic.StandardlizedAlgorithms
 
            
 
-        public AutoSession CreateNewSession()
-        {
-            var newAutoSession = new AutoSession { TableNumber = TableNumber};
-            using (GlobalDBContext dBContext = new GlobalDBContext(ConnectionString))
-            {
-                dBContext.AddAutoSession(newAutoSession);
-            }
-            return newAutoSession;
-        }
+        //public AutoSession CreateNewSession()
+        //{
+        //    var newAutoSession = new AutoSession { TableNumber = TableNumber};
+        //    using (GlobalDBContext dBContext = new GlobalDBContext(ConnectionString))
+        //    {
+        //        dBContext.AddAutoSession(newAutoSession);
+        //    }
+        //    return newAutoSession;
+        //}
 
         public BaccaratPredict Process(BaccratCard baccratCard, AutoResult autoResult = null)
         {
