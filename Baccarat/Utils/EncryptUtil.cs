@@ -10,14 +10,15 @@ namespace Midas.Utils
 {
     public class EncryptUtil
     {
-        public static string DecryptString(string key, string cipherText)
+        private const string Key = "65ea788a-94b9-42b5-aa00-f1ba848fe2e8";
+        public static string DecryptString(string cipherText)
         {
             byte[] iv = new byte[16];
             byte[] buffer = Convert.FromBase64String(cipherText);
 
             using (Aes aes = Aes.Create())
             {
-                aes.Key = Encoding.UTF8.GetBytes(key);
+                aes.Key = Encoding.UTF8.GetBytes(Key);
                 aes.IV = iv;
                 ICryptoTransform decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
 
@@ -34,14 +35,14 @@ namespace Midas.Utils
             }
         }
 
-        public static string EncryptString(string key, string plainText)
+        public static string EncryptString(string plainText)
         {
             byte[] iv = new byte[16];
             byte[] array;
 
             using (Aes aes = Aes.Create())
             {
-                aes.Key = Encoding.UTF8.GetBytes(key);
+                aes.Key = Encoding.UTF8.GetBytes(Key);
                 aes.IV = iv;
 
                 ICryptoTransform encryptor = aes.CreateEncryptor(aes.Key, aes.IV);

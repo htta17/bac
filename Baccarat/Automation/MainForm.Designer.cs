@@ -31,6 +31,8 @@ namespace Midas
         {
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.label10 = new System.Windows.Forms.Label();
+            this.txtCSS = new System.Windows.Forms.TextBox();
             this.btnTest = new System.Windows.Forms.Button();
             this.label8 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
@@ -98,10 +100,6 @@ namespace Midas
             this.lb_T_1 = new System.Windows.Forms.Label();
             this.lb_P_1 = new System.Windows.Forms.Label();
             this.lb_B_1 = new System.Windows.Forms.Label();
-            this.txtXPath = new System.Windows.Forms.TextBox();
-            this.label9 = new System.Windows.Forms.Label();
-            this.label10 = new System.Windows.Forms.Label();
-            this.txtCSS = new System.Windows.Forms.TextBox();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -126,8 +124,6 @@ namespace Midas
             // 
             this.tabPage1.Controls.Add(this.label10);
             this.tabPage1.Controls.Add(this.txtCSS);
-            this.tabPage1.Controls.Add(this.label9);
-            this.tabPage1.Controls.Add(this.txtXPath);
             this.tabPage1.Controls.Add(this.btnTest);
             this.tabPage1.Controls.Add(this.label8);
             this.tabPage1.Controls.Add(this.label7);
@@ -150,6 +146,24 @@ namespace Midas
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "DASHBOARD";
             this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(194, 322);
+            this.label10.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(52, 22);
+            this.label10.TabIndex = 140;
+            this.label10.Text = "CSS ";
+            // 
+            // txtCSS
+            // 
+            this.txtCSS.Location = new System.Drawing.Point(265, 322);
+            this.txtCSS.Name = "txtCSS";
+            this.txtCSS.Size = new System.Drawing.Size(387, 28);
+            this.txtCSS.TabIndex = 139;
+            this.txtCSS.Text = "widget-game-baccarat[ng-reflect-table-code=\'0101\']";
             // 
             // btnTest
             // 
@@ -218,6 +232,8 @@ namespace Midas
             // chBoxAllowTrade
             // 
             this.chBoxAllowTrade.AutoSize = true;
+            this.chBoxAllowTrade.Checked = true;
+            this.chBoxAllowTrade.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chBoxAllowTrade.ForeColor = System.Drawing.Color.Red;
             this.chBoxAllowTrade.Location = new System.Drawing.Point(135, 516);
             this.chBoxAllowTrade.Margin = new System.Windows.Forms.Padding(4);
@@ -1035,41 +1051,6 @@ namespace Midas
             this.lb_B_1.Text = "-1";
             this.lb_B_1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // txtXPath
-            // 
-            this.txtXPath.Location = new System.Drawing.Point(265, 287);
-            this.txtXPath.Name = "txtXPath";
-            this.txtXPath.Size = new System.Drawing.Size(387, 28);
-            this.txtXPath.TabIndex = 137;
-            // 
-            // label9
-            // 
-            this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(168, 287);
-            this.label9.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(71, 22);
-            this.label9.TabIndex = 138;
-            this.label9.Text = "XPATH";
-            // 
-            // label10
-            // 
-            this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(194, 322);
-            this.label10.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(52, 22);
-            this.label10.TabIndex = 140;
-            this.label10.Text = "CSS ";
-            // 
-            // txtCSS
-            // 
-            this.txtCSS.Location = new System.Drawing.Point(265, 322);
-            this.txtCSS.Name = "txtCSS";
-            this.txtCSS.Size = new System.Drawing.Size(387, 28);
-            this.txtCSS.TabIndex = 139;
-            this.txtCSS.Text = "widget-game-baccarat[ng-reflect-table-code=\'0101\']";
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 22F);
@@ -1166,8 +1147,6 @@ namespace Midas
         private System.Windows.Forms.Button btnTradeLogin;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.Button btnTest;
-        private System.Windows.Forms.TextBox txtXPath;
-        private System.Windows.Forms.Label label9;
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.TextBox txtCSS;
     }

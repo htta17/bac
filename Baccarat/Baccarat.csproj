@@ -98,6 +98,7 @@
     <Compile Include="Automation\Report.Designer.cs">
       <DependentUpon>Report.cs</DependentUpon>
     </Compile>
+    <Compile Include="Automation\UIProcess.cs" />
     <Compile Include="BaccaratSimulatorUI\BacSimulator.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -160,7 +161,7 @@
     <Compile Include="Configuration\SetConnection.Designer.cs">
       <DependentUpon>SetConnection.cs</DependentUpon>
     </Compile>
-    <Compile Include="Utils\Class1.cs" />
+    <Compile Include="Utils\EncryptUtil.cs" />
     <Compile Include="Utils\PhotoService.cs" />
     <Compile Include="Utils\RichTextBoxExtensions.cs" />
     <Compile Include="Utils\DatabaseUtil.cs" />
