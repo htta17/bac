@@ -27,7 +27,7 @@ namespace Midas.Automation
             try
             {
                 driver.Navigate().GoToUrl("https://www.jbbodds.com/vi-vn");
-                driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(5.0);
+                System.Threading.Thread.Sleep(5000);
 
                 driver.FindElement(By.CssSelector(".input-username input[name=username]")).SendKeys(userName);
                 driver.FindElement(By.CssSelector(".input-password input[name=password]")).SendKeys(password);

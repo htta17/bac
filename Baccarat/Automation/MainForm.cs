@@ -54,7 +54,7 @@ namespace Midas
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
-            }
+            }            
 
             Timers_Setup();
 
@@ -76,8 +76,7 @@ namespace Midas
         private readonly ChromeDriver CollectDataDriver = null;
         private IWebDriver CollectData_Scanned_Driver;
         private readonly EdgeDriver TradeDriver = null;
-        private IWebDriver Trade_Action_Driver;
-
+        private IWebDriver Trade_Action_Driver;  
         /// <summary>
         /// Lấy kết quả khi đang ở chế độ tất cả các bàn
         /// hoặc 1 bàn 
@@ -125,7 +124,7 @@ namespace Midas
             if (SwitchTableTimer == default)
                 SwitchTableTimer = new System.Timers.Timer();
 
-            CheckResultTimer.Interval = 6_123;  //5 giây 1 lần
+            CheckResultTimer.Interval = 5000;  //5 giây 1 lần
             CheckResultTimer.Elapsed += CheckResultTimer_Tick;
 
             SwitchTableTimer.Interval = 1000 * 60 * 5; //5 phút
@@ -176,8 +175,7 @@ namespace Midas
             {
                 IsInAllTableView = true;
                 CheckResultTimer.Start();
-            }           
-            
+            }
         }
 
         int ParseInt(string s)
@@ -287,6 +285,11 @@ namespace Midas
             if (_tableNumberInt == 0)
                 return;
 
+            CheckBox chkBox = this.Controls.Find($"chkTb{_tableNumberInt}", true).FirstOrDefault() as CheckBox;
+            if (chkBox != null && !chkBox.Checked)
+                return;
+
+
             scannedResult = new AutomationTableResult
             {
                 TotalBanker = ParseInt(_currentBanker),
@@ -345,8 +348,7 @@ namespace Midas
                         newThread.Start();                        
                     }
                     else if (lastTableResult.Total + 1 == scannedResult.Total)
-                    {
-                        //Task.Run(() =>                                
+                    {                        
                         var newThread = new System.Threading.Thread(() =>
                         {
                             newCard = lastTableResult.TotalBanker + 1 == scannedResult.TotalBanker ? BaccratCard.Banker
@@ -544,21 +546,28 @@ namespace Midas
 
             RegisterUtil.SaveRegistry(TRADE_USER_KEY, txtTradeUser.Text);
             RegisterUtil.SaveRegistry(TRADE_PWD_KEY, txtTradePassword.Text);
-            
+
             var anotherThread = new System.Threading.Thread(() =>
             {
                 UIProcess.LoginToTheSite(TradeDriver, txtTradeUser.Text, txtTradePassword.Text);
 
-                if (TradeDriver.WindowHandles.Count > 1)
+                try
                 {
-                    Trade_Action_Driver = TradeDriver.SwitchTo().Window(TradeDriver.WindowHandles[1]);
-
-                    var allTable = Trade_Action_Driver.FindElement(By.CssSelector("#IconAllTables"));
-                    allTable.Click(); //Nhấn vô chế độ tất cả các bàn
+                    if (TradeDriver.WindowHandles.Count > 1)
+                    {
+                        Trade_Action_Driver = TradeDriver.SwitchTo().Window(TradeDriver.WindowHandles[1]);
+                        System.Threading.Thread.Sleep(2000);
+                        var allTable = Trade_Action_Driver.FindElement(By.CssSelector("#IconAllTables"));
+                        allTable.Click(); //Nhấn vô chế độ tất cả các bàn
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Log(Color.Red, ex.Message);
                 }                
             });
 
-            anotherThread.Start();            
+            anotherThread.Start();
         }
 
         void Trade(BaccaratPredict predict, int tableNum, int baseUnit = 30_000)
@@ -567,12 +576,15 @@ namespace Midas
             {
                 Trade_Action_Driver = TradeDriver.SwitchTo().Window(TradeDriver.WindowHandles[1]);
             }
+            CheckBox chkBox = this.Controls.Find($"chkTb{tableNum}", true).FirstOrDefault() as CheckBox;
 
-            if (!chBoxAllowTrade.Checked || Trade_Action_Driver == null || predict == null || predict.Volume == 0)
-                return;
+            if (!chkAllowAutomatic.Checked || Trade_Action_Driver == null || predict == null || predict.Volume == 0)
+                return;                
 
-            if (tableNum != 1)
+            if (!chkBox.Checked)            
+            {                
                 return;
+            }                
 
             //Tìm đến nút để nhấn
             //OverlayChipMsg0102001 --Nút TIE 
@@ -591,8 +603,10 @@ namespace Midas
 
             try
             {
-                //Tìm bàn 1
-                var table1 = Trade_Action_Driver.FindElement(By.CssSelector(txtCSS.Text));
+                //Tìm bàn N
+                //"widget-game-baccarat[ng-reflect-table-code='0101']";
+                var querySelector = $"widget-game-baccarat[ng-reflect-table-code='010{ tableNum }']";
+                var table1 = Trade_Action_Driver.FindElement(By.CssSelector(querySelector));
 
                 var buttonUI = table1.FindElement(By.Id(buttonID));
                 if (buttonUI != null)
@@ -605,16 +619,18 @@ namespace Midas
                     var chip10K = Trade_Action_Driver.FindElement(By.CssSelector("#ChipAreaItem_10K"));
                     if (chip10K != null)
                     {
+                        System.Threading.Thread.Sleep(200);
                         chip10K.Click();
                         System.Threading.Thread.Sleep(200);
                         buttonUI.Click();
-                        System.Threading.Thread.Sleep(200);
+                        
                     }
 
                     //Lấy chip 20 hoặc 50K 
                     var chip20_50K = Trade_Action_Driver.FindElement(By.CssSelector(predict.Volume == 2 ?  "#ChipAreaItem_20K" : "#ChipAreaItem_50K"));
                     if (chip20_50K != null)
                     {
+                        System.Threading.Thread.Sleep(200);
                         chip20_50K.Click();
                         System.Threading.Thread.Sleep(200);
                         buttonUI.Click();

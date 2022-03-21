@@ -553,6 +553,8 @@ namespace CoreLogic.StandardlizedAlgorithms
                                         .FirstOrDefault();
 
                 updateSession.NoOfStepsRoot = allAutoRootsThisSession.Count;
+                updateSession.NoOfSteps = updateSession.AutoResults.Count;
+
                 if (updateSession.MaxRoot < sumProfit)
                     updateSession.MaxRoot = sumProfit;
                 if (updateSession.MinRoot > sumProfit)

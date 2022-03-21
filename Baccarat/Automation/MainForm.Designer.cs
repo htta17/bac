@@ -31,15 +31,13 @@ namespace Midas
         {
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
-            this.label10 = new System.Windows.Forms.Label();
-            this.txtCSS = new System.Windows.Forms.TextBox();
             this.btnTest = new System.Windows.Forms.Button();
             this.label8 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
             this.btnTradeLogin = new System.Windows.Forms.Button();
             this.lb_Balance = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
-            this.chBoxAllowTrade = new System.Windows.Forms.CheckBox();
+            this.chkTb2 = new System.Windows.Forms.CheckBox();
             this.label3 = new System.Windows.Forms.Label();
             this.lb_TimerStatus = new System.Windows.Forms.Label();
             this.btnStartStopAuto = new System.Windows.Forms.Button();
@@ -100,6 +98,13 @@ namespace Midas
             this.lb_T_1 = new System.Windows.Forms.Label();
             this.lb_P_1 = new System.Windows.Forms.Label();
             this.lb_B_1 = new System.Windows.Forms.Label();
+            this.chkTb1 = new System.Windows.Forms.CheckBox();
+            this.chkTb3 = new System.Windows.Forms.CheckBox();
+            this.chkTb4 = new System.Windows.Forms.CheckBox();
+            this.chkTb5 = new System.Windows.Forms.CheckBox();
+            this.chkTb6 = new System.Windows.Forms.CheckBox();
+            this.chkTb7 = new System.Windows.Forms.CheckBox();
+            this.chkAllowAutomatic = new System.Windows.Forms.CheckBox();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -122,15 +127,20 @@ namespace Midas
             // 
             // tabPage1
             // 
-            this.tabPage1.Controls.Add(this.label10);
-            this.tabPage1.Controls.Add(this.txtCSS);
+            this.tabPage1.Controls.Add(this.chkAllowAutomatic);
+            this.tabPage1.Controls.Add(this.chkTb7);
+            this.tabPage1.Controls.Add(this.chkTb6);
+            this.tabPage1.Controls.Add(this.chkTb5);
+            this.tabPage1.Controls.Add(this.chkTb4);
+            this.tabPage1.Controls.Add(this.chkTb3);
+            this.tabPage1.Controls.Add(this.chkTb1);
             this.tabPage1.Controls.Add(this.btnTest);
             this.tabPage1.Controls.Add(this.label8);
             this.tabPage1.Controls.Add(this.label7);
             this.tabPage1.Controls.Add(this.btnTradeLogin);
             this.tabPage1.Controls.Add(this.lb_Balance);
             this.tabPage1.Controls.Add(this.label4);
-            this.tabPage1.Controls.Add(this.chBoxAllowTrade);
+            this.tabPage1.Controls.Add(this.chkTb2);
             this.tabPage1.Controls.Add(this.label3);
             this.tabPage1.Controls.Add(this.lb_TimerStatus);
             this.tabPage1.Controls.Add(this.btnStartStopAuto);
@@ -147,24 +157,6 @@ namespace Midas
             this.tabPage1.Text = "DASHBOARD";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
-            // label10
-            // 
-            this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(194, 322);
-            this.label10.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(52, 22);
-            this.label10.TabIndex = 140;
-            this.label10.Text = "CSS ";
-            // 
-            // txtCSS
-            // 
-            this.txtCSS.Location = new System.Drawing.Point(265, 322);
-            this.txtCSS.Name = "txtCSS";
-            this.txtCSS.Size = new System.Drawing.Size(387, 28);
-            this.txtCSS.TabIndex = 139;
-            this.txtCSS.Text = "widget-game-baccarat[ng-reflect-table-code=\'0101\']";
-            // 
             // btnTest
             // 
             this.btnTest.Location = new System.Drawing.Point(474, 469);
@@ -179,7 +171,7 @@ namespace Midas
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(485, 260);
+            this.label8.Location = new System.Drawing.Point(541, 275);
             this.label8.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(72, 22);
@@ -229,19 +221,19 @@ namespace Midas
             this.label4.TabIndex = 131;
             this.label4.Text = "Số dư Tài khoản:";
             // 
-            // chBoxAllowTrade
+            // chkTb2
             // 
-            this.chBoxAllowTrade.AutoSize = true;
-            this.chBoxAllowTrade.Checked = true;
-            this.chBoxAllowTrade.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chBoxAllowTrade.ForeColor = System.Drawing.Color.Red;
-            this.chBoxAllowTrade.Location = new System.Drawing.Point(135, 516);
-            this.chBoxAllowTrade.Margin = new System.Windows.Forms.Padding(4);
-            this.chBoxAllowTrade.Name = "chBoxAllowTrade";
-            this.chBoxAllowTrade.Size = new System.Drawing.Size(248, 26);
-            this.chBoxAllowTrade.TabIndex = 130;
-            this.chBoxAllowTrade.Text = "Cho phép vào lệnh tự động";
-            this.chBoxAllowTrade.UseVisualStyleBackColor = true;
+            this.chkTb2.AutoSize = true;
+            this.chkTb2.Checked = true;
+            this.chkTb2.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkTb2.ForeColor = System.Drawing.Color.Red;
+            this.chkTb2.Location = new System.Drawing.Point(261, 336);
+            this.chkTb2.Margin = new System.Windows.Forms.Padding(4);
+            this.chkTb2.Name = "chkTb2";
+            this.chkTb2.Size = new System.Drawing.Size(177, 26);
+            this.chkTb2.TabIndex = 130;
+            this.chkTb2.Text = "Tự vào lệnh bàn 2";
+            this.chkTb2.UseVisualStyleBackColor = true;
             // 
             // label3
             // 
@@ -1051,6 +1043,94 @@ namespace Midas
             this.lb_B_1.Text = "-1";
             this.lb_B_1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
+            // chkTb1
+            // 
+            this.chkTb1.AutoSize = true;
+            this.chkTb1.Checked = true;
+            this.chkTb1.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkTb1.ForeColor = System.Drawing.Color.Red;
+            this.chkTb1.Location = new System.Drawing.Point(261, 302);
+            this.chkTb1.Margin = new System.Windows.Forms.Padding(4);
+            this.chkTb1.Name = "chkTb1";
+            this.chkTb1.Size = new System.Drawing.Size(177, 26);
+            this.chkTb1.TabIndex = 137;
+            this.chkTb1.Text = "Tự vào lệnh bàn 1";
+            this.chkTb1.UseVisualStyleBackColor = true;
+            // 
+            // chkTb3
+            // 
+            this.chkTb3.AutoSize = true;
+            this.chkTb3.ForeColor = System.Drawing.Color.Red;
+            this.chkTb3.Location = new System.Drawing.Point(261, 370);
+            this.chkTb3.Margin = new System.Windows.Forms.Padding(4);
+            this.chkTb3.Name = "chkTb3";
+            this.chkTb3.Size = new System.Drawing.Size(177, 26);
+            this.chkTb3.TabIndex = 138;
+            this.chkTb3.Text = "Tự vào lệnh bàn 3";
+            this.chkTb3.UseVisualStyleBackColor = true;
+            // 
+            // chkTb4
+            // 
+            this.chkTb4.AutoSize = true;
+            this.chkTb4.ForeColor = System.Drawing.Color.Red;
+            this.chkTb4.Location = new System.Drawing.Point(261, 404);
+            this.chkTb4.Margin = new System.Windows.Forms.Padding(4);
+            this.chkTb4.Name = "chkTb4";
+            this.chkTb4.Size = new System.Drawing.Size(177, 26);
+            this.chkTb4.TabIndex = 139;
+            this.chkTb4.Text = "Tự vào lệnh bàn 4";
+            this.chkTb4.UseVisualStyleBackColor = true;
+            // 
+            // chkTb5
+            // 
+            this.chkTb5.AutoSize = true;
+            this.chkTb5.ForeColor = System.Drawing.Color.Red;
+            this.chkTb5.Location = new System.Drawing.Point(261, 439);
+            this.chkTb5.Margin = new System.Windows.Forms.Padding(4);
+            this.chkTb5.Name = "chkTb5";
+            this.chkTb5.Size = new System.Drawing.Size(177, 26);
+            this.chkTb5.TabIndex = 140;
+            this.chkTb5.Text = "Tự vào lệnh bàn 5";
+            this.chkTb5.UseVisualStyleBackColor = true;
+            // 
+            // chkTb6
+            // 
+            this.chkTb6.AutoSize = true;
+            this.chkTb6.ForeColor = System.Drawing.Color.Red;
+            this.chkTb6.Location = new System.Drawing.Point(261, 473);
+            this.chkTb6.Margin = new System.Windows.Forms.Padding(4);
+            this.chkTb6.Name = "chkTb6";
+            this.chkTb6.Size = new System.Drawing.Size(177, 26);
+            this.chkTb6.TabIndex = 141;
+            this.chkTb6.Text = "Tự vào lệnh bàn 6";
+            this.chkTb6.UseVisualStyleBackColor = true;
+            // 
+            // chkTb7
+            // 
+            this.chkTb7.AutoSize = true;
+            this.chkTb7.ForeColor = System.Drawing.Color.Red;
+            this.chkTb7.Location = new System.Drawing.Point(261, 507);
+            this.chkTb7.Margin = new System.Windows.Forms.Padding(4);
+            this.chkTb7.Name = "chkTb7";
+            this.chkTb7.Size = new System.Drawing.Size(177, 26);
+            this.chkTb7.TabIndex = 142;
+            this.chkTb7.Text = "Tự vào lệnh bàn 7";
+            this.chkTb7.UseVisualStyleBackColor = true;
+            // 
+            // chkAllowAutomatic
+            // 
+            this.chkAllowAutomatic.AutoSize = true;
+            this.chkAllowAutomatic.Checked = true;
+            this.chkAllowAutomatic.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkAllowAutomatic.ForeColor = System.Drawing.Color.Red;
+            this.chkAllowAutomatic.Location = new System.Drawing.Point(261, 245);
+            this.chkAllowAutomatic.Margin = new System.Windows.Forms.Padding(4);
+            this.chkAllowAutomatic.Name = "chkAllowAutomatic";
+            this.chkAllowAutomatic.Size = new System.Drawing.Size(311, 26);
+            this.chkAllowAutomatic.TabIndex = 143;
+            this.chkAllowAutomatic.Text = "CHO PHÉP VÀO LỆNH TỰ ĐỘNG";
+            this.chkAllowAutomatic.UseVisualStyleBackColor = true;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 22F);
@@ -1136,7 +1216,7 @@ namespace Midas
         private System.Windows.Forms.Label label43;
         private System.Windows.Forms.CheckBox chboxShowDetail;
         private System.Windows.Forms.CheckBox chBoxShowPredict;
-        private System.Windows.Forms.CheckBox chBoxAllowTrade;
+        private System.Windows.Forms.CheckBox chkTb2;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label lb_Balance;
         private System.Windows.Forms.TextBox txtTradeUser;
@@ -1147,7 +1227,12 @@ namespace Midas
         private System.Windows.Forms.Button btnTradeLogin;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.Button btnTest;
-        private System.Windows.Forms.Label label10;
-        private System.Windows.Forms.TextBox txtCSS;
+        private System.Windows.Forms.CheckBox chkTb1;
+        private System.Windows.Forms.CheckBox chkTb7;
+        private System.Windows.Forms.CheckBox chkTb6;
+        private System.Windows.Forms.CheckBox chkTb5;
+        private System.Windows.Forms.CheckBox chkTb4;
+        private System.Windows.Forms.CheckBox chkTb3;
+        private System.Windows.Forms.CheckBox chkAllowAutomatic;
     }
 }
