@@ -60,6 +60,7 @@ namespace Midas
 
             Account_Setup();
 
+            SetBaseUnit();
 
             //Khởi tạo 10 bàn cho thuật toán ROOT
             if (string.IsNullOrEmpty(StartApp.GlobalConnectionString))
@@ -82,6 +83,8 @@ namespace Midas
         /// hoặc 1 bàn 
         /// </summary>
         private System.Timers.Timer CheckResultTimer { get; set; }
+
+        private int BaseUnit { get; set; }
 
         /// <summary>
         /// Chuyển chế độ giữa tất cả các bàn hoặc 1 bàn cụ thể, chống việc time out
@@ -124,7 +127,7 @@ namespace Midas
             if (SwitchTableTimer == default)
                 SwitchTableTimer = new System.Timers.Timer();
 
-            CheckResultTimer.Interval = 5000;  //5 giây 1 lần
+            CheckResultTimer.Interval = 6_123;  //5 giây 1 lần
             CheckResultTimer.Elapsed += CheckResultTimer_Tick;
 
             SwitchTableTimer.Interval = 1000 * 60 * 5; //5 phút
@@ -137,6 +140,12 @@ namespace Midas
             txtPassword.Text = (string)RegisterUtil.LoadRegistry(PWD_KEY);
             txtTradeUser.Text = (string)RegisterUtil.LoadRegistry(TRADE_USER_KEY);
             txtTradePassword.Text = (string)(RegisterUtil.LoadRegistry(TRADE_PWD_KEY));
+        }
+
+        private void SetBaseUnit()
+        {
+            int.TryParse(txtBaseUnit.Text, out int _baseUnit);
+            BaseUnit = _baseUnit < 30 ? 30 : _baseUnit;
         }
         #endregion
 
@@ -307,68 +316,73 @@ namespace Midas
             {
                 SavedAllTableResults.Add(scannedResult);
             }
-            else
-            {
-                if (lastTableResult.Total != scannedResult.Total)
+            else if (lastTableResult.Total != scannedResult.Total)
+            { 
+                if (chboxShowDetail.Checked)
                 {
-                    if (chboxShowDetail.Checked)
-                    {
-                        Log(Color.Black, $"Bàn {_tableNumber}: { lastTableResult.TextResult } ---> { scannedResult.TextResult }");
-                    }
+                    Log(Color.Black, $"Bàn {_tableNumber}: { lastTableResult.TextResult } ---> { scannedResult.TextResult }");
+                }
 
-                    var predict = new BaccaratPredict { Value = BaccratCard.NoTrade, Volume = 0 };
+                var predict = new BaccaratPredict { Value = BaccratCard.NoTrade, Volume = 0 };
 
-                    if (scannedResult.Total == 0)
+                if (scannedResult.Total == 0)
+                {
+                    //Task.Run(() =>
+                    var newThread = new System.Threading.Thread(() =>
                     {
-                        //Task.Run(() =>
-                        var newThread = new System.Threading.Thread(() =>
-                        {
-                            var newSessionID = AutoBacMaster.ResetTable(_tableNumberInt);
-                            Log(Color.Green, $"Tạo mới bàn số {_tableNumberInt} khi chưa có card nào. SessionID: {newSessionID}.");
-                        });
-                        newThread.Start();
-                    }
-                    else if (scannedResult.Total == 1 && AutoBacMaster.TableIsNull(_tableNumberInt))
-                    {
-                        newCard = scannedResult.TotalBanker == 1 ? BaccratCard.Banker :
-                                        scannedResult.TotalPlayer == 1 ? BaccratCard.Player : BaccratCard.Tie;
+                        var newSessionID = AutoBacMaster.ResetTable(_tableNumberInt);
+                        Log(Color.Green, $"Tạo mới bàn số {_tableNumberInt} khi chưa có card nào. SessionID: {newSessionID}.");
+                    });
+                    newThread.Start();
+                }
+                else if (scannedResult.Total == 1 && AutoBacMaster.TableIsNull(_tableNumberInt))
+                {
+                    newCard = scannedResult.TotalBanker == 1 ? BaccratCard.Banker :
+                                    scannedResult.TotalPlayer == 1 ? BaccratCard.Player : BaccratCard.Tie;
 
-                        //Vừa mới join vào, đáng lẽ đợi hết phiên
-                        //nhưng vì mới có 1 card, nên có thể chơi chơi luôn vì có thể vẫn kịp
+                    //Vừa mới join vào, đáng lẽ đợi hết phiên
+                    //nhưng vì mới có 1 card, nên có thể chơi chơi luôn vì có thể vẫn kịp
                         
-                        var newThread = new System.Threading.Thread(() =>
-                        {
-                            var newSessionID = AutoBacMaster.ResetTable(_tableNumberInt);
-                            Log(Color.Green, $"Tạo mới bàn số {_tableNumberInt} khi có 1 card  {newCard}. SessionID: {newSessionID}.");                           
-
-                            predict = AutoBacMaster.Process(_tableNumberInt, newCard, scannedResult);
-
-                            Trade(predict, _tableNumberInt);
-                        });
-                        newThread.Start();                        
-                    }
-                    else if (lastTableResult.Total + 1 == scannedResult.Total)
-                    {                        
-                        var newThread = new System.Threading.Thread(() =>
-                        {
-                            newCard = lastTableResult.TotalBanker + 1 == scannedResult.TotalBanker ? BaccratCard.Banker
-                                            : lastTableResult.TotalPlayer + 1 == scannedResult.TotalPlayer ? BaccratCard.Player
-                                            : BaccratCard.Tie;
-                            predict = AutoBacMaster.Process(_tableNumberInt, newCard, scannedResult);
-
-                            Trade(predict, _tableNumberInt);
-                        });
-                        newThread.Start();
-                    }
-
-                    if (chBoxShowPredict.Checked && predict.Value != BaccratCard.NoTrade)
+                    var newThread = new System.Threading.Thread(() =>
                     {
-                        Log(Color.Green, $"Bàn số {_tableNumber}, ra card {newCard}, dự đoán card tiếp {predict.Value} {predict.Volume} units");
-                    }
+                        var newSessionID = AutoBacMaster.ResetTable(_tableNumberInt);
+                        Log(Color.Green, $"Tạo mới bàn số {_tableNumberInt} khi có 1 card  {newCard}. SessionID: {newSessionID}.");                           
+
+                        predict = AutoBacMaster.Process(_tableNumberInt, newCard, scannedResult);
+
+                        Trade(predict, _tableNumberInt, BaseUnit);
+
+                        if (chBoxShowPredict.Checked && predict.Value != BaccratCard.NoTrade)
+                        {
+                            Log(Color.Green, $"Bàn số {_tableNumber}, ra card {newCard}, dự đoán card tiếp {predict.Value} {predict.Volume} units");
+                        }
+                    });
+                    newThread.Start();                        
+                }
+                else if (lastTableResult.Total + 1 == scannedResult.Total)
+                {                        
+                    var newThread = new System.Threading.Thread(() =>
+                    {
+                        newCard = lastTableResult.TotalBanker + 1 == scannedResult.TotalBanker ? BaccratCard.Banker
+                                        : lastTableResult.TotalPlayer + 1 == scannedResult.TotalPlayer ? BaccratCard.Player
+                                        : BaccratCard.Tie;
+                        predict = AutoBacMaster.Process(_tableNumberInt, newCard, scannedResult);
+
+                        Trade(predict, _tableNumberInt, BaseUnit);
+
+                        if (chBoxShowPredict.Checked && predict.Value != BaccratCard.NoTrade)
+                        {
+                            Log(Color.Green, $"Bàn số {_tableNumber}, ra card {newCard}, dự đoán card tiếp {predict.Value} {predict.Volume} units");
+                        }
+                    });
+                    newThread.Start();
                 }
                 SavedAllTableResults.Remove(lastTableResult);
-                SavedAllTableResults.Add(scannedResult);
+                SavedAllTableResults.Add(scannedResult);                                
             }
+
+
+            //End of function
 
         }
 
@@ -444,9 +458,10 @@ namespace Midas
             
             try
             {                
-                UIProcess.LoginToTheSite(CollectDataDriver, txtUserName.Text, txtPassword.Text);
-                
-                EnableAuto(true);
+                var loginSuccessed = UIProcess.LoginToTheSite(CollectDataDriver, txtUserName.Text, txtPassword.Text);
+
+                if (loginSuccessed)
+                    EnableAuto(true);
             }
             catch (Exception ex)
             {
@@ -454,7 +469,6 @@ namespace Midas
                 LogService.LogError(ex.Message);
             }
         }
-
         
         private void btnClearLog_Click(object sender, EventArgs e)
         {
@@ -549,14 +563,14 @@ namespace Midas
 
             var anotherThread = new System.Threading.Thread(() =>
             {
-                UIProcess.LoginToTheSite(TradeDriver, txtTradeUser.Text, txtTradePassword.Text);
-
+                var loginSuccess = UIProcess.LoginToTheSite(TradeDriver, txtTradeUser.Text, txtTradePassword.Text);
+                                
                 try
                 {
-                    if (TradeDriver.WindowHandles.Count > 1)
+                    if (loginSuccess && TradeDriver.WindowHandles.Count > 1)
                     {
                         Trade_Action_Driver = TradeDriver.SwitchTo().Window(TradeDriver.WindowHandles[1]);
-                        System.Threading.Thread.Sleep(2000);
+                        System.Threading.Thread.Sleep(100);
                         var allTable = Trade_Action_Driver.FindElement(By.CssSelector("#IconAllTables"));
                         allTable.Click(); //Nhấn vô chế độ tất cả các bàn
                     }
@@ -564,13 +578,21 @@ namespace Midas
                 catch (Exception ex)
                 {
                     Log(Color.Red, ex.Message);
+                    LogService.LogError(ex.Message);
                 }                
+                
             });
 
             anotherThread.Start();
         }
 
-        void Trade(BaccaratPredict predict, int tableNum, int baseUnit = 30_000)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="predict"></param>
+        /// <param name="tableNum"></param>
+        /// <param name="baseUnit">Default 30K</param>
+        void Trade(BaccaratPredict predict, int tableNum, int baseUnit = 30)
         {
             if (TradeDriver.WindowHandles.Count > 1)
             {
@@ -602,42 +624,8 @@ namespace Midas
             }
 
             try
-            {
-                //Tìm bàn N
-                //"widget-game-baccarat[ng-reflect-table-code='0101']";
-                var querySelector = $"widget-game-baccarat[ng-reflect-table-code='010{ tableNum }']";
-                var table1 = Trade_Action_Driver.FindElement(By.CssSelector(querySelector));
-
-                var buttonUI = table1.FindElement(By.Id(buttonID));
-                if (buttonUI != null)
-                {
-                    buttonUI.Click();
-                }
-
-                if (predict.Volume > 1)
-                {
-                    var chip10K = Trade_Action_Driver.FindElement(By.CssSelector("#ChipAreaItem_10K"));
-                    if (chip10K != null)
-                    {
-                        System.Threading.Thread.Sleep(200);
-                        chip10K.Click();
-                        System.Threading.Thread.Sleep(200);
-                        buttonUI.Click();
-                        
-                    }
-
-                    //Lấy chip 20 hoặc 50K 
-                    var chip20_50K = Trade_Action_Driver.FindElement(By.CssSelector(predict.Volume == 2 ?  "#ChipAreaItem_20K" : "#ChipAreaItem_50K"));
-                    if (chip20_50K != null)
-                    {
-                        System.Threading.Thread.Sleep(200);
-                        chip20_50K.Click();
-                        System.Threading.Thread.Sleep(200);
-                        buttonUI.Click();
-                    }
-                }
-
-               
+            {                
+                UIProcess.ClickOnChips(Trade_Action_Driver, tableNum, finalAmount, buttonID);                
             }
             catch (Exception ex)
             {
@@ -647,17 +635,14 @@ namespace Midas
 
         private void btnTest_Click(object sender, EventArgs e)
         {
-            //if (TradeDriver == null)
-            //    return;
+            Trade(new BaccaratPredict { Value = BaccratCard.Player, Volume = 2 }, 1, 30);
+        }
 
-            //Trade(new BaccaratPredict { Value = BaccratCard.Banker, Volume = 1 }, 1);
+        private void btnTestFunc2_Click(object sender, EventArgs e)
+        {
+            //Trade(new BaccaratPredict { Value = BaccratCard.Banker, Volume = 1 }, 1, 50);
 
-
-            //Thử với 1 bàn
-
-
-            //Test switch ban
-            SwitchTableTimer_Tick(null, null);
+            SetBaseUnit();
         }
     }
 }

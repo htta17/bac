@@ -295,6 +295,7 @@ namespace CoreLogic.StandardlizedAlgorithms
                     dBContext.UpdateAutoSession(currentSession);
                 }
                 var newAutoSession = new AutoSession { TableNumber = TableNumber };
+
                 dBContext.AddAutoSession(newAutoSession);
                 CurrentAutoSessionID = newAutoSession.ID;
             }
@@ -326,8 +327,7 @@ namespace CoreLogic.StandardlizedAlgorithms
                     var newAutoSession = new AutoSession { TableNumber = TableNumber };
                     dBContext.AddAutoSession(newAutoSession);
                     CurrentAutoSessionID = newAutoSession.ID;
-                }               
-
+                }
 
                 //Lấy 100 bước gần nhất của bàn 
                 MainAutoRoots = dBContext.FindLastNAutoRoots(TableNumber, 100)
@@ -341,19 +341,7 @@ namespace CoreLogic.StandardlizedAlgorithms
                                     })
                                     .ToList();
             }
-        }        
-
-           
-
-        //public AutoSession CreateNewSession()
-        //{
-        //    var newAutoSession = new AutoSession { TableNumber = TableNumber};
-        //    using (GlobalDBContext dBContext = new GlobalDBContext(ConnectionString))
-        //    {
-        //        dBContext.AddAutoSession(newAutoSession);
-        //    }
-        //    return newAutoSession;
-        //}
+        }    
 
         public BaccaratPredict Process(BaccratCard baccratCard, AutoResult autoResult = null)
         {
