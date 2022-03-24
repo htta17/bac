@@ -8,6 +8,11 @@ namespace CoreLogic
     {
         public BaccratCard Value { get; set; }
         public int Volume { get; set; }
+
+        public override string ToString()
+        {
+            return $"{Value.ToString().ToUpper() } {Volume} units";
+        }
     }
 
     public class QuadrupleCoeff 

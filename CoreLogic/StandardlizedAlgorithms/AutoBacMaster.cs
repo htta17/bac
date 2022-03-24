@@ -74,6 +74,10 @@ namespace CoreLogic.StandardlizedAlgorithms
             var table = GetTable(_tableNo);
             if (table != null)
             {
+                if (uiResult.Total == 0) //Mới tạo phiên, lấy kết quả dự đoán của bước cuối phiên cũ
+                {
+                    return LastPredicts.ContainsKey(_tableNo) ? LastPredicts[_tableNo] : noTradePredict;
+                }
                 var newResult = default(AutoResult);
                 using (GlobalDBContext context = new GlobalDBContext(ConnectionString))
                 {

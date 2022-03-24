@@ -30,8 +30,8 @@ namespace Midas.Automation
             //history-statistic-baccarat .tableLimit-item-content (0,1,2)
             //main-game-baccarat
 
-            txtUserName.Text = (string)RegisterUtil.LoadRegistry(RegisterUtil.USER_KEY);
-            txtPassword.Text = (string)RegisterUtil.LoadRegistry(RegisterUtil.PWD_KEY);
+            txtUserName.Text = (string)RegisterUtil.LoadRegistry(RegisterUtil.TRADE_USER_KEY);
+            txtPassword.Text = (string)RegisterUtil.LoadRegistry(RegisterUtil.TRADE_PWD_KEY);
 
             cbxTable.SelectedIndex = 0;
             cbxBrowser.SelectedIndex = 0;
@@ -106,13 +106,24 @@ namespace Midas.Automation
                 {
                     Log($"[All, B,P,T]: [{CurrentTotal}, {CurrentBanker}, {CurrentPlayer},{CurrentTie}]-->[{_scannedTotal}, {_scannedBanker}, {_scannedPlayer}, {_scannedTie}]");
                     BaccratCard newCard = BaccratCard.NoTrade;
-                    var predict = new BaccaratPredict { Value = BaccratCard.NoTrade, Volume = 0 };
                     if (_scannedTotal == 0)
                     {
                         var newThread = new System.Threading.Thread(() =>
                         {
                             var newSessionID = AutoBacMaster.ResetTable(TableNumber);
                             Log($"Tạo mới bàn số {TableNumber} khi chưa có card nào. SessionID: {newSessionID}.");
+
+                            var predict = AutoBacMaster.Process(TableNumber, newCard, new AutomationTableResult
+                            {
+                                TableNumber = TableNumber.ToString(),
+                                TotalBanker = 0,
+                                TotalPlayer = 0,
+                                TotalTie = 0
+                            });
+                            Trade(predict, TableNumber, BaseUnit);
+
+                            Log($"Bàn số {TableNumber}, dự đoán card tiếp dựa trên kết quả phiên cũ {predict}");
+
                         });
                         newThread.Start();
                     }
@@ -129,7 +140,7 @@ namespace Midas.Automation
                             var newSessionID = AutoBacMaster.ResetTable(TableNumber);
                             Log($"Tạo mới bàn số {TableNumber} khi có 1 card  {newCard}. SessionID: {newSessionID}.");
 
-                            predict = AutoBacMaster.Process(TableNumber, newCard, new AutomationTableResult
+                            var predict = AutoBacMaster.Process(TableNumber, newCard, new AutomationTableResult
                             {
                                 TableNumber = TableNumber.ToString(),
                                 TotalBanker = _scannedBanker,
@@ -139,7 +150,7 @@ namespace Midas.Automation
 
                             Trade(predict, TableNumber, BaseUnit);
 
-                            Log($"Bàn số {TableNumber}, ra card {newCard}, dự đoán card tiếp {predict.Value} {predict.Volume} units");
+                            Log($"Bàn số {TableNumber}, ra card {newCard}, dự đoán card tiếp {predict}");
                         });
                         newThread.Start();
 
@@ -152,13 +163,7 @@ namespace Midas.Automation
 
                         var newThread = new System.Threading.Thread(() =>
                         {                           
-                            predict = AutoBacMaster.Process(TableNumber, newCard, new AutomationTableResult
-                            {
-                                TableNumber = TableNumber.ToString(),
-                                TotalBanker = _scannedBanker,
-                                TotalPlayer = _scannedPlayer,
-                                TotalTie = _scannedTie
-                            });
+                            var predict = AutoBacMaster.Process(TableNumber, newCard, new AutomationTableResult { TableNumber = TableNumber.ToString(), TotalBanker = _scannedBanker, TotalPlayer = _scannedPlayer, TotalTie = _scannedTie  });
 
                             Trade(predict, TableNumber, BaseUnit);
 
@@ -192,9 +197,8 @@ namespace Midas.Automation
 
         AutoBacMaster AutoBacMaster { get; set; }
 
-        const int TIME_PERIOD = 8_000;
+        const int TIME_PERIOD = 5_000;
         const int TIME_START = 500;
-
 
         private void SetBaseUnit()
         {

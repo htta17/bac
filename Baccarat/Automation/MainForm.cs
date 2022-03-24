@@ -309,9 +309,7 @@ namespace Midas
                 if (chboxShowDetail.Checked)
                 {
                     Log($"Bàn {_tableNumber}: { lastTableResult.TextResult } ---> { scannedResult.TextResult }");
-                }
-
-                var predict = new BaccaratPredict { Value = BaccratCard.NoTrade, Volume = 0 };
+                }                
 
                 if (scannedResult.Total == 0)
                 {
@@ -320,6 +318,18 @@ namespace Midas
                     {
                         var newSessionID = AutoBacMaster.ResetTable(_tableNumberInt);
                         Log($"Tạo mới bàn số {_tableNumberInt} khi chưa có card nào. SessionID: {newSessionID}.");
+
+                        var predict = AutoBacMaster.Process(_tableNumberInt, newCard, new AutomationTableResult
+                        {
+                            TableNumber = _tableNumberInt.ToString(),
+                            TotalBanker = 0,
+                            TotalPlayer = 0,
+                            TotalTie = 0
+                        });
+                        
+                        Trade(predict, _tableNumberInt, BaseUnit);
+
+                        Log($"Bàn số {_tableNumberInt}, dự đoán card tiếp dựa trên kết quả phiên cũ {predict}");
                     });
                     newThread.Start();
                 }
@@ -334,9 +344,9 @@ namespace Midas
                     var newThread = new System.Threading.Thread(() =>
                     {
                         var newSessionID = AutoBacMaster.ResetTable(_tableNumberInt);
-                        Log($"Tạo mới bàn số {_tableNumberInt} khi có 1 card  {newCard}. SessionID: {newSessionID}.");                           
+                        Log($"Tạo mới bàn số {_tableNumberInt} khi có 1 card  {newCard}. SessionID: {newSessionID}.");
 
-                        predict = AutoBacMaster.Process(_tableNumberInt, newCard, scannedResult);
+                        var predict = AutoBacMaster.Process(_tableNumberInt, newCard, scannedResult);
 
                         Trade(predict, _tableNumberInt, BaseUnit);
 
@@ -353,8 +363,8 @@ namespace Midas
                                         : lastTableResult.TotalPlayer + 1 == scannedResult.TotalPlayer ? BaccratCard.Player
                                         : BaccratCard.Tie;
                     var newThread = new System.Threading.Thread(() =>
-                    {                        
-                        predict = AutoBacMaster.Process(_tableNumberInt, newCard, scannedResult);
+                    {
+                        var predict = AutoBacMaster.Process(_tableNumberInt, newCard, scannedResult);
 
                         Trade(predict, _tableNumberInt, BaseUnit);
 
