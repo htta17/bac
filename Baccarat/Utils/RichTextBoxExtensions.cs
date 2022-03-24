@@ -26,7 +26,7 @@ namespace Midas.Utils
             box.SelectionStart = 0;
             box.SelectionLength = text.Length;
             box.SelectionColor = color;
-        }
+        }       
     }
 
 }

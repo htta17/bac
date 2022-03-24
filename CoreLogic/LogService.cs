@@ -20,5 +20,18 @@ namespace Midas.Utils
             }
             File.AppendAllText(folderName + "\\Error.log", DateTime.Now.ToString() + " " + text + Environment.NewLine);
         }
+
+        public static void Log(string text)
+        {
+            var dateTimeNow = DateTime.Now;
+            var folderName = string.Format(FOLDER_FORMAT, dateTimeNow);
+            if (!Directory.Exists(folderName))
+            {
+                Directory.CreateDirectory(folderName);
+            }
+            File.AppendAllText(folderName + "\\Full.log", DateTime.Now.ToString() + " " + text + Environment.NewLine);
+        }
+
+
     }
 }

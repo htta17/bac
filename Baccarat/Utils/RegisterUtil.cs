@@ -10,6 +10,13 @@ namespace Midas.Utils
     public class RegisterUtil
     {
         const string REG_PATH = "HKEY_CURRENT_USER\\MidasSoft";
+
+        public const string USER_KEY = "UserName";
+        public const string PWD_KEY = "Password";
+
+        public const string TRADE_USER_KEY = "TradeUserName";
+        public const string TRADE_PWD_KEY = "TradePassword";
+
         public static object LoadRegistry(string key)
         {
             return Registry.GetValue(REG_PATH, key, default);

@@ -26,6 +26,7 @@ using System.Collections.ObjectModel;
 using OpenQA.Selenium.Remote;
 using OpenQA.Selenium.Chromium;
 
+
 namespace Midas
 {
     public partial class MainForm : Form
@@ -45,16 +46,7 @@ namespace Midas
                 MessageBox.Show(ex.Message);
 
                 btnCollectDataAuto.Visible = btnStartStopAuto.Visible = false;
-            }
-
-            try
-            {
-                TradeDriver = new EdgeDriver(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }            
+            }                   
 
             Timers_Setup();
 
@@ -76,7 +68,7 @@ namespace Midas
         #region Properties                
         private readonly ChromeDriver CollectDataDriver = null;
         private IWebDriver CollectData_Scanned_Driver;
-        private readonly EdgeDriver TradeDriver = null;
+        private EdgeDriver TradeDriver = null;
         private IWebDriver Trade_Action_Driver;  
         /// <summary>
         /// Lấy kết quả khi đang ở chế độ tất cả các bàn
@@ -93,11 +85,7 @@ namespace Midas
 
         //private IDictionary<int, System.Threading.Thread> AllThreads  {get;set;}
 
-        readonly string USER_KEY = "UserName";
-        readonly string PWD_KEY = "Password";
-
-        readonly string TRADE_USER_KEY = "TradeUserName";
-        readonly string TRADE_PWD_KEY = "TradePassword";
+        
 
         const string SAVED_SESSION_FILENAME_KEY = "BrowserSession.json";
 
@@ -136,10 +124,10 @@ namespace Midas
 
         private void Account_Setup()
         {            
-            txtUserName.Text = (string)RegisterUtil.LoadRegistry(USER_KEY);
-            txtPassword.Text = (string)RegisterUtil.LoadRegistry(PWD_KEY);
-            txtTradeUser.Text = (string)RegisterUtil.LoadRegistry(TRADE_USER_KEY);
-            txtTradePassword.Text = (string)(RegisterUtil.LoadRegistry(TRADE_PWD_KEY));
+            txtUserName.Text = (string)RegisterUtil.LoadRegistry(RegisterUtil.USER_KEY);
+            txtPassword.Text = (string)RegisterUtil.LoadRegistry(RegisterUtil.PWD_KEY);
+            txtTradeUser.Text = (string)RegisterUtil.LoadRegistry(RegisterUtil.TRADE_USER_KEY);
+            txtTradePassword.Text = (string)(RegisterUtil.LoadRegistry(RegisterUtil.TRADE_PWD_KEY));
         }
 
         private void SetBaseUnit()
@@ -177,8 +165,7 @@ namespace Midas
             }
             catch (Exception ex)
             {
-                Log(Color.Red, ex.Message);
-                LogService.LogError(ex.Message);
+                Log(ex.Message);
             }
             finally
             {
@@ -194,16 +181,17 @@ namespace Midas
             return int.Parse(s);
         }
 
-        private void Log(Color color, string text)
+        private void Log(string text)
         {
             if (InvokeRequired)
             {
-                this.Invoke(new Action<Color, string>(Log), new object[] { color, text });
+                this.Invoke(new Action<string>(Log), new object[] { text });
                 return;
             }
 
             txtLog.InsertOnTop($"{DateTime.Now: yyyy-MM-dd HH:mm:ss}: {text}"
-                + Environment.NewLine, color);
+                + Environment.NewLine, Color.Black);
+            LogService.Log(text);
         }
         private void SetLabel(AutomationTableResult result, Label banker, Label player, Label tie)
         {
@@ -288,7 +276,7 @@ namespace Midas
             }
             catch (Exception ex)
             {
-                Log(Color.Red, ex.Message);
+                Log(ex.Message);
             }
 
             if (_tableNumberInt == 0)
@@ -320,7 +308,7 @@ namespace Midas
             { 
                 if (chboxShowDetail.Checked)
                 {
-                    Log(Color.Black, $"Bàn {_tableNumber}: { lastTableResult.TextResult } ---> { scannedResult.TextResult }");
+                    Log($"Bàn {_tableNumber}: { lastTableResult.TextResult } ---> { scannedResult.TextResult }");
                 }
 
                 var predict = new BaccaratPredict { Value = BaccratCard.NoTrade, Volume = 0 };
@@ -331,7 +319,7 @@ namespace Midas
                     var newThread = new System.Threading.Thread(() =>
                     {
                         var newSessionID = AutoBacMaster.ResetTable(_tableNumberInt);
-                        Log(Color.Green, $"Tạo mới bàn số {_tableNumberInt} khi chưa có card nào. SessionID: {newSessionID}.");
+                        Log($"Tạo mới bàn số {_tableNumberInt} khi chưa có card nào. SessionID: {newSessionID}.");
                     });
                     newThread.Start();
                 }
@@ -346,7 +334,7 @@ namespace Midas
                     var newThread = new System.Threading.Thread(() =>
                     {
                         var newSessionID = AutoBacMaster.ResetTable(_tableNumberInt);
-                        Log(Color.Green, $"Tạo mới bàn số {_tableNumberInt} khi có 1 card  {newCard}. SessionID: {newSessionID}.");                           
+                        Log($"Tạo mới bàn số {_tableNumberInt} khi có 1 card  {newCard}. SessionID: {newSessionID}.");                           
 
                         predict = AutoBacMaster.Process(_tableNumberInt, newCard, scannedResult);
 
@@ -354,25 +342,25 @@ namespace Midas
 
                         if (chBoxShowPredict.Checked && predict.Value != BaccratCard.NoTrade)
                         {
-                            Log(Color.Green, $"Bàn số {_tableNumber}, ra card {newCard}, dự đoán card tiếp {predict.Value} {predict.Volume} units");
+                            Log($"Bàn số {_tableNumber}, ra card {newCard}, dự đoán card tiếp {predict.Value} {predict.Volume} units");
                         }
                     });
                     newThread.Start();                        
                 }
                 else if (lastTableResult.Total + 1 == scannedResult.Total)
-                {                        
-                    var newThread = new System.Threading.Thread(() =>
-                    {
-                        newCard = lastTableResult.TotalBanker + 1 == scannedResult.TotalBanker ? BaccratCard.Banker
+                {
+                    newCard = lastTableResult.TotalBanker + 1 == scannedResult.TotalBanker ? BaccratCard.Banker
                                         : lastTableResult.TotalPlayer + 1 == scannedResult.TotalPlayer ? BaccratCard.Player
                                         : BaccratCard.Tie;
+                    var newThread = new System.Threading.Thread(() =>
+                    {                        
                         predict = AutoBacMaster.Process(_tableNumberInt, newCard, scannedResult);
 
                         Trade(predict, _tableNumberInt, BaseUnit);
 
                         if (chBoxShowPredict.Checked && predict.Value != BaccratCard.NoTrade)
                         {
-                            Log(Color.Green, $"Bàn số {_tableNumber}, ra card {newCard}, dự đoán card tiếp {predict.Value} {predict.Volume} units");
+                            Log($"Bàn số {_tableNumber}, ra card {newCard}, dự đoán card tiếp {predict.Value} {predict.Volume} units");
                         }
                     });
                     newThread.Start();
@@ -403,7 +391,7 @@ namespace Midas
             }
             catch (Exception ex)
             {
-                Log(Color.Red, ex.Message);
+                Log(ex.Message);
             }
         }
 
@@ -453,8 +441,8 @@ namespace Midas
             if (CollectDataDriver == null)
                 return;
 
-            RegisterUtil.SaveRegistry(USER_KEY, txtUserName.Text);
-            RegisterUtil.SaveRegistry(PWD_KEY, txtPassword.Text);
+            RegisterUtil.SaveRegistry(RegisterUtil.USER_KEY, txtUserName.Text);
+            RegisterUtil.SaveRegistry(RegisterUtil.PWD_KEY, txtPassword.Text);
             
             try
             {                
@@ -465,8 +453,7 @@ namespace Midas
             }
             catch (Exception ex)
             {
-                Log(Color.Red, ex.Message);
-                LogService.LogError(ex.Message);
+                Log(ex.Message);
             }
         }
         
@@ -497,7 +484,7 @@ namespace Midas
 
                 btnStartStopAuto.Text = "Stop auto";
                 btnStartStopAuto.ForeColor = Color.Red;
-                Log(Color.Green, "Start auto successfully.");
+                Log("Start auto successfully.");
                 CheckResultTimer_Tick(null, null);
             }
             else
@@ -507,7 +494,7 @@ namespace Midas
 
                 btnStartStopAuto.Text = "Start auto";
                 btnStartStopAuto.ForeColor = Color.Green;
-                Log(Color.Green, "Stop auto successfully.");
+                Log( "Stop auto successfully.");
             }
 
             //Cập nhật status trên UI
@@ -555,11 +542,20 @@ namespace Midas
 
         private void btnTradeLogin_Click(object sender, EventArgs e)
         {
+            try
+            {
+                TradeDriver = new EdgeDriver(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+
             if (TradeDriver == null)
                 return;
 
-            RegisterUtil.SaveRegistry(TRADE_USER_KEY, txtTradeUser.Text);
-            RegisterUtil.SaveRegistry(TRADE_PWD_KEY, txtTradePassword.Text);
+            RegisterUtil.SaveRegistry(RegisterUtil.TRADE_USER_KEY, txtTradeUser.Text);
+            RegisterUtil.SaveRegistry(RegisterUtil.TRADE_PWD_KEY, txtTradePassword.Text);
 
             var anotherThread = new System.Threading.Thread(() =>
             {
@@ -577,7 +573,7 @@ namespace Midas
                 }
                 catch (Exception ex)
                 {
-                    Log(Color.Red, ex.Message);
+                    Log(ex.Message);
                     LogService.LogError(ex.Message);
                 }                
                 
@@ -594,6 +590,8 @@ namespace Midas
         /// <param name="baseUnit">Default 30K</param>
         void Trade(BaccaratPredict predict, int tableNum, int baseUnit = 30)
         {
+            if (TradeDriver == null)
+                return;
             if (TradeDriver.WindowHandles.Count > 1)
             {
                 Trade_Action_Driver = TradeDriver.SwitchTo().Window(TradeDriver.WindowHandles[1]);
@@ -629,19 +627,12 @@ namespace Midas
             }
             catch (Exception ex)
             {
-                Log(Color.Red, ex.Message);
+                Log(ex.Message);
             }            
-        }
+        }       
 
-        private void btnTest_Click(object sender, EventArgs e)
+        private void btnSetBaseUnit_Click(object sender, EventArgs e)
         {
-            Trade(new BaccaratPredict { Value = BaccratCard.Player, Volume = 2 }, 1, 30);
-        }
-
-        private void btnTestFunc2_Click(object sender, EventArgs e)
-        {
-            //Trade(new BaccaratPredict { Value = BaccratCard.Banker, Volume = 1 }, 1, 50);
-
             SetBaseUnit();
         }
     }

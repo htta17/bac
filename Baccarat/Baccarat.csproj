@@ -79,6 +79,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Automation\AutoTrade1Table.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Automation\AutoTrade1Table.Designer.cs">
+      <DependentUpon>AutoTrade1Table.cs</DependentUpon>
+    </Compile>
     <Compile Include="Automation\MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -181,6 +187,9 @@
     <Compile Include="Utils\UtilCal.Designer.cs">
       <DependentUpon>UtilCal.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="Automation\AutoTrade1Table.resx">
+      <DependentUpon>AutoTrade1Table.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Automation\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>

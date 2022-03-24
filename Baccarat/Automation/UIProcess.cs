@@ -49,46 +49,38 @@ namespace Midas.Automation
         /// <param name="driver"></param>
         /// <param name="userName"></param>
         /// <param name="password"></param>
-        public static bool LoginToTheSite(ChromiumDriver driver, string userName, string password)
+        public static bool LoginToTheSite(WebDriver driver, string userName, string password)
         {
             if (driver == null)
                 return false;
 
-            var isSuccess = false;
+            var isSuccess = false;            
+            driver.Navigate().GoToUrl("https://www.jbbodds.com/vi-vn");
+            System.Threading.Thread.Sleep(2000);
 
-            try
-            {
-                driver.Navigate().GoToUrl("https://www.jbbodds.com/vi-vn");
-                System.Threading.Thread.Sleep(5000);
+            driver.FindElement(By.CssSelector(".input-username input[name=username]")).SendKeys(userName);
+            driver.FindElement(By.CssSelector(".input-password input[name=password]")).SendKeys(password);
+            driver.FindElement(By.CssSelector("button[type=submit]")).Click();
+            System.Threading.Thread.Sleep(500); //Đợi nửa giây  
 
-                driver.FindElement(By.CssSelector(".input-username input[name=username]")).SendKeys(userName);
-                driver.FindElement(By.CssSelector(".input-password input[name=password]")).SendKeys(password);
-                driver.FindElement(By.CssSelector("button[type=submit]")).Click();
-                System.Threading.Thread.Sleep(500); //Đợi nửa giây  
+            var liveCasino = driver.FindElements(By.CssSelector("#menu-products > li > a"))[2];
+            liveCasino.Click();
+            System.Threading.Thread.Sleep(5000); //Đợi 5 giây 
 
-                var liveCasino = driver.FindElements(By.CssSelector("#menu-products > li > a"))[2];
-                liveCasino.Click();
-                System.Threading.Thread.Sleep(5000); //Đợi 5 giây 
+            var k9 = driver.FindElements(By.CssSelector(".casino-list li"))[0];
+            Actions actions = new Actions(driver);
+            actions.MoveToElement(k9).Perform(); //Đưa chuột lên phần K9
+            System.Threading.Thread.Sleep(1000); //Đợi 2 giây
 
-                var k9 = driver.FindElements(By.CssSelector(".casino-list li"))[0];
-                Actions actions = new Actions(driver);
-                actions.MoveToElement(k9).Perform(); //Đưa chuột lên phần K9
-                System.Threading.Thread.Sleep(2000); //Đợi 2 giây
+            var playNowGrandSuite = driver.FindElements(By.CssSelector(".game-popup a.btn-orange"))[0];
+            playNowGrandSuite.Click();
+            System.Threading.Thread.Sleep(1000);//Đợi 2 giây cho xuất hiện nút OK
 
-                var playNowGrandSuite = driver.FindElements(By.CssSelector(".game-popup a.btn-orange"))[0];
-                playNowGrandSuite.Click();
-                System.Threading.Thread.Sleep(1000);//Đợi 2 giây cho xuất hiện nút OK
+            var okButton = driver.FindElement(By.CssSelector(".modal-dialog .text-center button.bet-btn"));
+            okButton.Click(); //Nhấn nút OK
+            System.Threading.Thread.Sleep(5000);//Đợi 5 giây để màn hình mới load
 
-                var okButton = driver.FindElement(By.CssSelector(".modal-dialog .text-center button.bet-btn"));
-                okButton.Click(); //Nhấn nút OK
-                System.Threading.Thread.Sleep(5000);//Đợi 5 giây để màn hình mới load
-
-                isSuccess = true;
-            }
-            catch (Exception ex)
-            {
-                LogService.LogError(ex.Message);
-            }
+            isSuccess = true;           
 
             return isSuccess;
         }
@@ -136,6 +128,14 @@ namespace Midas.Automation
 
         public static List<ChipSelector> SelectChips(int amount)
         {
+            if (amount <= MinVal)
+            {
+                return new List<ChipSelector> { ChipSelector.Ten_K }; 
+            }
+            else if (amount < 50)
+            { 
+                return new List<ChipSelector> { ChipSelector.Ten_K, ChipSelector.Ten_K };
+            }
             var list = new List<ChipSelector>();
             int index = 0; 
             while (amount > 0 && index < ChipValues.Count)
@@ -154,14 +154,16 @@ namespace Midas.Automation
             return list; 
         }
 
-        public static void ClickOnChips(IWebDriver trader, int tableNum, int amount, string buttonID)
+        public static void ClickOnChips(IWebDriver trader, int tableNum, int amount, string buttonID, bool allTableView = true)
         { 
             var listChip = SelectChips(amount);
 
             if (listChip == null)
                 return;
             //Tìm bàn N
-            var querySelector = $"widget-game-baccarat[ng-reflect-table-code='010{ tableNum }']";
+            var querySelector = allTableView 
+                ? $"widget-game-baccarat[ng-reflect-table-code='010{ tableNum }']"
+                : $"main-game-baccarat[ng-reflect-table-code='010{ tableNum }']";
             var tableUI = trader.FindElement(By.CssSelector(querySelector));
 
             var buttonUI = tableUI.FindElement(By.Id(buttonID));

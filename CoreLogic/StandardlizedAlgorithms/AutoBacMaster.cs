@@ -67,6 +67,7 @@ namespace CoreLogic.StandardlizedAlgorithms
             return logicTable.CurrentAutoSessionID;
         }
 
+        Dictionary<int, BaccaratPredict> LastPredicts = new Dictionary<int, BaccaratPredict>();
         public BaccaratPredict Process(int _tableNo, BaccratCard baccratCard, AutomationTableResult uiResult)
         {
             var noTradePredict = new BaccaratPredict { Volume = 0, Value = BaccratCard.NoTrade };
@@ -88,8 +89,22 @@ namespace CoreLogic.StandardlizedAlgorithms
 
                 if (baccratCard == BaccratCard.Banker || baccratCard == BaccratCard.Player)
                 {
-                    return table.Process(baccratCard, newResult);
+                    var prd = table.Process(baccratCard, newResult);
+                    if (LastPredicts.ContainsKey(_tableNo))
+                    {
+                        LastPredicts[_tableNo] = prd;
+                    }
+                    else
+                    {
+                        LastPredicts.Add(_tableNo, prd);
+                    }
+                    return prd;
                 }
+                else if (baccratCard == BaccratCard.Tie)
+                {
+                    return LastPredicts.ContainsKey(_tableNo) ? LastPredicts[_tableNo] : noTradePredict;
+                }
+
                 return noTradePredict;
             }
             return noTradePredict;
