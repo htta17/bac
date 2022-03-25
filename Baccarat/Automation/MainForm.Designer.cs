@@ -63,8 +63,6 @@ namespace Midas
             this.btnCamera = new System.Windows.Forms.Button();
             this.btnCollectDataAuto = new System.Windows.Forms.Button();
             this.tabPage2 = new System.Windows.Forms.TabPage();
-            this.chBoxShowPredict = new System.Windows.Forms.CheckBox();
-            this.chboxShowDetail = new System.Windows.Forms.CheckBox();
             this.btnClearLog = new System.Windows.Forms.Button();
             this.txtLog = new System.Windows.Forms.RichTextBox();
             this.tabPage3 = new System.Windows.Forms.TabPage();
@@ -521,8 +519,6 @@ namespace Midas
             // 
             // tabPage2
             // 
-            this.tabPage2.Controls.Add(this.chBoxShowPredict);
-            this.tabPage2.Controls.Add(this.chboxShowDetail);
             this.tabPage2.Controls.Add(this.btnClearLog);
             this.tabPage2.Controls.Add(this.txtLog);
             this.tabPage2.Location = new System.Drawing.Point(4, 31);
@@ -533,34 +529,6 @@ namespace Midas
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "LOG";
             this.tabPage2.UseVisualStyleBackColor = true;
-            // 
-            // chBoxShowPredict
-            // 
-            this.chBoxShowPredict.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.chBoxShowPredict.AutoSize = true;
-            this.chBoxShowPredict.Checked = true;
-            this.chBoxShowPredict.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chBoxShowPredict.Location = new System.Drawing.Point(30, 548);
-            this.chBoxShowPredict.Margin = new System.Windows.Forms.Padding(4);
-            this.chBoxShowPredict.Name = "chBoxShowPredict";
-            this.chBoxShowPredict.Size = new System.Drawing.Size(163, 26);
-            this.chBoxShowPredict.TabIndex = 3;
-            this.chBoxShowPredict.Text = "Hiển thị dự đoán";
-            this.chBoxShowPredict.UseVisualStyleBackColor = true;
-            // 
-            // chboxShowDetail
-            // 
-            this.chboxShowDetail.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.chboxShowDetail.AutoSize = true;
-            this.chboxShowDetail.Checked = true;
-            this.chboxShowDetail.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chboxShowDetail.Location = new System.Drawing.Point(30, 499);
-            this.chboxShowDetail.Margin = new System.Windows.Forms.Padding(4);
-            this.chboxShowDetail.Name = "chboxShowDetail";
-            this.chboxShowDetail.Size = new System.Drawing.Size(214, 26);
-            this.chboxShowDetail.TabIndex = 2;
-            this.chboxShowDetail.Text = "Hiển thị kết quả chi tiết";
-            this.chboxShowDetail.UseVisualStyleBackColor = true;
             // 
             // btnClearLog
             // 
@@ -1187,7 +1155,6 @@ namespace Midas
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.tabPage2.ResumeLayout(false);
-            this.tabPage2.PerformLayout();
             this.tabPage3.ResumeLayout(false);
             this.tabPage3.PerformLayout();
             this.ResumeLayout(false);
@@ -1252,8 +1219,6 @@ namespace Midas
         private System.Windows.Forms.Label label41;
         private System.Windows.Forms.Label label42;
         private System.Windows.Forms.Label label43;
-        private System.Windows.Forms.CheckBox chboxShowDetail;
-        private System.Windows.Forms.CheckBox chBoxShowPredict;
         private System.Windows.Forms.CheckBox chkTb2;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label lb_Balance;

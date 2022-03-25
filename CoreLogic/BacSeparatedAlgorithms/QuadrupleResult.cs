@@ -11,7 +11,7 @@ namespace CoreLogic
 
         public override string ToString()
         {
-            return $"{Value.ToString().ToUpper() } {Volume} units";
+            return $"{Value} {Volume} units";
         }
     }
 

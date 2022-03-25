@@ -122,6 +122,7 @@ namespace Midas.Automation
                             });
                             Trade(predict, TableNumber, BaseUnit);
 
+                            
                             Log($"Bàn số {TableNumber}, dự đoán card tiếp dựa trên kết quả phiên cũ {predict}");
 
                         });
@@ -167,7 +168,7 @@ namespace Midas.Automation
 
                             Trade(predict, TableNumber, BaseUnit);
 
-                            Log($"Bàn số {TableNumber}, ra card {newCard}, dự đoán card tiếp {predict.Value} {predict.Volume} units");
+                            Log($"Bàn số {TableNumber}, ra card {newCard}, dự đoán card tiếp {predict}");
 
                         });
                         newThread.Start();

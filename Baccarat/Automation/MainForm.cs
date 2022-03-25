@@ -305,11 +305,11 @@ namespace Midas
                 SavedAllTableResults.Add(scannedResult);
             }
             else if (lastTableResult.Total != scannedResult.Total)
-            { 
-                if (chboxShowDetail.Checked)
-                {
-                    Log($"Bàn {_tableNumber}: { lastTableResult.TextResult } ---> { scannedResult.TextResult }");
-                }                
+            {
+
+                var detailResult = $"Bàn {_tableNumber}: [All,B,P,T]:[{lastTableResult.Total},{lastTableResult.TotalBanker},{lastTableResult.TotalPlayer},{lastTableResult.TotalTie}]"; 
+                detailResult += $"-->[{scannedResult.Total},{scannedResult.TotalBanker},{scannedResult.TotalPlayer},{scannedResult.TotalTie}].";
+                                
 
                 if (scannedResult.Total == 0)
                 {
@@ -329,7 +329,9 @@ namespace Midas
                         
                         Trade(predict, _tableNumberInt, BaseUnit);
 
-                        Log($"Bàn số {_tableNumberInt}, dự đoán card tiếp dựa trên kết quả phiên cũ {predict}");
+                        Log(detailResult + $" Dự đoán: {predict}");
+                       
+                        
                     });
                     newThread.Start();
                 }
@@ -350,10 +352,7 @@ namespace Midas
 
                         Trade(predict, _tableNumberInt, BaseUnit);
 
-                        if (chBoxShowPredict.Checked && predict.Value != BaccratCard.NoTrade)
-                        {
-                            Log($"Bàn số {_tableNumber}, ra card {newCard}, dự đoán card tiếp {predict.Value} {predict.Volume} units");
-                        }
+                        Log(detailResult + $" Card { newCard.ToString().ToUpper() }. Dự đoán: {predict}");                        
                     });
                     newThread.Start();                        
                 }
@@ -368,10 +367,7 @@ namespace Midas
 
                         Trade(predict, _tableNumberInt, BaseUnit);
 
-                        if (chBoxShowPredict.Checked && predict.Value != BaccratCard.NoTrade)
-                        {
-                            Log($"Bàn số {_tableNumber}, ra card {newCard}, dự đoán card tiếp {predict.Value} {predict.Volume} units");
-                        }
+                        Log(detailResult + $" Card { newCard.ToString().ToUpper() }. Dự đoán: {predict}");
                     });
                     newThread.Start();
                 }
