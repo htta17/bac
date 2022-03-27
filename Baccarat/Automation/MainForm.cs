@@ -161,7 +161,7 @@ namespace Midas
                 allTableButton.Click();
 
                 //Hiển thị số tiền
-                SetLabel(CollectDataDriver.FindElement(By.Id("Balance")).Text, lb_Balance);
+                //SetLabel(CollectDataDriver.FindElement(By.Id("Balance")).Text, lb_Balance);
             }
             catch (Exception ex)
             {
@@ -282,7 +282,7 @@ namespace Midas
             if (_tableNumberInt == 0)
                 return;
 
-            CheckBox chkBox = this.Controls.Find($"chkTb{_tableNumberInt}", true).FirstOrDefault() as CheckBox;
+            CheckBox chkBox = this.Controls.Find($"chbxCollect{_tableNumberInt}", true).FirstOrDefault() as CheckBox;
             if (chkBox != null && !chkBox.Checked)
                 return;
 

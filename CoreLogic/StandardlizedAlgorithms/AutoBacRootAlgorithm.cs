@@ -314,7 +314,7 @@ namespace CoreLogic.StandardlizedAlgorithms
                 {
                     //currentAutoSession = CreateNewSession();
                     var newAutoSession = new AutoSession { TableNumber = TableNumber };
-                    dBContext.AddAutoSession(newAutoSession);                    
+                    dBContext.AddAutoSession(newAutoSession);
                     CurrentAutoSessionID = newAutoSession.ID;
                 }
                 else if (currentAutoSession.NoOfStepsRoot > 1) //Bàn đã quá lâu
@@ -328,9 +328,13 @@ namespace CoreLogic.StandardlizedAlgorithms
                     dBContext.AddAutoSession(newAutoSession);
                     CurrentAutoSessionID = newAutoSession.ID;
                 }
+                else 
+                {
+                    CurrentAutoSessionID = currentAutoSession.ID;
+                }
 
-                //Lấy 100 bước gần nhất của bàn 
-                MainAutoRoots = dBContext.FindLastNAutoRoots(TableNumber, 100)
+                //Lấy 30 bước gần nhất của bàn 
+                MainAutoRoots = dBContext.FindLastNAutoRoots(TableNumber, 30)
                                     .Select(c => new SaveRootInfo 
                                     {
                                         BaccratCard = (BaccratCard)c.Card,
