@@ -147,21 +147,26 @@ namespace Midas
         {
             if (CollectData_Scanned_Driver == null)
                 return;
-
-            //var table1 = CollectData_Scanned_Driver.FindElement(By.CssSelector("#IconAllTables"));
-            var table1 = CollectData_Scanned_Driver.FindElements(By.CssSelector(".lobbyTable"))[0];
-            table1.Click(); //Nhấn vô chế độ tất cả các bàn
-            IsInAllTableView = false;
-            CheckResultTimer.Stop();
+            try
+            {
+                var table1 = CollectData_Scanned_Driver.FindElements(By.CssSelector(".lobbyTable"))[0];
+                table1.Click(); //Nhấn vô chế độ tất cả các bàn                
+            }
+            catch (Exception ex)
+            {
+                Log(ex.Message);
+            }
+            finally
+            {
+                IsInAllTableView = false;
+                CheckResultTimer.Stop();
+            }
 
             System.Threading.Thread.Sleep(2000); //Đợi khoảng 2 giây
             try
             {
                 var allTableButton = CollectData_Scanned_Driver.FindElement(By.CssSelector("#IconBaccarat"));
-                allTableButton.Click();
-
-                //Hiển thị số tiền
-                //SetLabel(CollectDataDriver.FindElement(By.Id("Balance")).Text, lb_Balance);
+                allTableButton.Click();               
             }
             catch (Exception ex)
             {
