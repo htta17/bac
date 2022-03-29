@@ -451,6 +451,8 @@ namespace Midas
         {
             if (CollectDataDriver == null)
                 return;
+            else
+                CollectDataDriver.SwitchTo().Window(CollectDataDriver.WindowHandles[0]);
 
             RegisterUtil.SaveRegistry(RegisterUtil.USER_KEY, txtUserName.Text);
             RegisterUtil.SaveRegistry(RegisterUtil.PWD_KEY, txtPassword.Text);
