@@ -260,7 +260,9 @@ namespace Midas
             }
 
         }
-        //object lock1, lock2, lock3, lock4, lock5, lock6, lock7, lock8, lock9, lock10; 
+
+        int CountError = 0;
+        
         public void GetResult_AllTableView_Table(IWebElement table)
         {
             var scannedResult = new AutomationTableResult { };
@@ -279,9 +281,75 @@ namespace Midas
                 _tableNumber = table.FindElement(By.Id("TableNo")).Text.Replace("T", "");
                 _tableNumberInt = ParseInt(_tableNumber);
             }
+            catch (NoSuchWindowException ex)
+            {
+                Log(ex.Message + " Đăng nhập tự động để tiếp tục lấy dữ liệu.");
+                SwitchTableTimer.Stop();
+                CheckResultTimer.Stop();
+
+                btn_CollectData_Click(null, null);
+                return;
+            }
+            catch (ElementClickInterceptedException ex)
+            {
+                Log(ex.Message + " Tự động nhấn OK và chuyển màn hình để tiếp tục.");
+                SwitchTableTimer.Stop();
+                CheckResultTimer.Stop();
+
+                //Nhấn nút OK
+                var okButton = CollectData_Scanned_Driver.FindElement(By.CssSelector("model-overlay .btn-primary"));
+                okButton.Click(); //Nhấn nút OK
+
+                /*
+                System.Threading.Thread.Sleep(200);
+                try
+                {
+                    var table1 = CollectData_Scanned_Driver.FindElements(By.CssSelector(".lobbyTable"))[0];
+                    table1.Click(); //Nhấn vô bàn 1               
+                    
+                }
+                catch (Exception ex1)
+                {
+                    Log(ex1.Message);
+                }
+                System.Threading.Thread.Sleep(2000); //Đợi khoảng 2 giây
+                try
+                {
+                    var allTableButton = CollectData_Scanned_Driver.FindElement(By.CssSelector("#IconBaccarat"));
+                    allTableButton.Click();
+                }
+                catch (Exception ex2)
+                {
+                    Log(ex2.Message);
+                }
+
+                SwitchTableTimer.Start();
+                CheckResultTimer.Start();
+                */
+                btn_CollectData_Click(null, null);
+                return;
+
+            }
             catch (Exception ex)
             {
                 Log(ex.Message);
+                CountError++;
+                if (CountError == 20)
+                {
+                    CountError = 0;
+                    SwitchTableTimer.Stop();
+                    CheckResultTimer.Stop();
+
+                    //Nhấn nút OK
+                    var okButton = CollectData_Scanned_Driver.FindElement(By.CssSelector("model-overlay .btn-primary"));
+                    if (okButton != null)
+                    {
+                        okButton.Click(); //Nhấn nút OK
+                    }
+
+                    btn_CollectData_Click(null, null);
+                    return;
+                }
             }
 
             if (_tableNumberInt == 0)
@@ -495,9 +563,9 @@ namespace Midas
                 CheckResultTimer.Start();
                 SwitchTableTimer.Start();
 
-                btnStartStopAuto.Text = "Stop auto";
+                btnStartStopAuto.Text = "Dừng thu dữ liệu";
                 btnStartStopAuto.ForeColor = Color.Red;
-                Log("Start auto successfully.");
+                Log("Bắt đầu thu dữ liệu.");
                 CheckResultTimer_Tick(null, null);
             }
             else
@@ -505,9 +573,9 @@ namespace Midas
                 CheckResultTimer.Stop();
                 SwitchTableTimer.Stop();
 
-                btnStartStopAuto.Text = "Start auto";
+                btnStartStopAuto.Text = "Bắt đầu thu dữ liệu";
                 btnStartStopAuto.ForeColor = Color.Green;
-                Log( "Stop auto successfully.");
+                Log( "Đã dừng thu dữ liệu.");
             }
 
             //Cập nhật status trên UI

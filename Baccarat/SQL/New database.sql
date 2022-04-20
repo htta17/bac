@@ -237,47 +237,61 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 CREATE PROCEDURE [dbo].[CommonQuery]
-	-- Add the parameters for the stored procedure here
-	@tablenumber int
+	@TABLES NVARCHAR(100), 
+	@BEGIN DateTime, 
+	@END DateTime
 AS
 BEGIN
 
-	select SUM(TotalProfit) AS LifeTimeTotal, SUM(RootMainProfit) AS LifeTimeMain
-	FROM 
-	(
-		select TableNumber, IsClosed, NoOfStepsRoot, StartDateTime,MinRoot, MaxRoot, RootMainProfit + RootAllSub * 2 AS TotalProfit, RootMainProfit  
-		from AutoSessions 
-	) AS A
+	declare @Run iNT = 0
+	declare @today datetime2 =  CAST (getdate() as date)
+	declare @yesterday datetime2 =  CAST (dateadd(day, -1, getdate()) as date)
+	declare @rightnow datetime2 = getdate()
 
-	select TableNumber, SUM( RootMainProfit + RootAllSub) GB1, SUM( RootMainProfit + RootAllSub * 2) AS LifeTimeTotal, SUM( RootMainProfit) AS LifeTimeMain
-	 from AutoSessions GROUP BY TableNumber
+	IF (@Run = 1)
+	BEGIN 
+		SELECT [ID]
+			  ,[StartDateTime]
+			  ,[NoOfSteps]
+			  ,[NoOfStepsRoot]      
+			  ,[TableNumber]      
+			  ,[MaxRoot]
+			  ,[MinRoot]
+			  ,[RootMainProfit]
+			  ,[RootProfit0]
+			  ,[RootProfit1]
+			  ,[RootProfit2]
+			  ,[RootProfit3]
+			  ,[RootAllSub]
+		  FROM [dbo].[AutoSessions]
+		WHERE IsClosed = 1
+	END
 
-	select StartDateTime, TableNumber,  RootMainProfit , RootAllSub + RootMainProfit * 2 AS 'Main, 2 * (all subs)', IsClosed from AutoSessions
-	where TableNumber = 1
+	/*
+	Shoe ID,Start At, No of Steps, No of Step without TIE, Table No, Max (6 threads), Min (6 threads), MainProfit, Profit0, Profit1, Profit2, Profit3, AllSubProfit
+	*/
 
-	select StartDateTime, TableNumber,  RootMainProfit , RootAllSub + RootMainProfit * 2 AS  'Main, 2 * (all subs)', IsClosed from AutoSessions
-	where TableNumber = 2
-
-	select StartDateTime, TableNumber,  RootMainProfit , RootAllSub + RootMainProfit * 2 AS  'Main, 2 * (all subs)', IsClosed from AutoSessions
-	where TableNumber = 3
-
-	select StartDateTime, TableNumber,  RootMainProfit , RootAllSub + RootMainProfit * 2 AS  'Main, 2 * (all subs)', IsClosed from AutoSessions
-	where TableNumber = 4
-
-	select StartDateTime, TableNumber,  RootMainProfit , RootAllSub + RootMainProfit * 2 AS  'Main, 2 * (all subs)', IsClosed from AutoSessions
-	where TableNumber = 5
-
-	select StartDateTime, TableNumber,  RootMainProfit , RootAllSub + RootMainProfit * 2 AS  'Main, 2 * (all subs)', IsClosed  from AutoSessions
-	where TableNumber = 6
-
-	select StartDateTime, TableNumber,  RootMainProfit , RootAllSub + RootMainProfit * 2 AS  'Main, 2 * (all subs)', IsClosed  from AutoSessions
-	where TableNumber = 7
-
-	select ID, TableNumber, NoOfStepsRoot, StartDateTime,MinRoot, MaxRoot,RootMainProfit, RootMainProfit + RootAllSub * 2 AS GlobalProfit ,  
-			CASE ISCLOSED WHEN 1 THEN 'Closed' ELSE 'Open' END [Status]	
-	from AutoSessions 
-
-
+	SELECT [ID]
+		  ,CASE WHEN [Card] = 1 THEN 'Banker' ELSE 'Player' END Card
+		  ,[InputDateTime]      
+		  ,[AutoSessionID] AS ShoeID
+		  ,[MainProfit]	       
+		  ,[AllSubProfit]
+		  , [MainProfit] + [AllSubProfit] * 2 AS CurrentTradeProfit
+		  , CASE WHEN [Card] = 1 AND [MainProfit] + [AllSubProfit] * 2 > 0 THEN ([MainProfit] + [AllSubProfit] * 2) * 0.95 ELSE ([MainProfit] + [AllSubProfit] * 2) END RealProfit
+		  ,SUM([MainProfit]) OVER (ORDER BY ID ASC) AS Accu_Main
+		  ,SUM([AllSubProfit]) OVER (ORDER BY ID ASC) AS Accu_AllSub
+		  ,SUM([AllSubProfit] * 2 + [MainProfit]) OVER (ORDER BY ID ASC) AS Accu_All
+		  ,SUM(CASE WHEN [Card] = 1 AND [MainProfit] + [AllSubProfit] * 2 > 0 THEN ([MainProfit] + [AllSubProfit] * 2) * 0.95 ELSE ([MainProfit] + [AllSubProfit] * 2) END ) OVER (ORDER BY ID ASC) Acc_RealProfit
+	  FROM [dbo].[AutoRoots]
+	WHERE AutoSessionID IN 
+		(	SELECT ID FROM AutoSessions 
+			WHERE 
+					StartDateTime between '2022-03-28' and @rightnow					
+					AND TableNumber IN (select VALUE FROM string_split(@TABLES, ','))
+					AND IsClosed = 1
+				) 
+				ORDER BY [AutoSessionID],ID ASC
 
 END
 GO
@@ -290,3 +304,6 @@ ON AutoRoots (AutoSessionID)
 
 CREATE INDEX IDX_AutoSessions_TableNumber
 ON AutoSessions (TableNumber)
+
+CREATE INDEX IDX_AutoSessions_IsClosed
+ON AutoSessions (IsClosed)
