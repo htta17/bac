@@ -284,52 +284,43 @@ namespace Midas
             catch (NoSuchWindowException ex)
             {
                 Log(ex.Message + " Đăng nhập tự động để tiếp tục lấy dữ liệu.");
-                SwitchTableTimer.Stop();
-                CheckResultTimer.Stop();
+                EnableAuto(false);
 
+                //Nhấn nút OK
+                var okButton = CollectData_Scanned_Driver.FindElement(By.CssSelector("model-overlay .btn-primary"));
+                if (okButton != null)
+                {
+                    okButton.Click(); //Nhấn nút OK
+                }
                 btn_CollectData_Click(null, null);
                 return;
             }
             catch (ElementClickInterceptedException ex)
             {
                 Log(ex.Message + " Tự động nhấn OK và chuyển màn hình để tiếp tục.");
-                SwitchTableTimer.Stop();
-                CheckResultTimer.Stop();
+                EnableAuto(false);
+
+                //Nhấn nút OK
+                var okButton = CollectData_Scanned_Driver.FindElement(By.CssSelector("model-overlay .btn-primary"));
+                okButton.Click(); //Nhấn nút OK
+                
+                btn_CollectData_Click(null, null);
+                return;
+            }
+
+            catch (StaleElementReferenceException ex)
+            {
+                Log(ex.Message + " Tự động nhấn OK và chuyển màn hình để tiếp tục.");
+                EnableAuto(false);
 
                 //Nhấn nút OK
                 var okButton = CollectData_Scanned_Driver.FindElement(By.CssSelector("model-overlay .btn-primary"));
                 okButton.Click(); //Nhấn nút OK
 
-                /*
-                System.Threading.Thread.Sleep(200);
-                try
-                {
-                    var table1 = CollectData_Scanned_Driver.FindElements(By.CssSelector(".lobbyTable"))[0];
-                    table1.Click(); //Nhấn vô bàn 1               
-                    
-                }
-                catch (Exception ex1)
-                {
-                    Log(ex1.Message);
-                }
-                System.Threading.Thread.Sleep(2000); //Đợi khoảng 2 giây
-                try
-                {
-                    var allTableButton = CollectData_Scanned_Driver.FindElement(By.CssSelector("#IconBaccarat"));
-                    allTableButton.Click();
-                }
-                catch (Exception ex2)
-                {
-                    Log(ex2.Message);
-                }
-
-                SwitchTableTimer.Start();
-                CheckResultTimer.Start();
-                */
                 btn_CollectData_Click(null, null);
                 return;
-
             }
+
             catch (Exception ex)
             {
                 Log(ex.Message);
@@ -337,8 +328,7 @@ namespace Midas
                 if (CountError == 20)
                 {
                     CountError = 0;
-                    SwitchTableTimer.Stop();
-                    CheckResultTimer.Stop();
+                    EnableAuto(false);
 
                     //Nhấn nút OK
                     var okButton = CollectData_Scanned_Driver.FindElement(By.CssSelector("model-overlay .btn-primary"));
@@ -367,7 +357,6 @@ namespace Midas
                 TotalTie = ParseInt(_currentTie),
                 TableNumber = _tableNumber
             };
-            SetLabel(scannedResult);
 
             BaccratCard newCard = BaccratCard.NoTrade;
             lastTableResult = SavedAllTableResults.FirstOrDefault(c => c.TableNumber == _tableNumber);
@@ -403,8 +392,6 @@ namespace Midas
                         Trade(predict, _tableNumberInt, BaseUnit);
 
                         Log(detailResult + $" Dự đoán: {predict}");
-                       
-                        
                     });
                     newThread.Start();
                 }

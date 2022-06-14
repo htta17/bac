@@ -1,4 +1,49 @@
-﻿/****** Object:  Table [dbo].[AutoResults]    Script Date: 3/9/2022 10:08:36 PM ******/
+﻿
+/****** Object:  Table [dbo].[AutoFollow2In]    Script Date: 5/15/2022 10:08:50 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[AutoFollow2In](
+	[ID] [int] NOT NULL,
+	[Card] [nvarchar](50) NOT NULL,
+	[Predict] [int] NOT NULL,
+	[Profit] [int] NOT NULL,
+	[Coeff] [int] NULL,
+	[ProfitMod] [int] NULL,
+	[UIResult] [nvarchar](200) NULL,
+	[AutoSessionID] [int] NULL,
+	[Profit_CutLoss] [int] NULL,
+	[ProfitMod_CutLoss] [int] NULL,
+ CONSTRAINT [PK_AutoFollow2In] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[AutoFollowF]    Script Date: 5/15/2022 10:08:51 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[AutoFollowF](
+	[ID] [int] NOT NULL,
+	[Card] [nvarchar](50) NOT NULL,
+	[Predict] [int] NOT NULL,
+	[Profit] [int] NOT NULL,
+	[Coeff] [int] NULL,
+	[ProfitMod] [int] NULL,
+	[UIResult] [nvarchar](200) NULL,
+	[AutoSessionID] [int] NULL,
+	[Profit_CutLoss] [int] NULL,
+	[ProfitMod_CutLoss] [int] NULL,
+ CONSTRAINT [PK_AutoFollowF] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[AutoResults]    Script Date: 5/15/2022 10:08:51 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -15,7 +60,7 @@ CREATE TABLE [dbo].[AutoResults](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[AutoRoots]    Script Date: 3/9/2022 10:08:36 PM ******/
+/****** Object:  Table [dbo].[AutoRoots]    Script Date: 5/15/2022 10:08:51 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -46,7 +91,7 @@ CREATE TABLE [dbo].[AutoRoots](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[AutoSessions]    Script Date: 3/9/2022 10:08:36 PM ******/
+/****** Object:  Table [dbo].[AutoSessions]    Script Date: 5/15/2022 10:08:51 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -83,7 +128,7 @@ CREATE TABLE [dbo].[AutoSessions](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Results]    Script Date: 3/9/2022 10:08:36 PM ******/
+/****** Object:  Table [dbo].[Results]    Script Date: 5/15/2022 10:08:51 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -99,7 +144,7 @@ CREATE TABLE [dbo].[Results](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Roots]    Script Date: 3/9/2022 10:08:36 PM ******/
+/****** Object:  Table [dbo].[Roots]    Script Date: 5/15/2022 10:08:51 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -153,7 +198,7 @@ CREATE TABLE [dbo].[Roots](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Sessions]    Script Date: 3/9/2022 10:08:36 PM ******/
+/****** Object:  Table [dbo].[Sessions]    Script Date: 5/15/2022 10:08:51 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -172,6 +217,23 @@ CREATE TABLE [dbo].[Sessions](
 	[Profit83] [int] NOT NULL,
 	[ImportFileName] [nvarchar](200) NULL,
  CONSTRAINT [PK_dbo.Sessions] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[tmp]    Script Date: 5/15/2022 10:08:51 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[tmp](
+	[ID] [int] NOT NULL,
+	[Step] [int] NULL,
+	[Card] [int] NULL,
+	[UIResult] [nvarchar](200) NULL,
+	[AutoSessionID] [int] NULL,
+ CONSTRAINT [PK_tmp] PRIMARY KEY CLUSTERED 
 (
 	[ID] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
@@ -231,79 +293,3 @@ ON DELETE CASCADE
 GO
 ALTER TABLE [dbo].[Results] CHECK CONSTRAINT [FK_dbo.Results_dbo.Sessions_SessionID]
 GO
-/****** Object:  StoredProcedure [dbo].[CommonQuery]    Script Date: 3/9/2022 10:08:36 PM ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-CREATE PROCEDURE [dbo].[CommonQuery]
-	@TABLES NVARCHAR(100), 
-	@BEGIN DateTime, 
-	@END DateTime
-AS
-BEGIN
-
-	declare @Run iNT = 0
-	declare @today datetime2 =  CAST (getdate() as date)
-	declare @yesterday datetime2 =  CAST (dateadd(day, -1, getdate()) as date)
-	declare @rightnow datetime2 = getdate()
-
-	IF (@Run = 1)
-	BEGIN 
-		SELECT [ID]
-			  ,[StartDateTime]
-			  ,[NoOfSteps]
-			  ,[NoOfStepsRoot]      
-			  ,[TableNumber]      
-			  ,[MaxRoot]
-			  ,[MinRoot]
-			  ,[RootMainProfit]
-			  ,[RootProfit0]
-			  ,[RootProfit1]
-			  ,[RootProfit2]
-			  ,[RootProfit3]
-			  ,[RootAllSub]
-		  FROM [dbo].[AutoSessions]
-		WHERE IsClosed = 1
-	END
-
-	/*
-	Shoe ID,Start At, No of Steps, No of Step without TIE, Table No, Max (6 threads), Min (6 threads), MainProfit, Profit0, Profit1, Profit2, Profit3, AllSubProfit
-	*/
-
-	SELECT [ID]
-		  ,CASE WHEN [Card] = 1 THEN 'Banker' ELSE 'Player' END Card
-		  ,[InputDateTime]      
-		  ,[AutoSessionID] AS ShoeID
-		  ,[MainProfit]	       
-		  ,[AllSubProfit]
-		  , [MainProfit] + [AllSubProfit] * 2 AS CurrentTradeProfit
-		  , CASE WHEN [Card] = 1 AND [MainProfit] + [AllSubProfit] * 2 > 0 THEN ([MainProfit] + [AllSubProfit] * 2) * 0.95 ELSE ([MainProfit] + [AllSubProfit] * 2) END RealProfit
-		  ,SUM([MainProfit]) OVER (ORDER BY ID ASC) AS Accu_Main
-		  ,SUM([AllSubProfit]) OVER (ORDER BY ID ASC) AS Accu_AllSub
-		  ,SUM([AllSubProfit] * 2 + [MainProfit]) OVER (ORDER BY ID ASC) AS Accu_All
-		  ,SUM(CASE WHEN [Card] = 1 AND [MainProfit] + [AllSubProfit] * 2 > 0 THEN ([MainProfit] + [AllSubProfit] * 2) * 0.95 ELSE ([MainProfit] + [AllSubProfit] * 2) END ) OVER (ORDER BY ID ASC) Acc_RealProfit
-	  FROM [dbo].[AutoRoots]
-	WHERE AutoSessionID IN 
-		(	SELECT ID FROM AutoSessions 
-			WHERE 
-					StartDateTime between '2022-03-28' and @rightnow					
-					AND TableNumber IN (select VALUE FROM string_split(@TABLES, ','))
-					AND IsClosed = 1
-				) 
-				ORDER BY [AutoSessionID],ID ASC
-
-END
-GO
-
-CREATE INDEX IDX_AutoResults_AutoSessionID
-ON AutoResults (AutoSessionID)
-
-CREATE INDEX IDX_AutoRoots_AutoSessionID
-ON AutoRoots (AutoSessionID)
-
-CREATE INDEX IDX_AutoSessions_TableNumber
-ON AutoSessions (TableNumber)
-
-CREATE INDEX IDX_AutoSessions_IsClosed
-ON AutoSessions (IsClosed)

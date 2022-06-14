@@ -263,60 +263,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Cards\10C.jpg" />
-    <Content Include="Cards\10D.jpg" />
-    <Content Include="Cards\10H.jpg" />
-    <Content Include="Cards\10S.jpg" />
-    <Content Include="Cards\11C.jpg" />
-    <Content Include="Cards\11D.jpg" />
-    <Content Include="Cards\11H.jpg" />
-    <Content Include="Cards\11S.jpg" />
-    <Content Include="Cards\12C.jpg" />
-    <Content Include="Cards\12D.jpg" />
-    <Content Include="Cards\12H.jpg" />
-    <Content Include="Cards\12S.jpg" />
-    <Content Include="Cards\13C.jpg" />
-    <Content Include="Cards\13D.jpg" />
-    <Content Include="Cards\13H.jpg" />
-    <Content Include="Cards\13S.jpg" />
-    <Content Include="Cards\1C.jpg" />
-    <Content Include="Cards\1D.jpg" />
-    <Content Include="Cards\1H.jpg" />
-    <Content Include="Cards\1S.jpg" />
-    <Content Include="Cards\2C.jpg" />
-    <Content Include="Cards\2D.jpg" />
-    <Content Include="Cards\2H.jpg" />
-    <Content Include="Cards\2S.jpg" />
-    <Content Include="Cards\3C.jpg" />
-    <Content Include="Cards\3D.jpg" />
-    <Content Include="Cards\3H.jpg" />
-    <Content Include="Cards\3S.jpg" />
-    <Content Include="Cards\4C.jpg" />
-    <Content Include="Cards\4D.jpg" />
-    <Content Include="Cards\4H.jpg" />
-    <Content Include="Cards\4S.jpg" />
-    <Content Include="Cards\5C.jpg" />
-    <Content Include="Cards\5D.jpg" />
-    <Content Include="Cards\5H.jpg" />
-    <Content Include="Cards\5S.jpg" />
-    <Content Include="Cards\6C.jpg" />
-    <Content Include="Cards\6D.jpg" />
-    <Content Include="Cards\6H.jpg" />
-    <Content Include="Cards\6S.jpg" />
-    <Content Include="Cards\7C.jpg" />
-    <Content Include="Cards\7D.jpg" />
-    <Content Include="Cards\7H.jpg" />
-    <Content Include="Cards\7S.jpg" />
-    <Content Include="Cards\8C.jpg" />
-    <Content Include="Cards\8D.jpg" />
-    <Content Include="Cards\8H.jpg" />
-    <Content Include="Cards\8S.jpg" />
-    <Content Include="Cards\9C.jpg" />
-    <Content Include="Cards\9D.jpg" />
-    <Content Include="Cards\9H.jpg" />
-    <Content Include="Cards\9S.jpg" />
-    <Content Include="Cards\CardBackBlue.jpg" />
-    <Content Include="Cards\CardBackRed.jpg" />
     <Content Include="Sound\Speech Off.wav">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
