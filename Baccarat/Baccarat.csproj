@@ -106,12 +106,6 @@
       <DependentUpon>Report.cs</DependentUpon>
     </Compile>
     <Compile Include="Automation\UIProcess.cs" />
-    <Compile Include="BaccaratSimulatorUI\BacSimulator.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="BaccaratSimulatorUI\BacSimulator.Designer.cs">
-      <DependentUpon>BacSimulator.cs</DependentUpon>
-    </Compile>
     <Compile Include="Baccarat\BaccaratBankerOnly.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -200,9 +194,6 @@
     <EmbeddedResource Include="Automation\Report.resx">
       <DependentUpon>Report.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="BaccaratSimulatorUI\BacSimulator.resx">
-      <DependentUpon>BacSimulator.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Baccarat\BaccaratBankerOnly.resx">
       <DependentUpon>BaccaratBankerOnly.cs</DependentUpon>
     </EmbeddedResource>
@@ -272,8 +263,12 @@
     <Content Include="Sound\Windows Logon.wav">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="SQL\Follow_Generator.sql" />
+    <Content Include="SQL\Follow_Query.sql" />
+    <Content Include="SQL\Important Query.sql" />
     <Content Include="SQL\New database.sql" />
-    <Content Include="SQL\Run 2020.02.14.sql" />
+    <Content Include="SQL\Ziczac query.sql" />
+    <Content Include="SQL\Ziczac_Generator.sql" />
     <None Include="Resources\camera-icon-png.png" />
     <None Include="Resources\160041651.jpg" />
     <None Include="Resources\download.png" />
